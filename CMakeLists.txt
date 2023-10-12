@@ -1,7 +1,12 @@
 ﻿# CMakeList.txt: plik projektu CMake najwyższego poziomu, wykonaj konfigurację globalną
 # i uwzględnij podprojekty w tym miejscu.
 #
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.19)
+
+cmake_policy(SET CMP0079 NEW)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
