@@ -9,7 +9,7 @@ namespace calendrical::calendars {
 	using namespace calendrical::datetypes;
 
 	class julian_calendar :
-		public typed_calendar_if<julian_date, simple_calendar>,
+		public typed_calendar_if<julian_date, julian_calendar>,
 		public year_aware_calendar_if,
 		public month_aware_calendar_if<month>,
 		public day_aware_calendar_if,

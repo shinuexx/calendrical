@@ -14,7 +14,7 @@ namespace calendrical::datetypes {
 		int32_t count;
 		bool leap;
 
-		constexpr roman_date(int32_t year, calendrical::month month, int32_t count, bool leap) :
+		constexpr roman_date(int32_t year, calendrical::month month, roman_event event, int32_t count, bool leap) :
 			has_year_if{ year },
 			has_month_if{ month },
 			event{ event },

@@ -13,7 +13,7 @@ namespace calendrical::holiday_providers {
 		holidays.push_back({ "easter", easter(gyear) });
 		holidays.push_back({ "pentecost", pentecost(gyear) });
 		holidays.push_back({ "astronomical easter", astronomical_easter(gyear) });
-		for (auto x : unlucky_friday(gyear))
+		for (auto x : unlucky_fridays(gyear))
 			holidays.push_back({ "unlucky friday", x });
 		holidays.sort();
 		return holidays;
