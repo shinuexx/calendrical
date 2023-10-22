@@ -6,14 +6,14 @@
 #include "type_name.hpp"
 
 namespace calendrical {
-	enum class range_type {
-		opened,
-		closed,
-		left_closed,
-		right_closed
-	};
+    enum class range_type {
+        opened,
+        closed,
+        left_closed,
+        right_closed
+    };
 
-	std::string to_string(const range_type& type);
+    std::string to_string(const range_type& type);
 
     template <typename T>
     struct range
@@ -47,9 +47,9 @@ namespace calendrical {
         }
         constexpr bool operator()(const T& value) const { return contains(value); }
 
-        template <typename T2>
-        constexpr range<T2> cast() const { return { type, static_cast<T2>(min), static_cast<T2>(max) }; }
-        template <typename T2>
+        template <typename T2, std::enable_if_t<std::is_convertible_v<T, T2>, int> = 0>
+        constexpr range<T2> cast() const { return { type, (T2)(min), (T2)(max) }; }
+        template <typename T2, std::enable_if_t<std::is_convertible_v<T, T2>, int> = 0>
         constexpr operator range<T2>() const { return cast<T2>(); }
 
         constexpr range<T> open() const { return { range_type::opened, min, max }; }

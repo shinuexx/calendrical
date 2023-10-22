@@ -7,9 +7,9 @@
 #include <iostream>
 
 namespace calendrical {
-	class fixed_date_t;
+    class fixed_date_t;
 
-	struct weekday {
+    struct weekday {
         static const weekday sunday;
         static const weekday monday;
         static const weekday tuesday;
@@ -66,7 +66,7 @@ namespace calendrical {
         constexpr int operator-(const weekday& rhs) const { return m_v - rhs.m_v; }
 
         std::string to_string() const;
-	};
+    };
 
     inline constexpr weekday weekday::sunday{ 0 };
     inline constexpr weekday weekday::monday{ 1 };

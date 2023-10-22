@@ -8,8 +8,8 @@
 #include "helpers.hpp"
 
 namespace calendrical {
-	class fixed_date_t {
-		int64_t m_v;
+    class fixed_date_t {
+        int64_t m_v;
 
     public:
         constexpr fixed_date_t(int64_t v) : m_v{ v } {}
@@ -28,7 +28,7 @@ namespace calendrical {
         constexpr fixed_date_t substract(int64_t value) const { return { m_v - value }; }
 
         friend std::string to_string(const fixed_date_t& rd);
-	};
+    };
 }
 
 std::ostream& operator<<(std::ostream& out, const calendrical::fixed_date_t& rd);

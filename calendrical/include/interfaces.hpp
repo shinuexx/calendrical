@@ -8,39 +8,39 @@
 #include "fixed_date.hpp"
 
 namespace calendrical {
-	struct holiday_t {
-		std::string name;
-		fixed_date_t date;
+    struct holiday_t {
+        std::string name;
+        fixed_date_t date;
 
-		constexpr bool operator==(const holiday_t& other) const { return (date == other.date) && (name == other.name); }
-		constexpr auto operator<=>(const holiday_t& other) const { return date <=> other.date; }
-	};
+        constexpr bool operator==(const holiday_t& other) const { return (date == other.date) && (name == other.name); }
+        constexpr auto operator<=>(const holiday_t& other) const { return date <=> other.date; }
+    };
 
-	struct date_if {
-		virtual std::string to_string() const = 0;
-		virtual ~date_if() = default;
-	};
+    struct date_if {
+        virtual std::string to_string() const = 0;
+        virtual ~date_if() = default;
+    };
 
-	struct calendar_if : public std::enable_shared_from_this<calendar_if> {
-		virtual fixed_date_t get_epoch() const = 0;
-		virtual calendar_type get_calendar_type() const = 0;
-		virtual ~calendar_if() = default;
-	};
+    struct calendar_if : public std::enable_shared_from_this<calendar_if> {
+        virtual fixed_date_t get_epoch() const = 0;
+        virtual calendar_type get_calendar_type() const = 0;
+        virtual ~calendar_if() = default;
+    };
 
-	template<typename T, typename SelfType, std::enable_if_t<std::is_base_of_v<date_if, T>, int> = 0>
-	struct typed_calendar_if : public calendar_if {
-		virtual T to_date(const fixed_date_t& date) const = 0;
-		virtual fixed_date_t to_fixed(const T& date) const = 0;
+    template<typename T, typename SelfType, std::enable_if_t<std::is_base_of_v<date_if, T>, int> = 0>
+    struct typed_calendar_if : public calendar_if {
+        virtual T to_date(const fixed_date_t& date) const = 0;
+        virtual fixed_date_t to_fixed(const T& date) const = 0;
         virtual std::shared_ptr<const SelfType> get_shared() const { return std::dynamic_pointer_cast<const SelfType>(shared_from_this()); }
-		virtual ~typed_calendar_if() = default;
-	};
+        virtual ~typed_calendar_if() = default;
+    };
 
-	struct holiday_provider_if {
-		virtual std::shared_ptr<const calendar_if> get_calendar() const = 0;
-		virtual std::list<holiday_t> get_holiday_in_year(int32_t gyear) const = 0;
+    struct holiday_provider_if {
+        virtual std::shared_ptr<const calendar_if> get_calendar() const = 0;
+        virtual std::list<holiday_t> get_holiday_in_year(int32_t gyear) const = 0;
 
-		virtual ~holiday_provider_if() = default;
-	};
+        virtual ~holiday_provider_if() = default;
+    };
 
     struct has_year_if
     {

@@ -6,30 +6,30 @@
 #include <iostream>
 
 namespace calendrical {
-	class moment_t {
-		double m_v;
+    class moment_t {
+        double m_v;
 
-	public:
+    public:
 
-		constexpr moment_t() : m_v{ 0.0 } {}
-		constexpr moment_t(double v) : m_v{ v } {}
-		constexpr moment_t(const fixed_date_t& rd) : m_v{ static_cast<double>(rd.operator int64_t()) } {}
-		constexpr operator double() const { return m_v; }
-		explicit operator fixed_date_t() const { return to_fixed_date(); }
+        constexpr moment_t() : m_v{ 0.0 } {}
+        constexpr moment_t(double v) : m_v{ v } {}
+        constexpr moment_t(const fixed_date_t& rd) : m_v{ static_cast<double>(rd.operator int64_t()) } {}
+        constexpr operator double() const { return m_v; }
+        explicit operator fixed_date_t() const { return to_fixed_date(); }
 
-		constexpr bool operator==(const moment_t& other) const { return m_v == other.m_v; }
-		constexpr auto operator<=>(const moment_t& other) const { return m_v <=> other.m_v; }
+        constexpr bool operator==(const moment_t& other) const { return m_v == other.m_v; }
+        constexpr auto operator<=>(const moment_t& other) const { return m_v <=> other.m_v; }
 
-		double time() const;
+        double time() const;
 
-		fixed_date_t to_fixed_date() const;
+        fixed_date_t to_fixed_date() const;
 
-		friend std::string to_string(const moment_t& m);
+        friend std::string to_string(const moment_t& m);
 
-		static constexpr moment_t hms(double h, double m = 0, double s = 0) {
-			return (h + (m + s / 60) / 60) / 24;
-		}
-	};
+        static constexpr moment_t hms(double h, double m = 0, double s = 0) {
+            return (h + (m + s / 60) / 60) / 24;
+        }
+    };
 
     class rational_moment_t
     {

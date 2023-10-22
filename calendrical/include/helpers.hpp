@@ -9,8 +9,8 @@
 #include "concepts.hpp"
 
 namespace calendrical {
-	using rational = boost::multiprecision::cpp_rational;
-	using bigint = boost::multiprecision::cpp_int;
+    using rational = boost::multiprecision::cpp_rational;
+    using bigint = boost::multiprecision::cpp_int;
 
     bigint floor(const rational& r);
     bigint ceil(const rational& r);
@@ -66,12 +66,14 @@ namespace calendrical {
     }
     double floor_div(double x, double y);
     rational floor_div(const rational& x, const rational& y);
+    bigint floor_div(const bigint& x, const bigint& y);
 
     static constexpr int64_t mod(int64_t x, int64_t y)
     {
         return x - y * floor_div(x, y);
     }
     double mod(double x, double y);
+    bigint mod(const bigint& x, const bigint& y);
     rational mod(const rational& x, const rational& y);
 
     static constexpr int64_t interval_modulus(int64_t x, int64_t a, int64_t b)
@@ -89,6 +91,8 @@ namespace calendrical {
         auto m = mod(x, b);
         return m == 0 ? b : m;
     }
+
+    bigint adjusted_remainder(const bigint& x, const bigint& b);
 
     template <typename T>
     using predicate_t = std::function<bool(const T&)>;
@@ -187,5 +191,17 @@ namespace calendrical {
     static constexpr UT operator-(const T& lhs, const T& rhs)
     {
         return static_cast<UT>(lhs) - static_cast<UT>(rhs);
+    }
+
+    template<container TR, container T1, container T2>
+    static constexpr TR join_copy(const T1& one, const T2& two) {
+        TR result{ one };
+        result.insert(result.end(), two.begin(), two.end());
+        return result;
+    }
+    template<container TR, container T1>
+    static constexpr TR& join_in_place(TR& result, const T1& one) {
+        result.insert(result.end(), one.begin(), one.end());
+        return result;
     }
 }

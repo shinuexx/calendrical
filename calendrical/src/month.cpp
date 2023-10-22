@@ -2,8 +2,8 @@
 #include <sstream>
 
 namespace calendrical {
-	std::string to_string(const month& m) {
-		std::ostringstream oss{};
+    std::string to_string(const month& m) {
+        std::ostringstream oss{};
         switch (m)
         {
         case month::january:
@@ -33,8 +33,8 @@ namespace calendrical {
         default:
             oss << "month{" << (static_cast<int>(m)) + '}'; break;
         }
-		return oss.str();
-	}
+        return oss.str();
+    }
 }
 
 

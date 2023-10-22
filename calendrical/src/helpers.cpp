@@ -1,7 +1,7 @@
 #include "helpers.hpp"
 
 namespace calendrical {
-	static const rational half{ 1, 2 };
+    static const rational half{ 1, 2 };
 
     bigint floor(const rational& r)
     {
@@ -52,7 +52,16 @@ namespace calendrical {
         return floor(x / y);
     }
 
+    bigint floor_div(const bigint& x, const bigint& y)
+    {
+        return floor(rational{ x,y });
+    }
+
     double mod(double x, double y)
+    {
+        return x - y * floor_div(x, y);
+    }
+    bigint mod(const bigint& x, const bigint& y)
     {
         return x - y * floor_div(x, y);
     }
@@ -74,6 +83,12 @@ namespace calendrical {
             return x;
         else
             return a + mod(x - a, b - a);
+    }
+
+    bigint adjusted_remainder(const bigint& x, const bigint& b)
+    {
+        auto m = mod(x, b);
+        return m.is_zero() ? b : m;
     }
 
     int64_t sigma(const predicate_t<int64_t>& p, const value_function_t<int64_t>& f, int64_t k)
