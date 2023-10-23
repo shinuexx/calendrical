@@ -1,4 +1,7 @@
 #include "holiday_providers/gregorian_calendar_holiday_provider.hpp"
+#include "time_and_astronomy.hpp"
+#include "season.hpp"
+#include "lunar_phase.hpp"
 
 namespace calendrical::holiday_providers {
     std::shared_ptr<const calendar_if> gregorian_calendar_holiday_provider::get_calendar() const {
@@ -53,6 +56,9 @@ namespace calendrical::holiday_providers {
     }
 
     fixed_date_t gregorian_calendar_holiday_provider::astronomical_easter(int32_t year) const {
-        return {};
+        using namespace calendrical::time_and_astronomy;
+        auto equinox = season_in_gregorian(season::SPRING, year);
+        auto paschal_moon = static_cast<int64_t>(std::floor(apparent_from_universal(lunar_phase_at_or_after(calendrical::lunar_phase::FULL, equinox), locations::jerusalem)));
+        return weekday::sunday.after(paschal_moon);
     }
 }
