@@ -115,6 +115,13 @@ namespace calendrical {
         virtual ~month_aware_calendar_if() = default;
     };
 
+    template<typename MonthType>
+    struct leap_month_aware_calendar_if : public month_aware_calendar_if<MonthType> {
+        virtual bool is_leap_month(const fixed_date_t& date) const = 0;
+
+        virtual ~leap_month_aware_calendar_if() = default;
+    };
+
     struct week_aware_calendar_if
     {
         virtual int32_t get_week(const fixed_date_t& date) const = 0;
@@ -125,6 +132,12 @@ namespace calendrical {
     {
         virtual int32_t get_day(const fixed_date_t& date) const = 0;
         virtual ~day_aware_calendar_if() = default;
+    };
+
+    struct leap_day_aware_calendar_if : public day_aware_calendar_if
+    {
+        virtual bool is_leap_day(const fixed_date_t& date) const = 0;
+        virtual ~leap_day_aware_calendar_if() = default;
     };
 
     struct year_aware_calendar_if

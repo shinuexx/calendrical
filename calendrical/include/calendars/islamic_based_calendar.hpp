@@ -24,6 +24,9 @@ namespace calendrical::calendars {
         virtual fixed_date_t get_epoch() const override { return m_epoch; }
         virtual calendar_type get_calendar_type() const override { return calendar_type::LUNAR; }
 
+        virtual int32_t next_year(int32_t year) const override { return year == -1 ? 1 : year + 1; }
+        virtual int32_t previous_year(int32_t year) const override { return year == 1 ? -1 : year - 1; }
+
         virtual simple_date to_date(const fixed_date_t& date) const override = 0;
         virtual fixed_date_t to_fixed(const simple_date& date) const override = 0;
 

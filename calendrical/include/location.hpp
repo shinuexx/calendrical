@@ -15,6 +15,17 @@ namespace calendrical {
         angle_t direction(const location& other) const;
     };
 
+    struct rational_location {
+        rational_angle_t latitude;
+        rational_angle_t longitude;
+        rational elevation;
+        rational_moment_t zone;
+
+        rational_moment_t get_longitude_zone() const { return longitude / rational_angle_t::full_circle; }
+
+        explicit operator location() const;
+    };
+
     namespace locations {
         static constexpr location urbana{ 40.1, -88.2, 225, moment_t::hms(-6) };
         static constexpr location greenwich{ 51.4777815, 0, 46.9, 0 };

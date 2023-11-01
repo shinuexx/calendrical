@@ -63,7 +63,7 @@ namespace calendrical::holiday_providers {
     }
     fixed_date_t hebrew_based_calendar_holiday_provider::ta_anit_esther(int32_t year) const {
         auto purim_date = purim(year);
-        return purim_date.get_weekday() == weekday::sunday ? purim_date.substract(3) : purim_date.substract(1);
+        return purim_date.get_weekday() == weekday::sunday ? purim_date.subtract(3) : purim_date.subtract(1);
     }
     fixed_date_t hebrew_based_calendar_holiday_provider::tishah_be_av(int32_t year) const {
         auto hyear = year - m_gregorian_year_hebrew_epoch;
@@ -119,9 +119,9 @@ namespace calendrical::holiday_providers {
     {
         auto [death_year, death_month, death_day] = deathdate.tie();
         if ((death_month == hebrew_month::marheshvan) && (death_day == 30) && !m_hebrew->is_long_marheshvan(death_year + 1))
-            return m_hebrew->to_fixed({ hyear, hebrew_month::kislev, 1 }).substract(1);
+            return m_hebrew->to_fixed({ hyear, hebrew_month::kislev, 1 }).subtract(1);
         else if ((death_month == hebrew_month::kislev) && (death_day == 30) && m_hebrew->is_short_kislev(death_year + 1))
-            return m_hebrew->to_fixed({ hyear, hebrew_month::tevet, 1 }).substract(1);
+            return m_hebrew->to_fixed({ hyear, hebrew_month::tevet, 1 }).subtract(1);
         else if (death_month == hebrew_month::adarii)
             return m_hebrew->to_fixed({ hyear, m_hebrew->last_month_of_year(hyear), death_day });
         else if ((death_day == 30) && (death_month == hebrew_month::adar) && !m_hebrew->is_leap_year(hyear))

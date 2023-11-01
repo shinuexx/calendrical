@@ -9,6 +9,7 @@
 #include "datetypes/bahai_date.hpp"
 #include "datetypes/chinese_date.hpp"
 #include "datetypes/lunar_date.hpp"
+#include "datetypes/sexagesimal_name.hpp"
 #include <sstream>
 
 namespace calendrical::datetypes {
@@ -62,13 +63,41 @@ namespace calendrical::datetypes {
         oss << "lunar_date{year:" << year << ",month:" << month << ",leap_month:" << std::boolalpha << leap_month << ",day:" << day << ",leap_day:" << std::boolalpha << leap_day << '}';
         return oss.str();
     }
+    std::string chinese_date::to_string() const {
+        std::ostringstream oss{};
+        oss << "chinese_date{cycle:" << cycle << ", year:" << year << ", month:" << month << ",leap_month:" << std::boolalpha << leap_month << ",day:" << day << '}';
+        return oss.str();
+    }
     std::string to_string(const olympiad& odate) {
         std::ostringstream oss{};
         oss << "olympiad{cycle:" << odate.cycle << ",year:" << odate.year << "}";
+        return oss.str();
+    }
+
+    sexagesimal_name sexagesimal_name::from(int64_t n) {
+        return {
+            (int32_t)adjusted_remainder(n, 10),
+            (int32_t)adjusted_remainder(n, 12),
+        };
+    }
+
+    int32_t sexagesimal_name::difference(const sexagesimal_name& date) const {
+        int64_t stem_difference = (int64_t)date.stem - stem;
+        auto branch_difference = date.branch - branch;
+        return (int32_t)adjusted_remainder(stem_difference + 25 * (branch_difference - stem_difference), 60);
+    }
+
+    std::string sexagesimal_name::to_string() const
+    {
+        std::ostringstream oss{};
+        oss << "sexagesimal_name{stem:" << stem << ",branch:" << branch << "}";
         return oss.str();
     }
 }
 
 std::ostream& operator<<(std::ostream& out, const calendrical::datetypes::olympiad& odate) {
     return out << calendrical::datetypes::to_string(odate);
+}
+std::ostream& operator<<(std::ostream& out, const calendrical::datetypes::sexagesimal_name& odate) {
+    return out << odate.to_string();
 }

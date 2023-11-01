@@ -43,10 +43,16 @@ namespace calendrical {
         return y.sign();
     }
 
+    int sign(const bigint& y)
+    {
+        return y.sign();
+    }
+
     double floor_div(double x, double y)
     {
         return std::floor(x / y);
     }
+
     rational floor_div(const rational& x, const rational& y)
     {
         return floor(x / y);
@@ -76,6 +82,13 @@ namespace calendrical {
             return x;
         else
             return a + mod(x - a, b - a);
+    }
+    bigint interval_modulus(const bigint& x, const bigint& a, const bigint& b)
+    {
+        if (a == b)
+            return x;
+        else
+            return a + mod(bigint{ x - a }, b - a);
     }
     rational interval_modulus(const rational& x, const rational& a, const rational& b)
     {

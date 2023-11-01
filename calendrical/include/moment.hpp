@@ -20,6 +20,9 @@ namespace calendrical {
         constexpr bool operator==(const moment_t& other) const { return m_v == other.m_v; }
         constexpr auto operator<=>(const moment_t& other) const { return m_v <=> other.m_v; }
 
+        constexpr moment_t add(double x) const { return m_v + x; }
+        constexpr moment_t subtract(double x) const { return m_v - x; }
+
         double time() const;
 
         fixed_date_t to_fixed_date() const;
@@ -29,7 +32,11 @@ namespace calendrical {
         static constexpr moment_t hms(double h, double m = 0, double s = 0) {
             return (h + (m + s / 60) / 60) / 24;
         }
+
+        static const moment_t end_of_time;
     };
+
+    inline constexpr moment_t moment_t::end_of_time{ std::numeric_limits<double>::infinity() };
 
     class rational_moment_t
     {
@@ -44,6 +51,7 @@ namespace calendrical {
         rational_moment_t(const bigint& v) : m_v{ v } {}
         rational_moment_t(bigint&& v) : m_v{ std::move(v) } {}
         rational_moment_t(const moment_t& m) : m_v{ m.operator double() } {}
+        rational_moment_t(const fixed_date_t& rd) : m_v{ rd.operator int64_t() } {}
 
         operator rational() const;
         explicit operator moment_t() const;

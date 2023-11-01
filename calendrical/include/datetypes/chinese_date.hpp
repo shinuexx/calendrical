@@ -2,7 +2,7 @@
 
 #include "interfaces.hpp"
 
-namespace calendrical
+namespace calendrical::datetypes
 {
   struct chinese_date : public has_cycle_if, public has_year_if, public has_leap_month_if<int32_t>, public has_day_if, public date_if
   {

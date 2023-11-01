@@ -961,7 +961,7 @@ namespace calendrical::time_and_astronomy {
     fixed_date_t phasis_on_or_before(const fixed_date_t& date, const location& location) {
         auto moon = lunar_phase_at_or_after(calendrical::lunar_phase::NEW, date).to_fixed_date();
         auto age = date - moon;
-        auto T = age <= 3 && !visible_crescent(date, location) ? moon.substract(29) : date;
+        auto T = age <= 3 && !visible_crescent(date, location) ? moon.subtract(29) : date;
         return least_passing(std::bind(visible_crescent, std::placeholders::_1, location), T);
     }
     fixed_date_t phasis_on_or_after(const fixed_date_t& date, const location& location) {
@@ -988,7 +988,7 @@ namespace calendrical::time_and_astronomy {
     }
     bool is_early_month(const fixed_date_t& date, const location& location) {
         auto start = phasis_on_or_before(date, location);
-        auto prev = start.substract(15);
+        auto prev = start.subtract(15);
         auto ml = month_length(prev, location);
         return (date - start) >= 30
             || ml > 30

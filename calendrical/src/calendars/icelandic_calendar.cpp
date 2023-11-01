@@ -18,7 +18,7 @@ namespace calendrical::calendars {
         return weekday::sunday.on_or_after(apr19);
     }
     fixed_date_t icelandic_calendar::winter(int32_t iyear) const {
-        return summer(iyear + 1).substract(180);
+        return summer(iyear + 1).subtract(180);
     }
 
     fixed_date_t icelandic_calendar::get_new_year(int32_t year) const {
@@ -54,7 +54,7 @@ namespace calendrical::calendars {
     int32_t icelandic_calendar::get_month(const icelandic_date& odate, const fixed_date_t& date) const {
         auto year = odate.year;
         auto season = odate.season;
-        auto midsummer = winter(year).substract(90);
+        auto midsummer = winter(year).subtract(90);
         auto t1 = summer(year);
         int64_t start;
         if (season == calendrical::season::WINTER)

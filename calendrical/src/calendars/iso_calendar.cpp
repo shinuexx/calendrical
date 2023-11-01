@@ -28,7 +28,7 @@ namespace calendrical::calendars {
     }
 
     int32_t iso_calendar::get_year(const fixed_date_t& date) const {
-        auto approx = m_gregorian->get_year(date.substract(3));
+        auto approx = m_gregorian->get_year(date.subtract(3));
         auto year = date >= get_new_year(approx + 1) ? approx + 1 : approx;
         return year;
     }

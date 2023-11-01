@@ -14,4 +14,13 @@ namespace calendrical {
         else
             return arctan(y, x);
     }
+    rational_location::operator location() const
+    {
+        return {
+            (angle_t)latitude,
+            (angle_t)longitude,
+            elevation.convert_to<double>(),
+            (moment_t)zone,
+        };
+    }
 }

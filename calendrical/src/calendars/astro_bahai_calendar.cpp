@@ -36,7 +36,7 @@ namespace calendrical::calendars {
     fixed_date_t astro_bahai_calendar::to_fixed(const bahai_date& date) const
     {
         auto [major, cycle, year, month, day] = date.tie();
-        auto years = 361 * (year - 1) + 19 * (cycle - 1) + year;
+        auto years = 361 * (major - 1) + 19 * (cycle - 1) + year;
         int64_t a;
         int32_t b;
         if (month == 19){

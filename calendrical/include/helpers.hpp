@@ -7,6 +7,7 @@
 #include <array>
 #include "range.hpp"
 #include "concepts.hpp"
+#include "small_rational.hpp"
 
 namespace calendrical {
     using rational = boost::multiprecision::cpp_rational;
@@ -40,6 +41,7 @@ namespace calendrical {
     }
 
     int sign(const rational& y);
+    int sign(const bigint& y);
 
     static constexpr int64_t floor_div(int64_t x, int64_t y)
     {
@@ -68,6 +70,10 @@ namespace calendrical {
     rational floor_div(const rational& x, const rational& y);
     bigint floor_div(const bigint& x, const bigint& y);
 
+    static constexpr small_rational floor_div(const small_rational& x, const small_rational& y) {
+        return small_rational::floor(x / y);
+    }
+
     static constexpr int64_t mod(int64_t x, int64_t y)
     {
         return x - y * floor_div(x, y);
@@ -75,6 +81,9 @@ namespace calendrical {
     double mod(double x, double y);
     bigint mod(const bigint& x, const bigint& y);
     rational mod(const rational& x, const rational& y);
+    static constexpr small_rational mod(const small_rational& x, const small_rational& y) {
+        return x - y * floor_div(x, y);
+    }
 
     static constexpr int64_t interval_modulus(int64_t x, int64_t a, int64_t b)
     {
@@ -84,7 +93,14 @@ namespace calendrical {
             return a + mod(x - a, b - a);
     }
     double interval_modulus(double x, double a, double b);
+    bigint interval_modulus(const bigint& x, const bigint& a, const bigint& b);
     rational interval_modulus(const rational& x, const rational& a, const rational& b);
+    static constexpr small_rational interval_modulus(const small_rational& x, const small_rational& a, const small_rational& b) {
+        if (a == b)
+            return x;
+        else
+            return a + mod(x - a, b - a);
+    }
 
     static constexpr int64_t adjusted_remainder(int64_t x, int64_t b)
     {
@@ -159,6 +175,17 @@ namespace calendrical {
         return std::find(std::begin(cont), std::end(cont), value) == std::end(cont);
     }
 
+    template<typename T>
+    static constexpr bool in(const std::initializer_list<T>& list, const T& value) 
+    {
+        return std::find(std::begin(list), std::end(list), value) != std::end(list);
+    }
+    template<typename T>
+    static constexpr bool not_in(const std::initializer_list<T>& list, const T& value)
+    {
+        return std::find(std::begin(list), std::end(list), value) == std::end(list);
+    }
+
     template <typename TIn, typename TOut>
     value_function_t<double> make_value_function(std::function<TOut(const TIn&)>&& func)
     {
@@ -177,9 +204,37 @@ namespace calendrical {
             return static_cast<double>(_Func(i));
         };
     }
+    template <typename TIn, typename TOut>
+    value_function_t<rational> make_rational_value_function(std::function<TOut(const TIn&)>&& func)
+    {
+        return [func](const rational& x)
+            {
+                auto i = static_cast<TIn>(x);
+                return static_cast<rational>(func(i));
+            };
+    }
+    template <typename TIn, typename TOut>
+    value_function_t<rational> make_rational_value_function(TOut(&_Func)(const TIn&))
+    {
+        return [&_Func](const rational& x)
+            {
+                auto i = static_cast<TIn>(x);
+                return static_cast<rational>(_Func(i));
+            };
+    }
+
+    template<typename TIn>
+    predicate_t<int64_t> make_predicate(std::function<bool(const TIn&)>&& func) {
+        return [&func](const int64_t& x) { return func(static_cast<TIn>(x)); };
+    }
+
+    template<typename TIn>
+    predicate_t<int64_t> make_predicate(bool(&_Func)(const TIn&)) {
+        return [&_Func](const int64_t& x) { return _Func(static_cast<TIn>(x)); };
+    }
 
     template <typename T, std::size_t N>
-    T cross_product(const std::array<T, N>& a, const std::array<T, N>& b)
+    constexpr T cross_product(const std::array<T, N>& a, const std::array<T, N>& b)
     {
         T r = 0;
         for (std::size_t i = 0; i < N; ++i)
