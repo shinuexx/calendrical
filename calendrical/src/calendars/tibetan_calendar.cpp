@@ -15,11 +15,11 @@ namespace calendrical::calendars {
         if (a > 6)
             return -tibetan_sun_equation(a - 6);
         else if (a > 3)
-            return tibetan_sun_equation(rational{ 6 } - a);
+            return tibetan_sun_equation(rational_angle_t{ 6 } - a);
         else if (is_integer(a))
             return t[(int32_t)(rational)a];
         else
-            return mod(a, 1) * tibetan_sun_equation(rational_angle_t{ ceil(a) }) + mod(-a, 1) * tibetan_sun_equation(rational_angle_t{ floor(a) });
+            return mod(a, 1) * (rational)tibetan_sun_equation(rational_angle_t{ ceil(a) }) + mod(-a, 1) * (rational)tibetan_sun_equation(rational_angle_t{ floor(a) });
     }
     rational_angle_t tibetan_calendar::tibetan_moon_equation(const rational_angle_t& a)
     {
@@ -36,11 +36,11 @@ namespace calendrical::calendars {
         if (a > 14)
             return -tibetan_moon_equation(a - 14);
         else if (a > 7)
-            return tibetan_moon_equation(rational{ 14 } - a);
+            return tibetan_moon_equation(rational_angle_t{ 14 } - a);
         else if (is_integer(a))
             return t[(int32_t)(rational)a];
         else
-            return mod(a, 1) * tibetan_moon_equation((rational)ceil(a)) + mod(-a, 1) * tibetan_moon_equation((rational)floor(a));
+            return mod(a, 1) * (rational)tibetan_moon_equation((rational)ceil(a)) + mod(-a, 1) * (rational)tibetan_moon_equation((rational)floor(a));
     }
     lunar_date tibetan_calendar::to_date(const fixed_date_t& date) const
     {
@@ -66,8 +66,8 @@ namespace calendrical::calendars {
         auto mean = days * rational{ 11135, 11312 } - 30 + (leap_day ? 0 : -1) + rational{ 1071,1616 };
         auto solar_anomaly = mod(days * rational{ 13,4824 } + rational{ 2117,4824 }, 1);
         auto lunar_anomaly = mod(days * rational{ 3781, 105840 } + rational{ 2837,15120 }, 1);
-        auto sun = -tibetan_sun_equation((rational)12 * solar_anomaly);
-        auto moon = tibetan_moon_equation((rational)28 * lunar_anomaly);
+        rational sun = -tibetan_sun_equation((rational)12 * solar_anomaly);
+        rational moon = tibetan_moon_equation((rational)28 * lunar_anomaly);
         return (int64_t)floor((int64_t)ms_epoch + mean + sun + moon);
     }
 

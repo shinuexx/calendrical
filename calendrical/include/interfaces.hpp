@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <list>
+#include <type_traits>
 #include "calendar_type.hpp"
 #include "fixed_date.hpp"
 
@@ -22,6 +23,7 @@ namespace calendrical {
     };
 
     struct calendar_if : public std::enable_shared_from_this<calendar_if> {
+        constexpr calendar_if() : std::enable_shared_from_this<calendar_if>{} {}
         virtual fixed_date_t get_epoch() const = 0;
         virtual calendar_type get_calendar_type() const = 0;
         virtual ~calendar_if() = default;
@@ -29,6 +31,7 @@ namespace calendrical {
 
     template<typename T, typename SelfType, std::enable_if_t<std::is_base_of_v<date_if, T>, int> = 0>
     struct typed_calendar_if : public calendar_if {
+        constexpr typed_calendar_if() : calendar_if() {}
         virtual T to_date(const fixed_date_t& date) const = 0;
         virtual fixed_date_t to_fixed(const T& date) const = 0;
         virtual std::shared_ptr<const SelfType> get_shared() const { return std::dynamic_pointer_cast<const SelfType>(shared_from_this()); }
@@ -177,4 +180,8 @@ namespace calendrical {
         virtual std::list<fixed_date_t> in_gregorian(MonthType cmonth, int32_t day, int32_t gyear) const = 0;
         virtual ~in_gregorian_aware_provider_if() = default;
     };
+}
+
+static std::ostream& operator<<(std::ostream& out, const calendrical::date_if& date) {
+    return out << date.to_string();
 }

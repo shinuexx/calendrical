@@ -18,3 +18,4 @@ project ("calendrical")
 
 # Uwzględnij podprojekty.
 add_subdirectory ("calendrical")
+add_subdirectory ("calendrical-tests")

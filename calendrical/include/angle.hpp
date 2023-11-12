@@ -72,7 +72,6 @@ namespace calendrical
         rational_angle_t operator-() const { return rational{ -m_v }; }
 
         rational_angle_t operator+(const rational_angle_t& right) const { return rational{ m_v + right.m_v }; }
-        friend rational_angle_t operator+(const rational& left, const rational_angle_t& right) { return rational{ left + right.m_v }; }
         rational_angle_t operator-(const rational_angle_t& right) const { return rational{ m_v - right.m_v }; }
         rational_angle_t operator*(const rational& right) const { return rational{ m_v + right }; }
         friend rational_angle_t operator*(const rational& left, const rational_angle_t& right) { return rational(left * right.m_v); }

@@ -28,7 +28,7 @@ namespace calendrical::calendars {
 
     rational modern_hindu_base::hindu_sine(const rational_angle_t& O)
     {
-        auto entry = O / rational{ 226, 60 };
+        auto entry = O / rational_angle_t::dms(0, 226);
         auto fraction = mod(entry, 1);
         return fraction * hindu_sine_table((int64_t)ceil(entry)) + (1 - fraction) * hindu_sine_table((int64_t)floor(entry));
     }
@@ -43,7 +43,7 @@ namespace calendrical::calendars {
     }
     rational_angle_t modern_hindu_base::hindu_mean_position(const rational_moment_t& t, const rational& period)
     {
-        return 360 * mod((t - hindu_creation) / period, 1);
+        return 360 * mod(((rational)t - hindu_creation) / period, 1);
     }
     rational_angle_t modern_hindu_base::hindu_true_position(const rational_moment_t& t, const rational& period, const rational& size, const rational& anomalistic, const rational& change)
     {
@@ -81,7 +81,7 @@ namespace calendrical::calendars {
 
     rational_moment_t modern_hindu_base::hindu_new_moon_before(const rational_moment_t& t)
     {
-        auto T = t - hindu_lunar_phase(t) * hindu_synodic_month / 360;
+        auto T = (rational)t - (rational)hindu_lunar_phase(t) * hindu_synodic_month / 360;
         auto p = [](const rational& l, const rational& u) { return hindu_zodiac(l) == hindu_zodiac(u) || (u - l) < hindu_E; };
         rational a = T - 1;
         rational b = boost::multiprecision::min((rational)t, T + 1);
@@ -109,7 +109,7 @@ namespace calendrical::calendars {
         static const rational a{ 600, 1577917828 };
         auto days = date - m_epoch;
         rational precession = 27 - boost::multiprecision::abs(108 * interval_modulus(a * days - quarter, -half, half));
-        return mod(hindu_solar_longitude(date) - precession, 360);
+        return mod((rational)hindu_solar_longitude(date) - precession, 360);
     }
     rational modern_hindu_base::hindu_solar_sidereal_difference(const fixed_date_t& date)
     {
@@ -143,7 +143,7 @@ namespace calendrical::calendars {
     rational modern_hindu_base::hindu_equation_of_time(const fixed_date_t& date)
     {
         auto offset = hindu_sine(hindu_mean_position(date, hindu_anomalistic_year));
-        auto equation_sun = offset * rational_angle_t::dms(57, 18) * (rational{ 14,360 } - boost::multiprecision::abs(offset) / 180);
+        rational equation_sun = offset * (rational)rational_angle_t::dms(57, 18) * (rational{ 14,360 } - boost::multiprecision::abs(offset) / 180);
         return (hindu_daily_motion(date) / 360) * (equation_sun / 360) * hindu_sidereal_year;
     }
 
@@ -153,7 +153,7 @@ namespace calendrical::calendars {
         static const rational quarter{ 1,4 };
         return (int64_t)date + quarter + (ujjain.longitude - m_hindu_location.longitude) / 360
             - hindu_equation_of_time(date)
-            + a * (hindu_ascensional_difference(date, m_hindu_location) + quarter * hindu_solar_sidereal_difference(date));
+            + a * ((rational)hindu_ascensional_difference(date, m_hindu_location) + quarter * hindu_solar_sidereal_difference(date));
     }
 
     rational_moment_t modern_hindu_base::hindu_sunset(const fixed_date_t& date) const
@@ -162,7 +162,7 @@ namespace calendrical::calendars {
         static const rational quarter{ 3,4 };
         return (int64_t)date + quarter + (ujjain.longitude - m_hindu_location.longitude) / 360
             - hindu_equation_of_time(date)
-            + a * (-hindu_ascensional_difference(date, m_hindu_location) + quarter * hindu_solar_sidereal_difference(date));
+            + a * ((rational)-hindu_ascensional_difference(date, m_hindu_location) + quarter * hindu_solar_sidereal_difference(date));
     }
 
     rational_moment_t modern_hindu_base::hindu_standard_from_sundial(const rational_moment_t& t) const
@@ -173,20 +173,20 @@ namespace calendrical::calendars {
         rational a, b, h;
         if (q == 0)
         {
-            a = hindu_sunset(date.subtract(1));
-            b = hindu_sunrise(date);
+            a = (rational)hindu_sunset(date.subtract(1));
+            b = (rational)hindu_sunrise(date);
             h = rational{ -1,4 };
         }
         else if (q == 3)
         {
-            a = hindu_sunset(date);
-            b = hindu_sunrise(date.add(1));
+            a = (rational)hindu_sunset(date);
+            b = (rational)hindu_sunrise(date.add(1));
             h = rational{ 3,4 };
         }
         else 
         {
-            a = hindu_sunrise(date);
-            b = hindu_sunset(date);
+            a = (rational)hindu_sunrise(date);
+            b = (rational)hindu_sunset(date);
             h = rational{ 1,4 };
         }
         return rational{ a + 2 * (b - a) * (time - h) };
@@ -229,7 +229,7 @@ namespace calendrical::calendars {
 
     rational_moment_t modern_hindu_base::hindu_solar_longitude_at_or_after(const rational_angle_t& l, const rational_moment_t& t)
     {
-        auto T = t + hindu_sidereal_year / 360 * mod(l - hindu_solar_longitude(t), 360);
+        auto T = (rational)t + hindu_sidereal_year / 360 * mod(l - hindu_solar_longitude(t), 360);
         auto a = boost::multiprecision::max((rational)t, T - 5);
         rational b = T + 5;
         return inverse_angular(make_rational_value_function(hindu_solar_longitude), l, a, b);
@@ -244,7 +244,7 @@ namespace calendrical::calendars {
     rational_moment_t modern_hindu_base::hindu_lunar_day_at_or_after(const rational& k, const rational_moment_t& t)
     {
         rational_angle_t phase = (k - 1) * rational{ 12 };
-        rational T = t + mod(phase - hindu_lunar_phase(t), 360);
+        rational T = (rational)t + mod(phase - hindu_lunar_phase(t), 360);
         auto a = boost::multiprecision::max((rational)t, T - 2);
         rational b = T + 2;
         return inverse_angular(make_rational_value_function(hindu_lunar_phase), phase, a, b);

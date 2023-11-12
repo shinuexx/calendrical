@@ -20,8 +20,8 @@ namespace calendrical::calendars {
         month get_month(const fixed_date_t& date, int32_t year) const;
 
     public:
-        constexpr gregorian_calendar() : m_epoch{ 1 } {}
-        constexpr gregorian_calendar(const fixed_date_t& epoch) : m_epoch{ epoch } {}
+        constexpr gregorian_calendar() : typed_calendar_if<gregorian_date, gregorian_calendar>{}, m_epoch{ 1 } {}
+        constexpr gregorian_calendar(const fixed_date_t& epoch) : typed_calendar_if<gregorian_date, gregorian_calendar>{}, m_epoch{ epoch } {}
 
         virtual ~gregorian_calendar() = default;
 

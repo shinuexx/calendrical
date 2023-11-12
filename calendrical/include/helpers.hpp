@@ -59,7 +59,7 @@ namespace calendrical {
 
         // If the signs of x and y are different and the remainder is non-zero,
         // adjust the quotient to floor division.
-        if ((x < 0 && y > 0) || (x > 0 && y < 0) && remainder != 0)
+        if (((x < 0 && y > 0) || (x > 0 && y < 0)) && remainder != 0)
         {
             quotient--;
         }
