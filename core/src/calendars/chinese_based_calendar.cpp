@@ -1,6 +1,7 @@
 #include "calendars/chinese_based_calendar.hpp"
 #include "calendars/gregorian_calendar.hpp"
 #include "time_and_astronomy.hpp"
+#include <cmath>
 
 namespace calendrical::calendars {
     using namespace calendrical::time_and_astronomy;

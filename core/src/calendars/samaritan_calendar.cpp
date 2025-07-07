@@ -1,5 +1,6 @@
 #include "calendars/samaritan_calendar.hpp"
-
+#include <algorithm>
+#include <cmath>
 #include <vector>
 #include "time_and_astronomy.hpp"
 
@@ -49,8 +50,8 @@ namespace calendrical::calendars {
     {
         const auto moon = new_moon_at_or_before(noon(date));
         const auto new_year = new_year_on_or_before(moon);
-        auto month = std::round(static_cast<double>(moon - new_year) / 29.5) + 1;
-        auto year = std::round(static_cast<double>(new_year - m_epoch) / 365.25) + std::ceil((month - 5) / 8.0);
+        const auto month = std::round(static_cast<double>(moon - new_year) / 29.5) + 1;
+        const auto year = std::round(static_cast<double>(new_year - m_epoch) / 365.25) + std::ceil((month - 5) / 8.0);
         const auto day = date - moon + 1;
         return {
             static_cast<int32_t>(year),

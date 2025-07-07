@@ -18,7 +18,7 @@ namespace calendrical::holiday_providers {
         fixed_date_t m_start_1_adar_21;
         fixed_date_t m_start_1_adar_28;
 
-        static const rational ADDA_Y;
+        static constexpr double ADDA_Y{35975351 / 98496.0};
 
     public:
         // ReSharper disable once CppNonExplicitConvertingConstructor
@@ -41,7 +41,7 @@ namespace calendrical::holiday_providers {
         [[nodiscard]] std::vector<fixed_date_t> birhath_ha_hama(int32_t year) const;
 
         [[nodiscard]] std::vector<moment_t> samuel_season_in_gregorian(const angle_t& season, int32_t year) const;
-        [[nodiscard]] std::vector<rational_moment_t> add_season_in_gregorian(const angle_t& season, int32_t year) const;
+        [[nodiscard]] std::vector<moment_t> add_season_in_gregorian(const angle_t& season, int32_t year) const;
 
         [[nodiscard]] std::vector<fixed_date_t> hanukkah(int32_t year) const;
 

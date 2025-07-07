@@ -13,14 +13,14 @@ namespace calendrical::calendars {
         public chinese_base{
         fixed_date_t m_epoch;
     public:
-        chinese_based_calendar(const fixed_date_t& epoch) : m_epoch{ epoch } {}
+        explicit chinese_based_calendar(const fixed_date_t& epoch) : m_epoch{ epoch } {}
         chinese_based_calendar();
 
         ~chinese_based_calendar() override = default;
 
         [[nodiscard]] fixed_date_t epoch() const override { return m_epoch; }
 
-        location get_location(const moment_t& t) const override = 0;
+        [[nodiscard]] location get_location(const moment_t& t) const override = 0;
 
         [[nodiscard]] chinese_date to_date(const fixed_date_t& date) const override;
         [[nodiscard]] fixed_date_t to_fixed(const chinese_date& date) const override;

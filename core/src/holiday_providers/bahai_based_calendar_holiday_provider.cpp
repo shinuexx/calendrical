@@ -1,4 +1,7 @@
 #include "holiday_providers/bahai_based_calendar_holiday_provider.hpp"
+
+#include <algorithm>
+
 #include "time_and_astronomy.hpp"
 
 namespace calendrical::holiday_providers {

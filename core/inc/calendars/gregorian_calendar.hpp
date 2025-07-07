@@ -17,6 +17,7 @@ namespace calendrical::calendars{
 
     public:
         constexpr gregorian_calendar() : m_epoch{1} {}
+        // ReSharper disable once CppNonExplicitConvertingConstructor
         constexpr gregorian_calendar(const fixed_date_t &date) : m_epoch{date} {} // NOLINT(*-explicit-constructor)
 
         ~gregorian_calendar() override = default;
@@ -44,7 +45,6 @@ namespace calendrical::calendars{
         [[nodiscard]] fixed_date_t last_weekday(weekday k, const gregorian_date &date) const;
 
         [[nodiscard]] std::ranges::transform_view<std::ranges::owning_view<std::vector<double>>, bind_constructor<moment_t>> cycle_in_gregorian(const angle_t &season, int32_t year, double L, const moment_t& start) const;
-        [[nodiscard]] std::ranges::transform_view<std::ranges::owning_view<std::vector<rational>>, bind_constructor<rational_moment_t>> cycle_in_gregorian(const angle_t &season, int32_t year, const rational& L, const rational_moment_t& start) const;
 
         static const gregorian_calendar standard;
     };

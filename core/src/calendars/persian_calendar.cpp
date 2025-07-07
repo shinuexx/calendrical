@@ -1,6 +1,7 @@
 #include "calendars/persian_calendar.hpp"
 #include "time_and_astronomy.hpp"
 #include "season.hpp"
+#include <cmath>
 
 namespace calendrical::calendars {
     using namespace calendrical::time_and_astronomy;
@@ -22,8 +23,8 @@ namespace calendrical::calendars {
     int32_t persian_calendar::get_year(const fixed_date_t& date) const
     {
         const auto new_year = new_year_on_or_before(date);
-        auto y = std::round(static_cast<double>(new_year - ms_epoch) / mean_tropical_year) + 1;
-        auto year = 0 < y ? y : y - 1;
+        const auto y = std::round(static_cast<double>(new_year - ms_epoch) / mean_tropical_year) + 1;
+        const auto year = 0 < y ? y : y - 1;
         return static_cast<int32_t>(year);
     }
     fixed_date_t persian_calendar::to_fixed(const simple_date& date) const

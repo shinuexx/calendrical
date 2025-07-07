@@ -13,13 +13,4 @@ namespace calendrical {
             return angle_t::half_circle;
         return arctan(y, x);
     }
-    rational_location::operator location() const
-    {
-        return {
-            static_cast<angle_t>(latitude),
-            static_cast<angle_t>(longitude),
-            elevation.convert_to<double>(),
-            static_cast<moment_t>(zone),
-        };
-    }
 }

@@ -1,8 +1,8 @@
 #include "holiday_providers/hebrew_based_calendar_holiday_provider.hpp"
 
-namespace calendrical::holiday_providers {
-    const rational hebrew_based_calendar_holiday_provider::ADDA_Y{35975351 , 98496};
+#include <algorithm>
 
+namespace calendrical::holiday_providers {
     hebrew_based_calendar_holiday_provider::hebrew_based_calendar_holiday_provider(
         const calendars::hebrew_based_calendar *hebrew) :
         m_hebrew(hebrew),
@@ -104,11 +104,11 @@ namespace calendrical::holiday_providers {
         return {r.begin(), r.end()};
     }
 
-    std::vector<rational_moment_t>
+    std::vector<moment_t>
     hebrew_based_calendar_holiday_provider::add_season_in_gregorian(const angle_t &season, int32_t year) const {
-        const rational start = static_cast<int64_t>(m_start_1_adar_28) + rational{1,4};
-        const rational offset = season / angle_t::full_circle * ADDA_Y;
-        auto r = m_gregorian->cycle_in_gregorian(season, year, ADDA_Y, rational_moment_t{start + offset});
+        const auto start = static_cast<int64_t>(m_start_1_adar_28) + 0.25;
+        const auto offset = season / angle_t::full_circle * ADDA_Y;
+        auto r = m_gregorian->cycle_in_gregorian(season, year, ADDA_Y, moment_t{start + offset});
         return {r.begin(), r.end()};
     }
 

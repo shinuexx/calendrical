@@ -1,12 +1,13 @@
 #include "calendars/french_calendar.hpp"
 #include "time_and_astronomy.hpp"
 #include "season.hpp"
+#include <cmath>
 
 namespace calendrical::calendars{
     using namespace calendrical::time_and_astronomy;
 
     // ReSharper disable once CppMemberFunctionMayBeStatic
-    moment_t french_calendar::midnight_in_paris(const fixed_date_t& date) const
+    moment_t french_calendar::midnight_in_paris(const fixed_date_t& date) const // NOLINT(*-convert-member-functions-to-static)
     {
         return midnight(date.add(1), paris);
     }

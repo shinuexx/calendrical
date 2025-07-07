@@ -23,8 +23,8 @@ namespace calendrical::holiday_providers {
 
         [[nodiscard]] std::vector<fixed_date_t> diwali(int32_t gyear) const;
 
-        [[nodiscard]]fixed_date_t tithi_occur(int32_t lmonth, const rational& tithi, const rational_moment_t& t, int32_t lyear) const;
-        [[nodiscard]] std::vector<fixed_date_t> lunar_event(int32_t lmonth, const rational& tithi, const rational_moment_t& t, int32_t gyear) const;
+        [[nodiscard]]fixed_date_t tithi_occur(int32_t lmonth, const double& tithi, const moment_t& t, int32_t lyear) const;
+        [[nodiscard]] std::vector<fixed_date_t> lunar_event(int32_t lmonth, const double& tithi, const moment_t& t, int32_t gyear) const;
 
         [[nodiscard]] std::vector<fixed_date_t> shiva(int32_t gyear) const;
         [[nodiscard]] std::vector<fixed_date_t> rama(int32_t gyear) const;

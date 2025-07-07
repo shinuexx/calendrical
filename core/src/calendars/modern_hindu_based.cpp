@@ -1,206 +1,185 @@
 #include <calendars/persian_based_calendar.hpp>
-
-
 #include "angle.hpp"
 #include "calendars/gregorian_calendar.hpp"
 #include "calendars/modern_hindu_base.hpp"
 #include "time_and_astronomy.hpp"
+#include <cmath>
 
 namespace calendrical::calendars {
-    const rational_location modern_hindu_base::ujjain{
-        rational_angle_t::dms(23,9),
-        rational_angle_t::dms(75,46,6),
-        0,
-        rational_moment_t::hms(5 + rational{461,9000})
-    };
-
-    const rational modern_hindu_base::hindu_sidereal_year{ 365 * 1080000LL + 279457, 1080000LL };
-    const rational modern_hindu_base::hindu_sidereal_month{ 27 * 14438334LL + 4644439, 14438334LL };
-    const rational modern_hindu_base::hindu_synodic_month{ 29 * 13358334LL + 7087771, 13358334LL };
-    const rational modern_hindu_base::hindu_creation{ static_cast<int64_t>(ms_epoch) - 1955880000 * hindu_sidereal_year };
-
-    const rational modern_hindu_base::hindu_anomalistic_year{ 1577917828000LL, 4320000000LL - 387 };
-    const rational modern_hindu_base::hindu_anomalistic_month{ 1577917828LL, 57753336LL - 488199 };
-
-    rational modern_hindu_base::hindu_sine_table(int64_t entry)
+    
+    double modern_hindu_base::hindu_sine_table(int64_t entry)
     {
         const auto exact = 3438 * sin(static_cast<double>(entry) * angle_t::dms(0, 225));
         const auto error = 0.215 * sign(exact) * sign(std::abs(exact) - 1716);
-        return rational{ static_cast<int64_t>(std::round(exact + error)), 3438 };
+        return std::round(exact + error) / 3438.0;
     }
 
-    rational modern_hindu_base::hindu_sine(const rational_angle_t& O)
+    double modern_hindu_base::hindu_sine(const angle_t& O)
     {
-        const auto entry = O / rational_angle_t::dms(0, 225);
+        const auto entry = O / angle_t::dms(0, 225);
         const auto fraction = mod(entry, 1);
         return fraction * hindu_sine_table(static_cast<int64_t>(ceil(entry))) + (1 - fraction) * hindu_sine_table(static_cast<int64_t>(floor(entry)));
     }
-    rational_angle_t modern_hindu_base::hindu_arcsin(const rational& amp) // NOLINT(*-no-recursion)
+    angle_t modern_hindu_base::hindu_arcsin(const double& amp) // NOLINT(*-no-recursion)
     {
         if (amp < 0)
             return -hindu_arcsin(-amp);
         const auto pos = least_passing([&amp](const int64_t& k) { return amp <= hindu_sine_table(k); }, 0);
         const auto below = hindu_sine_table(pos - 1);
-        return rational{225, 60} * (pos - 1 + (amp - below) / (hindu_sine_table(pos) - below));
+        return 225 / 60.0 * (pos - 1 + (amp - below) / (hindu_sine_table(pos) - below));
     }
-    rational_angle_t modern_hindu_base::hindu_mean_position(const rational_moment_t& t, const rational& period)
+    angle_t modern_hindu_base::hindu_mean_position(const moment_t& t, const double& period)
     {
-        return 360 * mod((static_cast<rational>(t) - hindu_creation) / period, 1);
+        return 360 * mod((static_cast<double>(t) - hindu_creation) / period, 1);
     }
-    rational_angle_t modern_hindu_base::hindu_true_position(const rational_moment_t& t, const rational& period, const rational& size, const rational& anomalistic, const rational& change)
+    angle_t modern_hindu_base::hindu_true_position(const moment_t& t, const double& period, const double& size, const double& anomalistic, const double& change)
     {
-        auto l = hindu_mean_position(t, period);
-        auto offset = hindu_sine(hindu_mean_position(t, anomalistic));
-        rational contraction = boost::multiprecision::abs(offset) * change * size;
-        auto equation = hindu_arcsin(offset * (size - contraction));
+        const auto l = hindu_mean_position(t, period);
+        const auto offset = hindu_sine(hindu_mean_position(t, anomalistic));
+        const double contraction = std::abs(offset) * change * size;
+        const auto equation = hindu_arcsin(offset * (size - contraction));
         return mod(l - equation, 360);
     }
-    rational_angle_t modern_hindu_base::hindu_solar_longitude(const rational_moment_t& t)
+    angle_t modern_hindu_base::hindu_solar_longitude(const moment_t& t)
     {
-        return hindu_true_position(t, hindu_sidereal_year, { 14,360 }, hindu_anomalistic_year, { 1,42 });
+        return hindu_true_position(t, hindu_sidereal_year, 14 / 360.0, hindu_anomalistic_year, 1 / 42.0 );
     }
 
-    int32_t modern_hindu_base::hindu_zodiac(const rational_moment_t& t)
+    int32_t modern_hindu_base::hindu_zodiac(const moment_t& t)
     {
         return static_cast<int32_t>(floor_div(hindu_solar_longitude(t), 30)) + 1;
     }
 
-    rational_angle_t modern_hindu_base::hindu_lunar_longitude(const rational_moment_t& t)
+    angle_t modern_hindu_base::hindu_lunar_longitude(const moment_t& t)
     {
-        return hindu_true_position(t, hindu_sidereal_month, { 32, 360 }, hindu_anomalistic_month, { 1,96 });
+        return hindu_true_position(t, hindu_sidereal_month,  32 / 360.0 , hindu_anomalistic_month, 1 / 96.0 );
     }
 
-    rational_angle_t modern_hindu_base::hindu_lunar_phase(const rational_moment_t& t)
+    angle_t modern_hindu_base::hindu_lunar_phase(const moment_t& t)
     {
         return mod(hindu_lunar_longitude(t) - hindu_solar_longitude(t), 360);
     }
-    int32_t modern_hindu_base::hindu_lunar_day_from_moment(const rational_moment_t& t)
+    int32_t modern_hindu_base::hindu_lunar_day_from_moment(const moment_t& t)
     {
         return static_cast<int32_t>(floor_div(hindu_lunar_phase(t), 12)) + 1;
     }
 
-    static const rational hindu_E{ 1, boost::multiprecision::pow(bigint{2}, 1000)};
+    static constexpr double hindu_E{std::pow(2, -100)};
 
-    rational_moment_t modern_hindu_base::hindu_new_moon_before(const rational_moment_t& t)
+    moment_t modern_hindu_base::hindu_new_moon_before(const moment_t& t)
     {
-        const auto T = static_cast<rational>(t) - static_cast<rational>(hindu_lunar_phase(t)) * hindu_synodic_month / 360;
-        auto p = [](const rational &l, const rational &u) {
+        const auto T = static_cast<double>(t) - static_cast<double>(hindu_lunar_phase(t)) * hindu_synodic_month / 360;
+        auto p = [](const double &l, const double &u) {
             return hindu_zodiac(l) == hindu_zodiac(u) || u - l < hindu_E;
         };
-        const rational a = T - 1;
-        const rational b = boost::multiprecision::min(static_cast<rational>(t), T + 1);
-        return binary_search([](const rational& x) { return hindu_lunar_phase(x) < 180; }, p, a, b);
+        const double a = T - 1;
+        const double b = std::min(static_cast<double>(t), T + 1);
+        return binary_search([](const double& x) { return hindu_lunar_phase(x) < 180_deg; }, p, a, b);
     }
-    int32_t modern_hindu_base::hindu_calendar_year(const rational_moment_t& t)
+    int32_t modern_hindu_base::hindu_calendar_year(const moment_t& t)
     {
         return static_cast<int32_t>(
-                round((static_cast<rational>(t) - static_cast<int64_t>(ms_epoch)) / hindu_sidereal_year - hindu_solar_longitude(t) / 360));
+                round((static_cast<double>(t) - static_cast<int64_t>(ms_epoch)) / hindu_sidereal_year - hindu_solar_longitude(t) / 360_deg));
     }
-    rational_angle_t modern_hindu_base::hindu_ascensional_difference(const fixed_date_t& date, const rational_location& location)
+    angle_t modern_hindu_base::hindu_ascensional_difference(const fixed_date_t& date, const location& location)
     {
-        rational sin_d = rational{ 1397, 3438 } * hindu_sine(hindu_tropical_longitude(date));
+        const double sin_d =  1397.0 / 3438 * hindu_sine(hindu_tropical_longitude(date));
         auto psi = location.latitude;
-        auto diurnal_radius = hindu_sine(90_rdeg + hindu_arcsin(sin_d));
-        auto tan_psi = hindu_sine(psi) / hindu_sine(90_rdeg + psi);
-        rational earth_sine = sin_d * tan_psi;
+        const auto diurnal_radius = hindu_sine(90_deg + hindu_arcsin(sin_d));
+        const auto tan_psi = hindu_sine(psi) / hindu_sine(90_deg + psi);
+        const double earth_sine = sin_d * tan_psi;
         return hindu_arcsin(-earth_sine / diurnal_radius);
     }
 
-    static const rational half{ 1,2 };
-    static const rational quarter{ 1,4 };
-
-    rational_angle_t modern_hindu_base::hindu_tropical_longitude(const fixed_date_t& date)
+    angle_t modern_hindu_base::hindu_tropical_longitude(const fixed_date_t& date)
     {
-        static const rational a{600, 1577917828};
+        constexpr double a{6e2 / 1577917828};
         const auto days = date - ms_epoch;
-        const rational precession = 27 - boost::multiprecision::abs(108 * interval_modulus(a * days - quarter, -half, half));
-        return mod(static_cast<rational>(hindu_solar_longitude(date)) - precession, 360);
+        const double precession = 27 - std::abs(108 * interval_modulus(a * days - 0.25, -0.5, 0.5));
+        return mod(static_cast<double>(hindu_solar_longitude(date)) - precession, 360);
     }
-    rational modern_hindu_base::hindu_solar_sidereal_difference(const fixed_date_t& date)
+    double modern_hindu_base::hindu_solar_sidereal_difference(const fixed_date_t& date)
     {
         return hindu_daily_motion(date) * hindu_rising_sign(date);
     }
-    rational modern_hindu_base::hindu_daily_motion(const fixed_date_t& date)
+    double modern_hindu_base::hindu_daily_motion(const fixed_date_t& date)
     {
-        static const rational mean_motion = 360 / hindu_sidereal_year;
-        auto anomaly = hindu_mean_position(date, hindu_anomalistic_year);
-        auto epicycle = rational{ 14,360 } - boost::multiprecision::abs(hindu_sine(anomaly)) / 1080;
-        auto entry = static_cast<int64_t>(floor_div(anomaly, rational{225, 60}));
-        auto sine_table_step = hindu_sine_table(entry + 1) - hindu_sine_table(entry);
-        auto factor = rational{ -3438,225 } *sine_table_step * epicycle;
+        constexpr double mean_motion = 360 / hindu_sidereal_year;
+        const auto anomaly = hindu_mean_position(date, hindu_anomalistic_year);
+        const auto epicycle = 14/360.0 - std::abs(hindu_sine(anomaly)) / 1080;
+        const auto entry = static_cast<int64_t>(floor_div(anomaly, 225 / 6e1));
+        const auto sine_table_step = hindu_sine_table(entry + 1) - hindu_sine_table(entry);
+        const auto factor = -3438 / 225.0 * sine_table_step * epicycle;
         return mean_motion * (factor + 1);
     }
-    rational modern_hindu_base::hindu_rising_sign(const fixed_date_t& date)
+    double modern_hindu_base::hindu_rising_sign(const fixed_date_t& date)
     {
-        static const std::array table{
-                rational{1670, 1800}, rational{1795, 1800}, rational{1935, 1800},
-                rational{1935, 1800}, rational{1795, 1800}, rational{1670, 1800},
+        constexpr std::array table{
+                1670 / 1800.0, 1795 / 1800.0, 1935 / 1800.0,
+                1935 / 1800.0, 1795 / 1800.0, 1670 / 1800.0,
         };
 
-        const auto i = floor(hindu_tropical_longitude(date) / 30_rdeg);
+        const auto i = floor(hindu_tropical_longitude(date) / 30_deg);
         return table[static_cast<std::size_t>(mod(i, 6))];
     }
 
-    rational modern_hindu_base::hindu_equation_of_time(const fixed_date_t& date)
+    double modern_hindu_base::hindu_equation_of_time(const fixed_date_t& date)
     {
         const auto offset = hindu_sine(hindu_mean_position(date, hindu_anomalistic_year));
-        const rational equation_sun = offset * static_cast<rational>(rational_angle_t::dms(57, 18)) * (rational{ 14,360 } - boost::multiprecision::abs(offset) / 180);
+        const double equation_sun = offset * static_cast<double>(angle_t::dms(57, 18)) * ( 14/360.0 - std::abs(offset) / 180);
         return hindu_daily_motion(date) / 360 * (equation_sun / 360) * hindu_sidereal_year;
     }
 
-    rational_moment_t modern_hindu_base::hindu_sunrise(const fixed_date_t& date) const
+    moment_t modern_hindu_base::hindu_sunrise(const fixed_date_t& date) const
     {
-        static const rational a{ 1577917828, 1582237828 * 360LL };
-        static const rational quarter{ 1,4 };
-        return static_cast<int64_t>(date) + quarter + (ujjain.longitude - m_hindu_location.longitude) / 360
+        constexpr double a{ 1577917828 / (1582237828 * 360.0) };
+        constexpr double quarter{ 0.25 };
+        return static_cast<int64_t>(date) + quarter + (ujjain.longitude - m_hindu_location.longitude) / 360_deg
             - hindu_equation_of_time(date)
-            + a * (static_cast<rational>(hindu_ascensional_difference(date, m_hindu_location)) + quarter * hindu_solar_sidereal_difference(date));
+            + a * (static_cast<double>(hindu_ascensional_difference(date, m_hindu_location)) + quarter * hindu_solar_sidereal_difference(date));
     }
 
-    rational_moment_t modern_hindu_base::hindu_sunset(const fixed_date_t& date) const
+    moment_t modern_hindu_base::hindu_sunset(const fixed_date_t& date) const
     {
-        static const rational a{ 1577917828, 1582237828 * 360LL };
-        static const rational quarter{ 3,4 };
-        return static_cast<int64_t>(date) + quarter + (ujjain.longitude - m_hindu_location.longitude) / 360
+        constexpr double a{ 1577917828 / (1582237828 * 360.0) };
+        constexpr double quarter{ 0.25 };
+        return static_cast<int64_t>(date) + quarter + (ujjain.longitude - m_hindu_location.longitude) / 360_deg
             - hindu_equation_of_time(date)
-            + a * (static_cast<rational>(-hindu_ascensional_difference(date, m_hindu_location)) + quarter * hindu_solar_sidereal_difference(date));
+            + a * (static_cast<double>(-hindu_ascensional_difference(date, m_hindu_location)) + quarter * hindu_solar_sidereal_difference(date));
     }
 
-    rational_moment_t modern_hindu_base::hindu_standard_from_sundial(const rational_moment_t& t) const
+    moment_t modern_hindu_base::hindu_standard_from_sundial(const moment_t& t) const
     {
-        auto date = t.to_fixed_date();
-        auto time = t.time();
-        auto q = static_cast<int32_t>(floor(4 * time));
-        rational a, b, h;
+        const auto date = t.to_fixed_date();
+        const auto time = t.time();
+        const auto q = static_cast<int32_t>(floor(4 * time));
+        double a, b, h;
         if (q == 0)
         {
-            a = static_cast<rational>(hindu_sunset(date.subtract(1)));
-            b = static_cast<rational>(hindu_sunrise(date));
-            h = rational{ -1,4 };
+            a = static_cast<double>(hindu_sunset(date.subtract(1)));
+            b = static_cast<double>(hindu_sunrise(date));
+            h = -0.25;
         }
         else if (q == 3)
         {
-            a = static_cast<rational>(hindu_sunset(date));
-            b = static_cast<rational>(hindu_sunrise(date.add(1)));
-            h = rational{ 3,4 };
+            a = static_cast<double>(hindu_sunset(date));
+            b = static_cast<double>(hindu_sunrise(date.add(1)));
+            h = 0.75;
         }
         else
         {
-            a = static_cast<rational>(hindu_sunrise(date));
-            b = static_cast<rational>(hindu_sunset(date));
-            h = rational{ 1,4 };
+            a = static_cast<double>(hindu_sunrise(date));
+            b = static_cast<double>(hindu_sunset(date));
+            h = 0.25;
         }
-        return rational{ a + 2 * (b - a) * (time - h) };
+        return double{ a + 2 * (b - a) * (time - h) };
     }
 
-    rational_moment_t modern_hindu_base::alt_hindu_sunrise(const fixed_date_t& date) const
+    moment_t modern_hindu_base::alt_hindu_sunrise(const fixed_date_t& date) const
     {
         static constexpr auto prim = angle_t::dms(0, 47);
-        const auto rise = time_and_astronomy::dawn(date, static_cast<location>(m_hindu_location), prim);
-        return rational{
-            static_cast<int32_t>(std::round(rise * 24 * 60)),
-            24 * 60
-        };
+        const auto rise = time_and_astronomy::dawn(date, m_hindu_location, prim);
+        return std::round(rise * 24 * 60) / (24 * 60);
     }
 
     angle_t modern_hindu_base::ayanamsha(const moment_t& t)
@@ -210,7 +189,7 @@ namespace calendrical::calendars {
 
     moment_t modern_hindu_base::astro_hindu_sunset(const fixed_date_t& date) const
     {
-        return time_and_astronomy::dusk(date, static_cast<location>(m_hindu_location), 0_deg);
+        return time_and_astronomy::dusk(date, m_hindu_location, 0_deg);
     }
 
     int32_t modern_hindu_base::sidereal_zodiac(const moment_t& t)
@@ -229,27 +208,27 @@ namespace calendrical::calendars {
         return static_cast<int32_t>(floor_div(time_and_astronomy::lunar_phase(t), 12)) + 1;
     }
 
-    rational_moment_t modern_hindu_base::hindu_solar_longitude_at_or_after(const rational_angle_t& l, const rational_moment_t& t)
+    moment_t modern_hindu_base::hindu_solar_longitude_at_or_after(const angle_t& l, const moment_t& t)
     {
-        const auto T = static_cast<rational>(t) + hindu_sidereal_year / 360 * mod(l - hindu_solar_longitude(t), 360);
-        const auto a = boost::multiprecision::max(static_cast<rational>(t), T - 5);
-        const rational b = T + 5;
-        return inverse_angular(make_rational_value_function(hindu_solar_longitude), l, a, b);
+        const auto T = static_cast<double>(t) + hindu_sidereal_year / 360 * mod(l - hindu_solar_longitude(t), 360);
+        const auto a = std::max(static_cast<double>(t), T - 5);
+        const double b = T + 5;
+        return inverse_angular(make_value_function(hindu_solar_longitude), l, a, b);
     }
 
-    rational_moment_t modern_hindu_base::mesha_samkranti(int32_t gyear)
+    moment_t modern_hindu_base::mesha_samkranti(int32_t gyear)
     {
         const auto jan1 = gregorian_calendar::standard.get_new_year(gyear);
-        return hindu_solar_longitude_at_or_after(0_rdeg, jan1);
+        return hindu_solar_longitude_at_or_after(0_deg, jan1);
     }
 
-    rational_moment_t modern_hindu_base::hindu_lunar_day_at_or_after(const rational& k, const rational_moment_t& t)
+    moment_t modern_hindu_base::hindu_lunar_day_at_or_after(const double& k, const moment_t& t)
     {
-        rational_angle_t phase = (k - 1) * rational{ 12 };
-        rational T = static_cast<rational>(t) + mod(phase - hindu_lunar_phase(t), 360);
-        auto a = boost::multiprecision::max(static_cast<rational>(t), T - 2);
-        rational b = T + 2;
-        return inverse_angular(make_rational_value_function(hindu_lunar_phase), phase, a, b);
+        const angle_t phase = (k - 1) * double{12};
+        const double T = static_cast<double>(t) + mod(phase - hindu_lunar_phase(t), 360);
+        const auto a = std::max(static_cast<double>(t), T - 2);
+        const double b = T + 2;
+        return inverse_angular(make_value_function(hindu_lunar_phase), phase, a, b);
     }
 
     fixed_date_t modern_hindu_base::hindu_lunar_new_year(int32_t gyear) const
@@ -267,13 +246,13 @@ namespace calendrical::calendars {
     int32_t modern_hindu_base::hindu_lunar_station(const fixed_date_t& date) const
     {
         const auto critical = hindu_sunrise(date);
-        return static_cast<int32_t>(floor_div(hindu_lunar_longitude(critical), rational_angle_t::dms(0, 800))) + 1;
+        return static_cast<int32_t>(floor_div(hindu_lunar_longitude(critical), angle_t::dms(0, 800))) + 1;
     }
 
     int32_t modern_hindu_base::yoga(const fixed_date_t& date)
     {
-        return 1 + static_cast<int32_t>(mod(static_cast<bigint>(floor_div(hindu_solar_longitude(date) + hindu_lunar_longitude(date),
-                                                             rational_angle_t::dms(0, 800))),
+        return 1 + static_cast<int32_t>(mod(floor_div(hindu_solar_longitude(date) + hindu_lunar_longitude(date),
+                                                             angle_t::dms(0, 800)),
                                         27));
     }
 }

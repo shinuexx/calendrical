@@ -10,8 +10,8 @@ namespace calendrical::calendars {
         chinese_calendar() = default;
         ~chinese_calendar() override = default;
 
-        location get_location(const moment_t& t) const override;
+        [[nodiscard]] location get_location(const moment_t& t) const override;
 
-        chinese_marriage_augury year_marriage_augury(int32_t cycle, int32_t year) const;
+        [[nodiscard]] chinese_marriage_augury year_marriage_augury(int32_t cycle, int32_t year) const;
     };
 }

@@ -7,16 +7,16 @@ namespace calendrical::calendars{
     protected:
         static constexpr fixed_date_t ms_epoch{ -1132959 };
 
-        static const rational arya_solar_year;
-        static const rational arya_jovian_period;
+        static constexpr double arya_solar_year{1577917500.0 / 4320000};
+        static constexpr double arya_jovian_period{1577917500.0 / 364224};
 
-        static const rational arya_solar_month;
-        static const rational arya_lunar_month;
-        static const rational arya_lunar_day;
+        static constexpr double arya_solar_month{arya_solar_year / 12};
+        static constexpr double arya_lunar_month{1577917500.0 / 53433336};
+        static constexpr double arya_lunar_day{arya_lunar_month / 30};
 
-        static const rational lunar_leap_year_indicator;
+        static constexpr double lunar_leap_year_indicator{23902504679.0 / 1282400064.0};
 
-        static const rational arya_solar_lunar_month_difference;
+        static constexpr double arya_solar_lunar_month_difference{arya_solar_month - arya_lunar_month};
 
     public:
         hindu_base() = default;

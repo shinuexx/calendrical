@@ -1,5 +1,7 @@
 #include "holiday_providers/persian_based_calendar_holiday_provider.hpp"
 
+#include <algorithm>
+
 namespace calendrical::holiday_providers {
     persian_based_calendar_holiday_provider::persian_based_calendar_holiday_provider(const calendars::persian_based_calendar* persian) : m_persian(persian) {
         m_gregorian_year_persian_epoch = calendars::gregorian_calendar::standard.get_year(m_persian->epoch());

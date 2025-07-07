@@ -1,4 +1,5 @@
 #include "calendars/modern_hindu_lunar_calendar.hpp"
+#include <cmath>
 
 namespace calendrical::calendars {
     lunar_date modern_hindu_lunar_calendar::to_date(const fixed_date_t& date) const
@@ -7,7 +8,7 @@ namespace calendrical::calendars {
         auto day = hindu_lunar_day_from_moment(critical);
         auto leap_day = day == hindu_lunar_day_from_moment(hindu_sunrise(date.subtract(1)));
         const auto last_new_moon = hindu_new_moon_before(critical);
-        const auto next_new_moon = hindu_new_moon_before(floor(last_new_moon) + 35);
+        const auto next_new_moon = hindu_new_moon_before(std::floor(last_new_moon) + 35);
         const auto solar_month = hindu_zodiac(last_new_moon);
         auto leap_month = solar_month == hindu_zodiac(next_new_moon);
         auto month = static_cast<int32_t>(adjusted_remainder(solar_month + 1, 12));
@@ -22,13 +23,13 @@ namespace calendrical::calendars {
     }
     fixed_date_t modern_hindu_lunar_calendar::to_fixed(const lunar_date& date) const
     {
-        static const rational half{ 1,2 };
+        constexpr double half{ 0.5 };
         auto [year, month, leap_month, day, leap_day] = date;
-        const rational m{month - 1, 12};
-        const rational approx = static_cast<int64_t>(ms_epoch) + hindu_sidereal_year * (year + hindu_lunar_era + m);
+        const double m{(month - 1) / 12.0};
+        const double approx = static_cast<int64_t>(ms_epoch) + hindu_sidereal_year * (year + hindu_lunar_era + m);
         const auto s = static_cast<int64_t>(floor(
-                approx - hindu_sidereal_year * interval_modulus(hindu_solar_longitude(approx) / 360 - m, -half, half)));
-        const auto k = hindu_lunar_day_from_moment(s + rational{ 1,4 });
+                approx - hindu_sidereal_year * interval_modulus(hindu_solar_longitude(approx) / 360_deg - m, -half, half)));
+        const auto k = hindu_lunar_day_from_moment(s + 0.25);
         auto est = s + day;
         const auto mid = to_date(s - 15);
         if (range_opened_between(3, 27).contains(k)) {
@@ -38,7 +39,7 @@ namespace calendrical::calendars {
         } else {
             est -= interval_modulus(k, 15, 45);
         }
-        const auto T = est - interval_modulus(hindu_lunar_day_from_moment(est + rational{1, 4}) - day, -15, 15);
+        const auto T = est - interval_modulus(hindu_lunar_day_from_moment(est + 0.25) - day, -15, 15);
         const std::array<int64_t, 2> dates{day, adjusted_remainder(day + 1, 30)};
         const auto ddate = least_passing([&](const int64_t& d) { return in(dates, hindu_lunar_day_from_moment(hindu_sunrise(d))); }, T - 1);
         return leap_day ? ddate + 1 : ddate;

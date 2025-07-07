@@ -1,6 +1,7 @@
 #include "calendars/astro_bahai_calendar.hpp"
 #include "time_and_astronomy.hpp"
 #include "season.hpp"
+#include <cmath>
 
 namespace calendrical::calendars{
     using namespace calendrical::time_and_astronomy;

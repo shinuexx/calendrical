@@ -1,5 +1,6 @@
 #include "holiday_providers/gregorian_calendar_holiday_provider.hpp"
 
+#include <algorithm>
 #include <lunar_phase.hpp>
 #include <season.hpp>
 #include <time_and_astronomy.hpp>

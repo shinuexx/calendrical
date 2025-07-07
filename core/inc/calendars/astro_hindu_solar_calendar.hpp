@@ -13,7 +13,6 @@ namespace calendrical::calendars {
 
     public:
         astro_hindu_solar_calendar() = default;
-        astro_hindu_solar_calendar(const rational_location& hindu_location) : modern_hindu_base{ hindu_location }{}
         ~astro_hindu_solar_calendar() override = default;
 
         [[nodiscard]] fixed_date_t epoch() const override { return ms_epoch; }

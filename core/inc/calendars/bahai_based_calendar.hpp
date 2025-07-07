@@ -27,7 +27,7 @@ namespace calendrical::calendars {
         static constexpr int32_t ayyam_i_ha{ 0 };
 
         bahai_based_calendar();
-        virtual ~bahai_based_calendar() = default;
+        ~bahai_based_calendar() override = default;
 
         [[nodiscard]] virtual int32_t get_major(const fixed_date_t& date) const;
         [[nodiscard]] virtual int32_t get_cycle(const fixed_date_t& date) const;

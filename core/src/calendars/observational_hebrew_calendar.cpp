@@ -1,6 +1,7 @@
 #include "calendars/observational_hebrew_calendar.hpp"
 #include "time_and_astronomy.hpp"
 #include "season.hpp"
+#include <cmath>
 
 namespace calendrical::calendars{
     using namespace calendrical::time_and_astronomy;
@@ -11,8 +12,8 @@ namespace calendrical::calendars{
     }
 
     fixed_date_t observational_hebrew_calendar::first_of_nisan(int32_t gyear) {
-        auto equinox = season_in_gregorian(season::SPRING, gyear);
-        auto set = universal_from_standard(sunset(static_cast<int64_t>(std::floor(equinox)), hebrew_location),
+        const auto equinox = season_in_gregorian(season::SPRING, gyear);
+        const auto set = universal_from_standard(sunset(static_cast<int64_t>(std::floor(equinox)), hebrew_location),
                                            hebrew_location);
         return phasis_on_or_after(static_cast<int64_t>(std::floor(equinox) - (equinox < set ? 14 : 13)),
                                   hebrew_location);

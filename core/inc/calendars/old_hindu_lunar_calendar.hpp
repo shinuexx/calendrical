@@ -11,12 +11,12 @@ namespace calendrical::calendars {
         public typed_calendar_if<simple_lunar_date>,
         public hindu_base {
 
-        [[nodiscard]] rational get_sun(const fixed_date_t& date) const;
-        [[nodiscard]] rational get_new_moon(const rational& sun) const;
-        [[nodiscard]] int32_t get_month(const rational& new_moon) const;
-        [[nodiscard]] int32_t get_day(const rational& sun) const;
-        [[nodiscard]] int32_t get_year(const rational& new_moon) const;
-        [[nodiscard]] bool get_leap(const rational& new_moon) const;
+        [[nodiscard]] double get_sun(const fixed_date_t& date) const;
+        [[nodiscard]] double get_new_moon(const double& sun) const;
+        [[nodiscard]] int32_t get_month(const double& new_moon) const;
+        [[nodiscard]] int32_t get_day(const double& sun) const;
+        [[nodiscard]] int32_t get_year(const double& new_moon) const;
+        [[nodiscard]] bool get_leap(const double& new_moon) const;
 
     public:
         old_hindu_lunar_calendar() = default;

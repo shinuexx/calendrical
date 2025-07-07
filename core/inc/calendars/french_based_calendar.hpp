@@ -12,8 +12,8 @@ namespace calendrical::calendars {
     protected:
         static constexpr fixed_date_t ms_epoch{654415};
 
-        int32_t get_month(const fixed_date_t& date, const fixed_date_t& new_year) const;
-        int32_t get_day(const fixed_date_t& date, const fixed_date_t& new_year) const;
+        [[nodiscard]] int32_t get_month(const fixed_date_t& date, const fixed_date_t& new_year) const;
+        [[nodiscard]] int32_t get_day(const fixed_date_t& date, const fixed_date_t& new_year) const;
 
     public:
         static constexpr location paris{angle_t::dms(48,50,11), angle_t::dms(2,20,15), 27, moment_t::hms(1)};

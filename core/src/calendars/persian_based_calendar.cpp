@@ -1,5 +1,6 @@
 #include "calendars/persian_based_calendar.hpp"
 #include "calendars/julian_calendar.hpp"
+#include <cmath>
 
 namespace calendrical::calendars {
     const fixed_date_t persian_based_calendar::ms_epoch = 226896;//julian_calendar{}.to_fixed({ 622, month::march, 19 });

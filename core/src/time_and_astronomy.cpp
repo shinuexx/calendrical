@@ -828,7 +828,7 @@ namespace calendrical::time_and_astronomy {
         );
         if (rise >= t.add(1) )
             return bogus;
-        return std::max<double>(standard_from_universal(rise, location), static_cast<double>(date));
+        return std::max<double>(standard_from_universal(rise, location), date);
     }
     moment_t local_zero_hour(const moment_t& t) {
         const auto date = t.to_fixed_date();

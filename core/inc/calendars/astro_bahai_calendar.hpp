@@ -13,7 +13,6 @@ namespace calendrical::calendars{
         [[nodiscard]] moment_t bahai_sunset(const fixed_date_t& date) const;
         [[nodiscard]] fixed_date_t new_year_on_or_before(const fixed_date_t& date) const;
 
-    public:
         static constexpr location bahai_location{35.696111, 51.423056, 0, moment_t::hms(3.5)};
 
         astro_bahai_calendar() = default;

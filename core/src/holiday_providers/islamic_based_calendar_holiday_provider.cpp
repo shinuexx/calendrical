@@ -1,5 +1,7 @@
 #include "holiday_providers/islamic_based_calendar_holiday_provider.hpp"
 
+#include <algorithm>
+
 namespace calendrical::holiday_providers {
 
     std::vector<holiday_t> islamic_based_calendar_holiday_provider::in_year(int32_t year) const {

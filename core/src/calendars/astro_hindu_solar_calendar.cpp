@@ -1,5 +1,6 @@
 #include "calendars/astro_hindu_solar_calendar.hpp"
 #include "time_and_astronomy.hpp"
+#include <cmath>
 
 namespace calendrical::calendars {
 

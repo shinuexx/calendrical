@@ -1,5 +1,6 @@
 #include "holiday_providers/julian_calendar_holiday_provider.hpp"
 
+#include <algorithm>
 #include <array>
 
 namespace calendrical::holiday_providers{

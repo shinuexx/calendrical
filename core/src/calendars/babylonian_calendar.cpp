@@ -2,7 +2,7 @@
 #include "time_and_astronomy.hpp"
 #include "range.hpp"
 #include "lunar_phase.hpp"
-
+#include <cmath>
 
 namespace calendrical::calendars {
     using namespace calendrical::time_and_astronomy;
