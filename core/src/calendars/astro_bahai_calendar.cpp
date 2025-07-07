@@ -37,18 +37,18 @@ namespace calendrical::calendars{
         const auto years = 361 * (major - 1) + 19 * (cycle - 1) + year;
         int64_t a;
         int32_t b;
-        if (month == 19){
-            auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years + 0.5)));
+        if (month == 19) {
+            const auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years + 0.5)));
             a = new_year_on_or_before(ms_epoch + x);
             b = -20 + day;
         }
         else if (month == ayyam_i_ha) {
-            auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years - 0.5)));
+            const auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years - 0.5)));
             a = new_year_on_or_before(ms_epoch + x);
             b = 341 + day;
         }
         else {
-            auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years - 0.5)));
+            const auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years - 0.5)));
             a = new_year_on_or_before(ms_epoch + x);
             b = 19 * (month - 1) + day - 1;
         }

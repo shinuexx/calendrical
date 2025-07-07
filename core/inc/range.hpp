@@ -51,6 +51,7 @@ namespace calendrical {
         template <typename T2, typename = std::enable_if_t<std::convertible_to<T, T2> || std::constructible_from<T, T2>>>
         constexpr range<T2> cast() const { return { type, static_cast<T2>(min), static_cast<T2>(max) }; }
         template <typename T2, typename = std::enable_if_t<std::convertible_to<T, T2> || std::constructible_from<T, T2>>>
+        // ReSharper disable once CppNonExplicitConversionOperator
         constexpr operator range<T2>() const { return cast<T2>(); } // NOLINT(*-explicit-constructor)
 
         constexpr range open() const { return { range_type::opened, min, max }; }

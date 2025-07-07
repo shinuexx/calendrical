@@ -14,7 +14,7 @@ namespace calendrical::holiday_providers {
         const auto range = m_gregorian->get_year_range(gyear);
         const auto y = m_calendar->get_year(range.min);
         auto r = std::views::iota(y, y + 3) |
-            std::views::transform([&](int32_t y) { return m_calendar->to_fixed({y, cmonth, cday});}) |
+            std::views::transform([&](int32_t y2) { return m_calendar->to_fixed({y2, cmonth, cday});}) |
             std::views::filter(range);
         return {r.begin(), r.end()};
     }

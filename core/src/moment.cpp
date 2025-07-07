@@ -50,7 +50,7 @@ namespace calendrical {
     }
 
     std::chrono::hh_mm_ss<std::chrono::milliseconds> moment_t::to_hh_mm_ss(const moment_t& input) {
-        const int64_t time = static_cast<int64_t>(input.time() * (24 * 60 * 60 * 1000));
+        const auto time = static_cast<int64_t>(input.time() * (24 * 60 * 60 * 1000));
         const std::chrono::milliseconds ms{time};
         return std::chrono::hh_mm_ss{ms};
     }

@@ -12,7 +12,7 @@ namespace calendrical{
         std::map<std::type_index, std::map<fixed_date_t, std::unique_ptr<const calendar_if>>> m_calendars;
 
     public:
-        calendar_provider() : m_calendars() {}
+        calendar_provider() = default;
 
         [[nodiscard]] const calendar_if* get(const std::type_index& type, const fixed_date_t& epoch) const;
         [[nodiscard]] const calendar_if* get(const std::type_index& type) const;

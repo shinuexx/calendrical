@@ -4,7 +4,6 @@ namespace calendrical {
     std::string fixed_date_t::to_string() const {
         return std::to_string(m_v) + " [RD]";
     }
-
 }
 
 std::ostream& operator<<(std::ostream& out, const calendrical::fixed_date_t& rd){

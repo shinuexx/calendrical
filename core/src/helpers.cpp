@@ -145,7 +145,7 @@ namespace calendrical{
     }
     rational binary_search(const predicate_t<rational>& phi, const double_predicate_t<rational>& psi, const rational& u, const rational& v)
     {
-        const rational x = (u + v) / 2;
+        rational x = (u + v) / 2;
         if (psi(u, v))
             return x;
         if (phi(x))

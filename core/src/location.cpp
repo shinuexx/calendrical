@@ -3,8 +3,8 @@
 namespace calendrical {
     angle_t location::direction(const location& other) const
     {
-        auto &[phi, psi, e,z] = *this;
-        auto &[phi1, psi1, e1, z1] = other;
+        const auto &[phi, psi, e,z] = *this;
+        const auto &[phi1, psi1, e1, z1] = other;
         const auto y = sin(phi1 - phi);
         const auto x = cos(psi) * tan(psi1) - sin(psi) * cos(phi - phi1);
         if (x == 0 && y == 0 || psi1 == 90_deg)

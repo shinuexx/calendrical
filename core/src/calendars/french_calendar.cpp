@@ -19,20 +19,20 @@ namespace calendrical::calendars{
 
     fixed_date_t french_calendar::get_new_year(int32_t year) const
     {
-        auto approx = std::floor(ms_epoch + 180 + mean_tropical_year * (year - 1));
+        const auto approx = std::floor(ms_epoch + 180 + mean_tropical_year * (year - 1));
         return new_year_on_or_before(static_cast<int64_t>(approx));
     }
     int32_t french_calendar::get_year(const fixed_date_t& date) const
     {
         const auto new_year = new_year_on_or_before(date);
-        return static_cast<int32_t>(std::round((new_year - ms_epoch) / mean_tropical_year) + 1);
+        return static_cast<int32_t>(std::round(static_cast<double>(new_year - ms_epoch) / mean_tropical_year) + 1);
     }
     simple_date french_calendar::to_date(const fixed_date_t& date) const
     {
         const auto new_year = new_year_on_or_before(date);
-        auto year = static_cast<int32_t>(std::round((new_year - ms_epoch) / mean_tropical_year) + 1);
-        auto month = get_month(date, new_year);
-        auto day = get_day(date, new_year);
+        const auto year = static_cast<int32_t>(std::round(static_cast<double>(new_year - ms_epoch) / mean_tropical_year) + 1);
+        const auto month = get_month(date, new_year);
+        const auto day = get_day(date, new_year);
         return { year, month, day };
     }
     fixed_date_t french_calendar::to_fixed(const simple_date& date) const

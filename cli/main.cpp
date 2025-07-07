@@ -8,14 +8,8 @@
 using calendrical::fixed_date_t;
 
 int main() {
-    const static std::string tmp = boost::multiprecision::cpp_rational{1,2}.str();
     calendrical::calendars::modern_hindu_solar_calendar calendar{};
-/*
-    std::cout << std::setprecision(16) << (double)calendrical::time_and_astronomy::precession(
-        calendrical::time_and_astronomy::universal_from_standard(
-            static_cast<calendrical::moment_t>(calendrical::calendars::modern_hindu_base::mesha_samkranti(285)),
-            static_cast<calendrical::location>(calendrical::calendars::modern_hindu_base::ujjain)));
-*/
+
     const auto date = 10_rd;
     const auto sdate = calendar.to_date(date);
     const auto sdate2 = calendrical::datetypes::simple_date{1, 2, 3};

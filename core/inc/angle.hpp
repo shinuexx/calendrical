@@ -23,7 +23,7 @@ namespace calendrical
         constexpr angle_t(const EnumType &v) : m_v{static_cast<double>(static_cast<std::underlying_type_t<EnumType>>(v))} {} // NOLINT(*-explicit-constructor)
 
         // ReSharper disable once CppNonExplicitConversionOperator
-        constexpr operator double() const { return m_v; }
+        constexpr operator double() const { return m_v; } // NOLINT(*-explicit-constructor)
 
         constexpr bool operator==(const angle_t &other) const { return m_v == other.m_v; }
         constexpr auto operator<=>(const angle_t &other) const { return m_v <=> other.m_v; }

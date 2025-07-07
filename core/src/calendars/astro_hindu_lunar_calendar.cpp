@@ -32,7 +32,7 @@ namespace calendrical::calendars {
         const auto s = static_cast<int64_t>(
                 floor(approx - mean_sidereal_year *
                                        interval_modulus(sidereal_solar_longitude(approx) / 360_deg - m, -0.5, 0.5)));
-        const auto k = astro_hindu_lunar_day_from_moment(s + 0.25);
+        const auto k = astro_hindu_lunar_day_from_moment(static_cast<double>(s) + 0.25);
         auto est = s + day;
         const auto mid = to_date(s - 15);
         if (range_opened_between(3, 27).contains(k)) {
@@ -42,7 +42,7 @@ namespace calendrical::calendars {
         } else {
             est -= interval_modulus(k, 15, 45);
         }
-        const auto T = est - interval_modulus(astro_hindu_lunar_day_from_moment(est + 0.25) - static_cast<int64_t>(day), -15, 15LL);
+        const auto T = est - interval_modulus(astro_hindu_lunar_day_from_moment(static_cast<double>(est) + 0.25) - static_cast<int64_t>(day), -15, 15LL);
         const std::array<int64_t, 2> dates{day, adjusted_remainder(day + 1, 30)};
         const auto ddate = least_passing([&](const int64_t& d) { return in(dates, astro_hindu_lunar_day_from_moment(static_cast<moment_t>(alt_hindu_sunrise(d)))); }, T - 1);
         return leap_day ? ddate + 1 : ddate;

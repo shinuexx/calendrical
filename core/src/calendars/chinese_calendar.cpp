@@ -11,8 +11,8 @@ namespace calendrical::calendars {
     chinese_marriage_augury chinese_calendar::year_marriage_augury(int32_t cycle, int32_t year) const
     {
         const auto new_year = to_fixed({ cycle, year, 1, false, 1 });
-        auto c = year == 60 ? cycle + 1 : cycle;
-        auto y = year == 60 ? 1 : year + 1;
+        const auto c = year == 60 ? cycle + 1 : cycle;
+        const auto y = year == 60 ? 1 : year + 1;
         const auto next_new_year = to_fixed({c, y, 1, false, 1});
         const auto first_minor_term = current_major_solar_term(new_year);
         const auto next_first_minor_term = current_major_solar_term(next_new_year);

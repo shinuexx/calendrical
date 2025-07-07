@@ -24,8 +24,8 @@ namespace calendrical::calendars {
 
     rational modern_hindu_base::hindu_sine_table(int64_t entry)
     {
-        auto exact = 3438 * sin(static_cast<double>(entry) * angle_t::dms(0, 225));
-        auto error = 0.215 * sign(exact) * sign(std::abs(exact) - 1716);
+        const auto exact = 3438 * sin(static_cast<double>(entry) * angle_t::dms(0, 225));
+        const auto error = 0.215 * sign(exact) * sign(std::abs(exact) - 1716);
         return rational{ static_cast<int64_t>(std::round(exact + error)), 3438 };
     }
 
