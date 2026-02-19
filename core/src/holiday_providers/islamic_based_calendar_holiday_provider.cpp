@@ -1,5 +1,7 @@
 #include "holiday_providers/islamic_based_calendar_holiday_provider.hpp"
 
+#include <algorithm>
+
 namespace calendrical::holiday_providers {
 
     std::vector<holiday_t> islamic_based_calendar_holiday_provider::in_year(int32_t year) const {
@@ -15,9 +17,9 @@ namespace calendrical::holiday_providers {
         const auto range = m_gregorian->get_year_range(gyear);
         const auto y = m_islamic->to_date(range.min).year;
         auto r = std::ranges::iota_view(y - 1, y + 2) |
-            std::views::transform([&](int32_t y) { return m_islamic->to_fixed({y, imonth, iday}); }) |
+            std::views::transform([&](int32_t y2) { return m_islamic->to_fixed({y2, imonth, iday}); }) |
             std::views::filter(range);
-        return std::vector(r.begin(), r.end());
+        return {r.begin(), r.end()};
     }
 
     std::vector<fixed_date_t> islamic_based_calendar_holiday_provider::mawlid(int32_t year) const {

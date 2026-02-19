@@ -1,8 +1,8 @@
 #include "holiday_providers/hebrew_based_calendar_holiday_provider.hpp"
 
-namespace calendrical::holiday_providers {
-    const rational hebrew_based_calendar_holiday_provider::ADDA_Y{35975351 , 98496};
+#include <algorithm>
 
+namespace calendrical::holiday_providers {
     hebrew_based_calendar_holiday_provider::hebrew_based_calendar_holiday_provider(
         const calendars::hebrew_based_calendar *hebrew) :
         m_hebrew(hebrew),
@@ -38,7 +38,7 @@ namespace calendrical::holiday_providers {
         const auto range = m_gregorian->get_year_range(gyear);
         const auto y = m_hebrew->get_year(range.min);
         auto r = std::views::iota(y, y + 3) |
-            std::views::transform([&](int32_t y) { return m_hebrew->to_fixed({y, hmonth, hday});}) |
+            std::views::transform([&](int32_t y2) { return m_hebrew->to_fixed({y2, hmonth, hday});}) |
             std::views::filter(range);
         return {r.begin(), r.end()};
     }
@@ -98,17 +98,17 @@ namespace calendrical::holiday_providers {
     std::vector<moment_t> hebrew_based_calendar_holiday_provider::samuel_season_in_gregorian(const angle_t &season,
                                                                                              int32_t year) const {
         constexpr auto Y = 365.25;
-        const auto start = m_start_1_adar_21 + 0.75;
+        const auto start = static_cast<double>(m_start_1_adar_21) + 0.75;
         const auto offset = season / angle_t::full_circle * Y;
         auto r = m_gregorian->cycle_in_gregorian(season, year, Y, start + offset);
         return {r.begin(), r.end()};
     }
 
-    std::vector<rational_moment_t>
+    std::vector<moment_t>
     hebrew_based_calendar_holiday_provider::add_season_in_gregorian(const angle_t &season, int32_t year) const {
-        const rational start = static_cast<int64_t>(m_start_1_adar_28) + rational{1,4};
-        const rational offset = season / angle_t::full_circle * ADDA_Y;
-        auto r = m_gregorian->cycle_in_gregorian(season, year, ADDA_Y, rational_moment_t{start + offset});
+        const auto start = static_cast<int64_t>(m_start_1_adar_28) + 0.25;
+        const auto offset = season / angle_t::full_circle * ADDA_Y;
+        auto r = m_gregorian->cycle_in_gregorian(season, year, ADDA_Y, moment_t{start + offset});
         return {r.begin(), r.end()};
     }
 
@@ -144,7 +144,7 @@ namespace calendrical::holiday_providers {
         const auto range = m_gregorian->get_year_range(gyear);
         const auto y = m_hebrew->get_year(range.min);
         auto r = std::views::iota(y, y + 3) |
-            std::views::transform([&](int32_t y) { return birthday(birthdate, y);}) |
+            std::views::transform([&](int32_t y2) { return birthday(birthdate, y2);}) |
             std::views::filter(range);
         return {r.begin(), r.end()};
     }
@@ -155,7 +155,7 @@ namespace calendrical::holiday_providers {
         const auto range = m_gregorian->get_year_range(gyear);
         const auto y = m_hebrew->get_year(range.min);
         auto r = std::views::iota(y, y + 3) |
-            std::views::transform([&](int32_t y) { return yahrzeit(deathdate, y);}) |
+            std::views::transform([&](int32_t y2) { return yahrzeit(deathdate, y2);}) |
             std::views::filter(range);
         return {r.begin(), r.end()};
     }

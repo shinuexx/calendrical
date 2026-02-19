@@ -1,26 +1,27 @@
-#include <calendars/modern_hindu_solar_calendar.hpp>
-#include <calendars/old_hindu_solar_calendar.hpp>
+#include <exception>
 #include <iostream>
-#include <time_and_astronomy.hpp>
+#include <memory>
 
-#include <calendars/samaritan_calendar.hpp>
+#include "commands/command_dispatcher.hpp"
+#include "commands/convert_command.hpp"
+#include "commands/holidays_command.hpp"
+#include "commands/list_command.hpp"
+#include "converter_provider_builder.hpp"
+#include "holiday_provider_provider_builder.hpp"
 
-using calendrical::fixed_date_t;
+int main(int argc, const char* const argv[]) {
+    [[maybe_unused]] auto cnvrtr_prvdr = calendrical::cli::build_converter_provider();
+    [[maybe_unused]] auto hld_prvdr_prvdr = calendrical::cli::build_holiday_provider_provider();
 
-int main() {
-    const static std::string tmp = boost::multiprecision::cpp_rational{1,2}.str();
-    calendrical::calendars::modern_hindu_solar_calendar calendar{};
-/*
-    std::cout << std::setprecision(16) << (double)calendrical::time_and_astronomy::precession(
-        calendrical::time_and_astronomy::universal_from_standard(
-            static_cast<calendrical::moment_t>(calendrical::calendars::modern_hindu_base::mesha_samkranti(285)),
-            static_cast<calendrical::location>(calendrical::calendars::modern_hindu_base::ujjain)));
-*/
-    const auto date = 10_rd;
-    const auto sdate = calendar.to_date(date);
-    const auto sdate2 = calendrical::datetypes::simple_date{1, 2, 3};
-    const auto rdate = calendar.to_fixed(sdate2);
-
-    std::cout << date << " => " << sdate.to_string() << std::endl;
-    std::cout << sdate2.to_string() << " => " << rdate << std::endl;
+    try {
+        calendrical::cli::commands::command_dispatcher dispatcher{};
+        dispatcher.add<calendrical::cli::convert_command>(std::addressof(cnvrtr_prvdr));
+        dispatcher.add<calendrical::cli::holidays_command>(std::addressof(hld_prvdr_prvdr));
+        dispatcher.add<calendrical::cli::list_command>(std::addressof(cnvrtr_prvdr), std::addressof(hld_prvdr_prvdr));
+        return dispatcher.dispatch(argc, argv);
+    } catch (const std::exception &ex) {
+        std::cerr << "Error: " << ex.what() << '\n';
+        std::cerr << "Use 'calendrical_cli --help' for usage.\n";
+        return 1;
+    }
 }

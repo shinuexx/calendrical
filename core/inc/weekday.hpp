@@ -68,13 +68,13 @@ namespace calendrical {
         [[nodiscard]] std::string to_string() const;
     };
 
-    constexpr weekday weekday::sunday{ 0 };
-    constexpr weekday weekday::monday{ 1 };
-    constexpr weekday weekday::tuesday{ 2 };
-    constexpr weekday weekday::wednesday{ 3 };
-    constexpr weekday weekday::thursday{ 4 };
-    constexpr weekday weekday::friday{ 5 };
-    constexpr weekday weekday::saturday{ 6 };
+    inline constexpr weekday weekday::sunday{ 0 };
+    inline constexpr weekday weekday::monday{ 1 };
+    inline constexpr weekday weekday::tuesday{ 2 };
+    inline constexpr weekday weekday::wednesday{ 3 };
+    inline constexpr weekday weekday::thursday{ 4 };
+    inline constexpr weekday weekday::friday{ 5 };
+    inline constexpr weekday weekday::saturday{ 6 };
 
     template<
         std::ranges::range Range

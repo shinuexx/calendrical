@@ -18,64 +18,64 @@ namespace tests {
         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24
     };
 
-    static const auto angles = std::array{
-        rational_angle_t{},
-        rational_angle_t::dms(0,225),
-        rational_angle_t::dms(0,450),
-        rational_angle_t::dms(0,675),
-        rational_angle_t::dms(0,900),
-        rational_angle_t::dms(0,1125),
-        rational_angle_t::dms(0,1350),
-        rational_angle_t::dms(0,1575),
-        rational_angle_t::dms(0,1800),
-        rational_angle_t::dms(0,2025),
-        rational_angle_t::dms(0,2250),
-        rational_angle_t::dms(0,2475),
-        rational_angle_t::dms(0,2700),
-        rational_angle_t::dms(0,2925),
-        rational_angle_t::dms(0,3150),
-        rational_angle_t::dms(0,3375),
-        rational_angle_t::dms(0,3600),
-        rational_angle_t::dms(0,3825),
-        rational_angle_t::dms(0,4050),
-        rational_angle_t::dms(0,4275),
-        rational_angle_t::dms(0,4500),
-        rational_angle_t::dms(0,4725),
-        rational_angle_t::dms(0,4950),
-        rational_angle_t::dms(0,5175),
-        rational_angle_t::dms(0,5400)
+    static constexpr auto angles = std::array{
+        angle_t{},
+        angle_t::dms(0,225),
+        angle_t::dms(0,450),
+        angle_t::dms(0,675),
+        angle_t::dms(0,900),
+        angle_t::dms(0,1125),
+        angle_t::dms(0,1350),
+        angle_t::dms(0,1575),
+        angle_t::dms(0,1800),
+        angle_t::dms(0,2025),
+        angle_t::dms(0,2250),
+        angle_t::dms(0,2475),
+        angle_t::dms(0,2700),
+        angle_t::dms(0,2925),
+        angle_t::dms(0,3150),
+        angle_t::dms(0,3375),
+        angle_t::dms(0,3600),
+        angle_t::dms(0,3825),
+        angle_t::dms(0,4050),
+        angle_t::dms(0,4275),
+        angle_t::dms(0,4500),
+        angle_t::dms(0,4725),
+        angle_t::dms(0,4950),
+        angle_t::dms(0,5175),
+        angle_t::dms(0,5400)
     };
 
-    static const auto sines = std::array{
-        rational{0},
-        rational{225,3438},
-        rational{449,3438},
-        rational{671,3438},
-        rational{890,3438},
-        rational{1105,3438},
-        rational{1315,3438},
-        rational{1520,3438},
-        rational{1719,3438},
-        rational{1910,3438},
-        rational{2093,3438},
-        rational{2267,3438},
-        rational{2431,3438},
-        rational{2585,3438},
-        rational{2728,3438},
-        rational{2859,3438},
-        rational{2978,3438},
-        rational{3084,3438},
-        rational{3177,3438},
-        rational{3256,3438},
-        rational{3321,3438},
-        rational{3372,3438},
-        rational{3409,3438},
-        rational{3431,3438},
-        rational{3438,3438}
+    static constexpr auto sines = std::array{
+        double{0},
+        double{225 / 3438.0},
+        double{449 / 3438.0},
+        double{671 / 3438.0},
+        double{890 / 3438.0},
+        double{1105 / 3438.0},
+        double{1315 / 3438.0},
+        double{1520 / 3438.0},
+        double{1719 / 3438.0},
+        double{1910 / 3438.0},
+        double{2093 / 3438.0},
+        double{2267 / 3438.0},
+        double{2431 / 3438.0},
+        double{2585 / 3438.0},
+        double{2728 / 3438.0},
+        double{2859 / 3438.0},
+        double{2978 / 3438.0},
+        double{3084 / 3438.0},
+        double{3177 / 3438.0},
+        double{3256 / 3438.0},
+        double{3321 / 3438.0},
+        double{3372 / 3438.0},
+        double{3409 / 3438.0},
+        double{3431 / 3438.0},
+        double{3438 / 3438.0}
     };
 
 
-    class hindu_sine_entry_test : public helpers::input_output_test<int32_t, rational>{};
+    class hindu_sine_entry_test : public helpers::input_output_test<int32_t, double>{};
 
     TEST_P(hindu_sine_entry_test, calculate) {
         auto &[rd, output] = GetParam();
@@ -83,7 +83,7 @@ namespace tests {
         EXPECT_EQ(actual, output) << output << " : " << actual << " : " << rd << std::endl;
     }
 
-    class hindu_sine_test : public helpers::input_output_test<rational_angle_t, rational>{};
+    class hindu_sine_test : public helpers::input_output_test<angle_t, double>{};
 
     TEST_P(hindu_sine_test, calculate) {
         auto &[rd, output] = GetParam();
@@ -91,7 +91,7 @@ namespace tests {
         EXPECT_EQ(actual, output) << output << " : " << actual << " : " << rd << std::endl;
     }
 
-    class hindu_arcsine_test : public helpers::input_output_test<rational, rational_angle_t>{};
+    class hindu_arcsine_test : public helpers::input_output_test<double, angle_t>{};
 
     TEST_P(hindu_arcsine_test, calculate) {
         auto &[rd, output] = GetParam();

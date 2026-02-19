@@ -1,5 +1,6 @@
 #include "holiday_providers/modern_hindu_lunar_calendar_holiday_provider.hpp"
 #include "time_and_astronomy.hpp"
+#include <cmath>
 
 namespace calendrical::holiday_providers {
     using namespace calendrical::datetypes;
@@ -11,7 +12,7 @@ namespace calendrical::holiday_providers {
     }
     std::vector<holiday_t> modern_hindu_lunar_calendar_holiday_provider::in_year(int32_t gyear) const
     {
-        return std::vector<holiday_t>();
+        return {};
     }
     std::vector<fixed_date_t> modern_hindu_lunar_calendar_holiday_provider::in_gregorian(int32_t cmonth, int32_t day, int32_t gyear) const
     {
@@ -52,21 +53,24 @@ namespace calendrical::holiday_providers {
         return lunar_holiday(8, 1, gyear);
     }
 
-    fixed_date_t modern_hindu_lunar_calendar_holiday_provider::tithi_occur(int32_t lmonth, const rational& tithi, const rational_moment_t& t, int32_t lyear) const
+    fixed_date_t modern_hindu_lunar_calendar_holiday_provider::tithi_occur(int32_t lmonth, const double& tithi, const moment_t& t, int32_t lyear) const
     {
-        const auto approx = date_occur(lyear, lmonth, static_cast<int32_t>(floor(tithi)));
-        const auto lunar = m_lunar->hindu_lunar_day_at_or_after(tithi, approx - 2);
+        const auto approx = date_occur(lyear, lmonth, static_cast<int32_t>(std::floor(tithi)));
+        const auto lunar = modern_hindu_lunar_calendar::hindu_lunar_day_at_or_after(
+            tithi,
+            moment_t{approx.subtract(2)}
+        );
         const auto try_ = lunar.to_fixed_date();
-        if (const auto th = time_and_astronomy::standard_from_sundial(try_ + static_cast<moment_t>(t),
-                                                                static_cast<location>(modern_hindu_base::ujjain));
-            lunar <= th || m_lunar->hindu_lunar_phase(time_and_astronomy::standard_from_sundial(
-                                   try_ + 1 + static_cast<moment_t>(t),
-                                   static_cast<location>(modern_hindu_base::ujjain))) > 12 * tithi)
+        if (const auto th = time_and_astronomy::standard_from_sundial(static_cast<double>(try_) + static_cast<moment_t>(t),
+                                                                modern_hindu_base::ujjain);
+            lunar <= th || modern_hindu_lunar_calendar::hindu_lunar_phase(time_and_astronomy::standard_from_sundial(
+                                   static_cast<double>(try_) + 1 + static_cast<moment_t>(t),
+                                   modern_hindu_base::ujjain)) > angle_t{12 * tithi})
             return try_;
         return try_.add(1);
     }
 
-    std::vector<fixed_date_t> modern_hindu_lunar_calendar_holiday_provider::lunar_event(int32_t lmonth, const rational& tithi, const rational_moment_t& t, int32_t gyear) const
+    std::vector<fixed_date_t> modern_hindu_lunar_calendar_holiday_provider::lunar_event(int32_t lmonth, const double& tithi, const moment_t& t, int32_t gyear) const
     {
         auto range = gregorian_calendar::standard.get_year_range(gyear);
         const auto lyear = m_lunar->get_year(range.min);
@@ -80,12 +84,12 @@ namespace calendrical::holiday_providers {
 
     std::vector<fixed_date_t> modern_hindu_lunar_calendar_holiday_provider::shiva(int32_t gyear) const
     {
-        return lunar_event(11, 29, rational{1}, gyear);
+        return lunar_event(11, 29, 1, gyear);
     }
 
     std::vector<fixed_date_t> modern_hindu_lunar_calendar_holiday_provider::rama(int32_t gyear) const
     {
-        return lunar_event(1, 9, rational{ 1,2 }, gyear);
+        return lunar_event(1, 9, 0.5, gyear);
     }
 
     int32_t modern_hindu_lunar_calendar_holiday_provider::karana(int32_t n)

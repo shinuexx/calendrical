@@ -8,8 +8,8 @@ namespace calendrical::calendars{
         using french_based_calendar::get_month;
         using french_based_calendar::get_day;
 
-        moment_t midnight_in_paris(const fixed_date_t& date) const;
-        fixed_date_t new_year_on_or_before(const fixed_date_t& date) const;
+        [[nodiscard]] moment_t midnight_in_paris(const fixed_date_t& date) const;
+        [[nodiscard]] fixed_date_t new_year_on_or_before(const fixed_date_t& date) const;
 
     public:
         french_calendar() = default;

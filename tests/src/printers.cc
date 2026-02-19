@@ -18,10 +18,4 @@ namespace calendrical{
     } // namespace datetypes
     void PrintTo(const weekday &wd, std::ostream *os) { *os << wd; }
     void PrintTo(const fixed_date_t &date, std::ostream *os) { *os << date; }
-    void PrintTo(const rational_angle_t& date, std::ostream* os) { *os << date; }
 } // namespace calendrical
-
-namespace boost::multiprecision {
-    void PrintTo(const cpp_int& number, std::ostream* os){ *os << number.str(); }
-    void PrintTo(const cpp_rational& number, std::ostream* os) { *os << number.str(); }
-}

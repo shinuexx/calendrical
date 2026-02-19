@@ -3,6 +3,7 @@
 #include "location.hpp"
 #include "lunar_phase.hpp"
 #include "range.hpp"
+#include <cmath>
 
 namespace calendrical::calendars {
 

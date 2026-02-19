@@ -10,7 +10,7 @@ namespace calendrical::calendars{
         fixed_date_t m_epoch;
 
     public:
-        constexpr simple_calendar(const fixed_date_t& epoch) : m_epoch(epoch) {} // NOLINT(*-explicit-constructor)
+        explicit constexpr simple_calendar(const fixed_date_t& epoch) : m_epoch(epoch) {} // NOLINT(*-explicit-constructor)
 
         ~simple_calendar() override = default;
 

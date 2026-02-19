@@ -14,7 +14,6 @@
 #include <datetypes/icelandic_date.hpp>
 #include "datetypes/hebrew_date.hpp"
 
-#include <angle.hpp>
 #include <datetypes/lunar_date.hpp>
 #include <datetypes/sexagesimal_name.hpp>
 
@@ -36,10 +35,4 @@ namespace calendrical{
     }
     void PrintTo(const weekday& wd, std::ostream* os);
     void PrintTo(const fixed_date_t& date, std::ostream* os);
-    void PrintTo(const rational_angle_t& date, std::ostream* os);
-}
-
-namespace boost::multiprecision {
-    void PrintTo(const cpp_int& number, std::ostream* os);
-    void PrintTo(const cpp_rational& number, std::ostream* os);
 }

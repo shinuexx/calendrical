@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 cmake_policy(SET CMP0079 NEW)
-cmake_policy(SET CMP0167 OLD)
+if (POLICY CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,6 +15,8 @@ if (POLICY CMP0141)
 endif()
 
 project(calendrical)
+
+include(CTest)
 
 add_subdirectory(core)
 add_subdirectory(cli)

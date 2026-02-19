@@ -13,7 +13,7 @@ namespace calendrical::calendars {
 
         static bool babylonian_criterion(const fixed_date_t& date);
 
-        fixed_date_t new_month_on_or_before(const fixed_date_t& date) const;
+        [[nodiscard]] fixed_date_t new_month_on_or_before(const fixed_date_t& date) const;
 
     public:
         babylonian_calendar() = default;

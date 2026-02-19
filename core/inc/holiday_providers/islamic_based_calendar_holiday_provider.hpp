@@ -12,7 +12,7 @@ namespace calendrical::holiday_providers {
         const calendars::gregorian_calendar *m_gregorian;
 
     public:
-        islamic_based_calendar_holiday_provider(const calendars::islamic_based_calendar *islamic) :
+        explicit islamic_based_calendar_holiday_provider(const calendars::islamic_based_calendar *islamic) :
             m_islamic(islamic),
             m_gregorian(std::addressof(calendars::gregorian_calendar::standard)){}
 

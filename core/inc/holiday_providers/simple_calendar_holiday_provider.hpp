@@ -11,12 +11,12 @@ namespace calendrical::holiday_providers{
         const calendars::gregorian_calendar* m_gregorian;
 
     public:
-        simple_calendar_holiday_provider(const calendars::simple_calendar* calendar) : m_calendar(calendar), m_gregorian(std::addressof(calendars::gregorian_calendar::standard)){}
+        explicit simple_calendar_holiday_provider(const calendars::simple_calendar* calendar) : m_calendar(calendar), m_gregorian(std::addressof(calendars::gregorian_calendar::standard)){}
         ~simple_calendar_holiday_provider() override = default;
 
-        const calendar_if* calendar() const override { return m_calendar; };
-        std::vector<holiday_t> in_year(int32_t gyear) const override { return {}; }
+        [[nodiscard]] const calendar_if* calendar() const override { return m_calendar; };
+        [[nodiscard]] std::vector<holiday_t> in_year(int32_t gyear) const override { return {}; }
 
-        std::vector<fixed_date_t> in_gregorian(int32_t cmonth, int32_t cday, int32_t gyear) const;
+        [[nodiscard]] std::vector<fixed_date_t> in_gregorian(int32_t cmonth, int32_t cday, int32_t gyear) const;
     };
 }

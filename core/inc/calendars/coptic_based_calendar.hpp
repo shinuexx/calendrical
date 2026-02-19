@@ -11,6 +11,7 @@ namespace calendrical::calendars {
 
         [[nodiscard]] int32_t get_month(const fixed_date_t& date, int32_t year) const;
     public:
+        // ReSharper disable once CppNonExplicitConvertingConstructor
         constexpr coptic_based_calendar(const fixed_date_t& epoch) : m_epoch(epoch) {} // NOLINT(*-explicit-constructor)
 
         ~coptic_based_calendar() override = default;

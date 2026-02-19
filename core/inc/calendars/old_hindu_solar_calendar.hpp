@@ -11,10 +11,10 @@ namespace calendrical::calendars {
         public typed_calendar_if<simple_date>,
         public hindu_base
     {
-        [[nodiscard]] rational get_sun(const fixed_date_t& date) const;
-        [[nodiscard]] int32_t get_year(const rational& sun) const;
-        [[nodiscard]] int32_t get_month(const rational& sun) const;
-        [[nodiscard]] int32_t get_day(const rational& sun) const;
+        [[nodiscard]] double get_sun(const fixed_date_t& date) const;
+        [[nodiscard]] int32_t get_year(const double& sun) const;
+        [[nodiscard]] int32_t get_month(const double& sun) const;
+        [[nodiscard]] int32_t get_day(const double& sun) const;
 
     public:
         old_hindu_solar_calendar() = default;

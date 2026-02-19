@@ -1,7 +1,5 @@
 #pragma once
 
-#include "types.hpp"
-
 namespace calendrical::datetypes {
     struct bahai_date {
         int32_t major;

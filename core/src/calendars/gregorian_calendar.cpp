@@ -100,14 +100,4 @@ namespace calendrical::calendars{
         auto t = positions_in_range<double>(pos, L, D, year_range);
         return std::move(t) | std::views::transform(bind_constructor<moment_t>{});
     }
-
-    std::ranges::transform_view<std::ranges::owning_view<std::vector<rational>>, bind_constructor<rational_moment_t>> gregorian_calendar::cycle_in_gregorian(const angle_t &season, int32_t year, const rational &L,
-                                                const rational_moment_t &start) const {
-        const auto year_range = get_year_range(year);
-        const rational pos = season / 360_deg * L;
-        const auto D = pos - mod(start, L);
-        auto t = positions_in_range<rational>(pos, L, D, year_range.cast<int64_t>().cast<rational>());
-        return std::move(t) | std::views::transform(bind_constructor<rational_moment_t>{});
-    }
-
 }

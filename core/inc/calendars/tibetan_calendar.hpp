@@ -11,8 +11,8 @@ namespace calendrical::calendars {
     {
         static const fixed_date_t ms_epoch;
 
-        [[nodiscard]] static rational_angle_t tibetan_sun_equation(const rational_angle_t& a);
-        [[nodiscard]] static rational_angle_t tibetan_moon_equation(const rational_angle_t& a);
+        [[nodiscard]] static angle_t tibetan_sun_equation(const angle_t& a);
+        [[nodiscard]] static angle_t tibetan_moon_equation(const angle_t& a);
 
     public:
 

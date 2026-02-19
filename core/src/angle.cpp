@@ -3,16 +3,8 @@
 #include <cmath>
 
 namespace calendrical {
-    const rational_angle_t rational_angle_t::full_circle{ 360 };
-    const rational_angle_t rational_angle_t::half_circle{ 180 };
-
     std::string to_string(const angle_t& angle) {
         return std::to_string(angle.m_v) + "°";
-    }
-
-    std::string to_string(const rational_angle_t& angle)
-    {
-        return angle.m_v.str() + "°";
     }
 
     double sin(const angle_t& angle) {
@@ -41,7 +33,7 @@ namespace calendrical {
         if (x == 0)
             r = sign(y) * 90;
         else {
-            auto a = degrees(std::atan(y / x));
+            const auto a = degrees(std::atan(y / x));
             r = x >= 0 ? a : a + 180;
         }
         return mod(r, 360);
@@ -50,16 +42,4 @@ namespace calendrical {
 
 std::ostream& operator<<(std::ostream& out, const calendrical::angle_t& angle) {
     return out << to_string(angle);
-}
-
-std::ostream& operator<<(std::ostream& out, const calendrical::rational_angle_t& angle)
-{
-    return out << to_string(angle);
-}
-
-calendrical::rational_angle_t operator"" _rdeg(long double x) {
-    return { static_cast<double>(x) };
-}
-calendrical::rational_angle_t operator"" _rdeg(unsigned long long x) {
-    return calendrical::rational{ x };
 }

@@ -1,4 +1,7 @@
 #include "holiday_providers/bahai_based_calendar_holiday_provider.hpp"
+
+#include <algorithm>
+
 #include "time_and_astronomy.hpp"
 
 namespace calendrical::holiday_providers {
@@ -6,7 +9,7 @@ namespace calendrical::holiday_providers {
         return astro ? static_cast<const calendars::bahai_based_calendar*>(m_astro) : static_cast<const calendars::bahai_based_calendar*>(m_classic);
     }
 
-    std::vector<holiday_t> bahai_based_calendar_holiday_provider::in_year(int32_t gyear) const {
+    std::vector<holiday_t> bahai_based_calendar_holiday_provider::in_year(const int32_t gyear) const {
         std::vector<holiday_t> result{
             {"new year", new_year(gyear)},
             {"naw ruz", naw_ruz(gyear)},
@@ -17,8 +20,8 @@ namespace calendrical::holiday_providers {
         return result;
     }
 
-    fixed_date_t bahai_based_calendar_holiday_provider::new_year(int32_t year) const {
-        return m_gregorian->to_fixed({year, month::march, 21});
+    fixed_date_t bahai_based_calendar_holiday_provider::new_year(int32_t gyear) const {
+        return m_gregorian->to_fixed({gyear, month::march, 21});
     }
 
     fixed_date_t bahai_based_calendar_holiday_provider::naw_ruz(int32_t gyear) const {

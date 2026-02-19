@@ -41,7 +41,7 @@ namespace calendrical::time_and_astronomy {
                        36525.0;
         const auto y2000 = year - 2000;
         if (in(r2051, year)) {
-            auto c2051 = -20 + 32 * std::pow((year - 1820.0) / 1e2, 2) + 0.5628 * (2150.0 - year);
+            const auto c2051 = -20 + 32 * std::pow((year - 1820.0) / 1e2, 2) + 0.5628 * (2150.0 - year);
             return c2051 / 86400;
         }
         if (in(r2006, year)) {
@@ -111,7 +111,7 @@ namespace calendrical::time_and_astronomy {
         const angle_t anomaly = eot_anomaly_p(c);
         const auto eccentricity = eot_eccentricity_p(c);
         const auto E = obliquity(t);
-        auto y = std::pow(tan(static_cast<double>(E) / 2), 2);
+        const auto y = std::pow(tan(static_cast<double>(E) / 2), 2);
         auto equation = y * sin(2 * l) - 2 * eccentricity * sin(anomaly)
             + 4 * eccentricity * y * sin(anomaly) * cos(2 * l)
             - 0.5 * y * y * sin(4 * l)
@@ -477,7 +477,7 @@ namespace calendrical::time_and_astronomy {
         const auto M = solar_anomaly(c);
         const auto M1 = lunar_anomaly(c);
         const auto F = moon_node(c);
-        auto E = lunar_E_p(c);
+        const auto E = lunar_E_p(c);
         double correction{};
         for (auto &[v, w, x, y, z]: lunar_longitude_table) {
             correction += v * std::pow(E, std::abs(x)) * sin(w * D + x * M + y * M1 + z * F);
@@ -519,10 +519,10 @@ namespace calendrical::time_and_astronomy {
     }
 
     angle_t lunar_phase(const moment_t& t) {
-        auto psi = mod(lunar_longitude(t) - solar_longitude(t), 360);
+        const auto psi = mod(lunar_longitude(t) - solar_longitude(t), 360);
         const auto t0 = *zero_new_moon;
         const auto n = static_cast<int64_t>(std::round((t - t0) / mean_synodic_month));
-        if (auto psi1 = 360 * mod((t - nth_new_moon(n)) / mean_synodic_month, 1); std::abs(psi - psi1) > 180)
+        if (const auto psi1 = 360 * mod((t - nth_new_moon(n)) / mean_synodic_month, 1); std::abs(psi - psi1) > 180)
             return psi1;
         return psi;
     }
@@ -610,7 +610,7 @@ namespace calendrical::time_and_astronomy {
         const auto M = solar_anomaly(c);
         const auto M1 = lunar_anomaly(c);
         const auto F = moon_node(c);
-        auto E = lunar_E_p(c);
+        const auto E = lunar_E_p(c);
         double b{};
         for (auto &[v, w, x, y, z]: lunar_latitude_table)
             b += v * std::pow(E, std::abs(x)) * sin(w * D + x * M + y * M1 + z * F);
@@ -704,7 +704,7 @@ namespace calendrical::time_and_astronomy {
         const auto M = solar_anomaly(c);
         const auto M1 = lunar_anomaly(c);
         const auto F = moon_node(c);
-        auto E = lunar_E_p(c);
+        const auto E = lunar_E_p(c);
         double correction{};
         for (auto& [v, w, x, y, z] : lunar_distance_table)
             correction += v * std::pow(E, std::abs(x)) * cos(w * D + x * M + y * M1 + z * F);
@@ -797,12 +797,12 @@ namespace calendrical::time_and_astronomy {
 
     moment_t moonrise(const fixed_date_t& date, const location& location) {
         const auto t = universal_from_standard(date, location);
-        auto waning = lunar_phase(t) > angle_t::half_circle;
-        auto alt = observed_lunar_altitude(t, location);
-        auto lat = location.latitude;
-        auto offset = alt / angle_t{4 * (90 - std::abs(lat))};
+        const auto waning = lunar_phase(t) > angle_t::half_circle;
+        const auto alt = observed_lunar_altitude(t, location);
+        const auto lat = location.latitude;
+        const auto offset = alt / angle_t{4 * (90 - std::abs(lat))};
         const auto approx = waning ? (offset > 0 ? t.add(1 - offset) : t.subtract(offset)) : t.add(0.5 + offset);
-        moment_t rise = binary_search(
+        const moment_t rise = binary_search(
             [&location](const double& x) { return observed_lunar_altitude(x, location) > 0_deg; },
             [](const double& l, const double& u) { return u - l < static_cast<double>(min1); },
             approx.subtract(0.25),
@@ -815,12 +815,12 @@ namespace calendrical::time_and_astronomy {
     moment_t moonset(const fixed_date_t& date, const location& location)
     {
         const auto t = universal_from_standard(date, location);
-        auto waxing = lunar_phase(t) < angle_t::half_circle;
-        auto alt = observed_lunar_altitude(t, location);
-        auto lat = location.latitude;
-        auto offset = alt / angle_t{4 * (90 - std::abs(lat))};
+        const auto waxing = lunar_phase(t) < angle_t::half_circle;
+        const auto alt = observed_lunar_altitude(t, location);
+        const auto lat = location.latitude;
+        const auto offset = alt / angle_t{4 * (90 - std::abs(lat))};
         const auto approx = waxing ? (offset > 0 ? t.add(offset) : t.add(1 + offset)) : t.add(0.5 - offset);
-        moment_t rise = binary_search(
+        const moment_t rise = binary_search(
             [&location](const double& x) { return observed_lunar_altitude(x, location) < 0_deg; },
             [](const double& l, const double& u) { return u - l < static_cast<double>(min1); },
             approx.subtract(0.25),

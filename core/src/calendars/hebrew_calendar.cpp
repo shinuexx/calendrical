@@ -1,9 +1,8 @@
 #include "calendars/hebrew_calendar.hpp"
+#include <algorithm>
 
 namespace calendrical::calendars {
-    const rational hebrew_calendar::molad_part{ 876, 25920 };
-    const rational hebrew_calendar::molad_month_length{ 765433, 25920 }; //= 29 + rational{ 1,2 } + rational{ 793,25920 };
-    const rational hebrew_calendar::molad_1_tishri = static_cast<int64_t>(ms_epoch) - molad_part;
+
 
     hebrew_month hebrew_calendar::get_month(const fixed_date_t& date, int32_t year) const {
         auto start = date < to_fixed({ year, hebrew_month::nisan, 1 }) ? hebrew_month::tishri : hebrew_month::nisan;
@@ -17,8 +16,7 @@ namespace calendrical::calendars {
     int64_t hebrew_calendar::year_length_correction(int32_t year) const {
         const auto ny0 = elapsed_days(year - 1);
         const auto ny1 = elapsed_days(year);
-        const auto ny2 = elapsed_days(year + 1);
-        if (ny2 - ny1 == 356)
+        if (const auto ny2 = elapsed_days(year + 1); ny2 - ny1 == 356)
             return 2;
         if (ny1 - ny0 == 382)
             return 1;
@@ -26,7 +24,7 @@ namespace calendrical::calendars {
     }
 
     // ReSharper disable once CppMemberFunctionMayBeStatic
-    int64_t hebrew_calendar::elapsed_days(int32_t year) const {
+    int64_t hebrew_calendar::elapsed_days(int32_t year) const { // NOLINT(*-convert-member-functions-to-static)
         const auto months_elapsed = floor_div(235 * year - 234, 19);
         const auto parts_elapsed = 12084 + 13753 * months_elapsed;
         const auto days = 29 * months_elapsed + floor_div(parts_elapsed, 25920);
@@ -38,7 +36,7 @@ namespace calendrical::calendars {
     bool hebrew_calendar::is_leap_year(int32_t year) const { return mod(7 * year + 1, 19) < 7; }
 
     // ReSharper disable once CppMemberFunctionMayBeStatic
-    bool hebrew_calendar::is_sabbatical_year(int32_t year) const {
+    bool hebrew_calendar::is_sabbatical_year(int32_t year) const { // NOLINT(*-convert-member-functions-to-static)
         return mod(year, 7) == 0;
     }
 
@@ -81,17 +79,17 @@ namespace calendrical::calendars {
         return to_date(date).day;
     }
 
-    rational_moment_t hebrew_calendar::molad(int32_t year, hebrew_month month) {
+    moment_t hebrew_calendar::molad(int32_t year, hebrew_month month) {
         const auto y = month < hebrew_month::tishri ? year + 1 : year;
         const auto months_elapsed = month - hebrew_month::tishri + floor_div(235 * y - 234, 19);
-        rational r = static_cast<int64_t>(ms_epoch) - molad_part + months_elapsed * molad_month_length;
+        const auto r = static_cast<int64_t>(ms_epoch) - molad_part + static_cast<double>(months_elapsed) * molad_month_length;
         return r;
     }
 
-    fixed_date_t hebrew_calendar::fixed_from_molad(const rational_moment_t &moon) {
-        const auto r = mod(74377 * static_cast<rational>(moon) - rational{2879, 2160}, 7);
-        const rational_moment_t a{molad_1_tishri + r * 765433};
-        return static_cast<fixed_date_t>(a);
+    fixed_date_t hebrew_calendar::fixed_from_molad(const moment_t &moon) {
+        const auto r = mod(74377 * moon - 2879.0 / 2160, 7);
+        const moment_t a{molad_1_tishri + r * 765433};
+        return a.to_fixed_date();
     }
 
     std::vector<weekday> hebrew_calendar::possible_days(hebrew_month hmonth, int32_t hday) const {

@@ -12,7 +12,7 @@ namespace calendrical::holiday_providers {
         int32_t m_gregorian_year_persian_epoch;
 
     public:
-        persian_based_calendar_holiday_provider(const calendars::persian_based_calendar* persian);
+        explicit persian_based_calendar_holiday_provider(const calendars::persian_based_calendar* persian);
         ~persian_based_calendar_holiday_provider() override = default;
 
         [[nodiscard]] const calendar_if* calendar() const override;

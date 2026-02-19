@@ -1,6 +1,7 @@
 #include "calendars/observational_hebrew_calendar.hpp"
 #include "time_and_astronomy.hpp"
 #include "season.hpp"
+#include <cmath>
 
 namespace calendrical::calendars{
     using namespace calendrical::time_and_astronomy;
@@ -11,8 +12,8 @@ namespace calendrical::calendars{
     }
 
     fixed_date_t observational_hebrew_calendar::first_of_nisan(int32_t gyear) {
-        auto equinox = season_in_gregorian(season::SPRING, gyear);
-        auto set = universal_from_standard(sunset(static_cast<int64_t>(std::floor(equinox)), hebrew_location),
+        const auto equinox = season_in_gregorian(season::SPRING, gyear);
+        const auto set = universal_from_standard(sunset(static_cast<int64_t>(std::floor(equinox)), hebrew_location),
                                            hebrew_location);
         return phasis_on_or_after(static_cast<int64_t>(std::floor(equinox) - (equinox < set ? 14 : 13)),
                                   hebrew_location);
@@ -43,7 +44,7 @@ namespace calendrical::calendars{
         auto year1 = month >= hebrew_month::tishri ? year - 1 : year;
         const auto start = m_hebrew->to_fixed({year1, hebrew_month::nisan, 1});
         const auto gyear = m_gregorian->get_year(start.add(60));
-        auto new_year = first_of_nisan(gyear);
+        const auto new_year = first_of_nisan(gyear);
         const auto midmonth = new_year + static_cast<int64_t>(std::round(29.5 * (static_cast<int32_t>(month) - 1))) + 15;
         return phasis_on_or_before(midmonth, hebrew_location) + day - 1;
     }

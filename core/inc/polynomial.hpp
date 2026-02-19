@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
 #include <cmath>
+#include <ranges>
 #include <array>
 
 namespace calendrical{
@@ -12,9 +12,9 @@ namespace calendrical{
    public:
 
       // ReSharper disable once CppNonExplicitConvertingConstructor
-      constexpr polynomial(const std::array<double, N>& coefficients) : m_coefficients(coefficients){}
+      constexpr polynomial(const std::array<double, N>& coefficients) : m_coefficients(coefficients){} // NOLINT(*-explicit-constructor)
 
-      constexpr double evaluate(const double& x) const{
+      [[nodiscard]] constexpr double evaluate(const double& x) const{
          double result = 0;
          for(auto& c : std::views::reverse(m_coefficients)){
             result = x * result + c;

@@ -1,5 +1,6 @@
 #include "holiday_providers/julian_calendar_holiday_provider.hpp"
 
+#include <algorithm>
 #include <array>
 
 namespace calendrical::holiday_providers{
@@ -26,7 +27,7 @@ namespace calendrical::holiday_providers{
         const auto y = m_julian->get_year(range.min);
         const auto y1 = y == -1 ? 1 : y + 1;
         auto r = std::array<int32_t, 2>({y, y1}) |
-            std::views::transform([&](int32_t y) { return m_julian->to_fixed({y, cmonth, cday}); }) |
+            std::views::transform([&](int32_t y2) { return m_julian->to_fixed({y2, cmonth, cday}); }) |
             std::views::filter(range);
         return {r.begin(), r.end()};
     }
