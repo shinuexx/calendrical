@@ -31,7 +31,22 @@ target_link_libraries(tests PRIVATE libcalendrical)
 
 enable_testing()
 
-find_package(GTest REQUIRED CONFIG)
+find_package(GTest CONFIG QUIET)
+if (NOT GTest_FOUND)
+	find_package(GTest MODULE QUIET)
+endif()
+
+if (NOT GTest_FOUND)
+	include(FetchContent)
+	FetchContent_Declare(
+		googletest
+		URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
+		DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+	)
+	# Keep parent project compiler/linker settings on Windows.
+	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+	FetchContent_MakeAvailable(googletest)
+endif()
 
 target_link_libraries(tests PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 
