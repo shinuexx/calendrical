@@ -49,8 +49,8 @@ namespace calendrical
         friend angle_t arctan(double y, double x);
     };
 
-    constexpr angle_t angle_t::full_circle{ 360 };
-    constexpr angle_t angle_t::half_circle{ 180 };
+    inline constexpr angle_t angle_t::full_circle{ 360 };
+    inline constexpr angle_t angle_t::half_circle{ 180 };
 
     std::string to_string(const angle_t &angle);
 

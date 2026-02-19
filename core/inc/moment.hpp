@@ -40,7 +40,7 @@ namespace calendrical {
         static std::chrono::hh_mm_ss<std::chrono::milliseconds> to_hh_mm_ss(const moment_t& input);
     };
 
-    constexpr moment_t moment_t::end_of_time{ std::numeric_limits<double>::infinity() };
+    inline constexpr moment_t moment_t::end_of_time{ std::numeric_limits<double>::infinity() };
 
     std::string to_string(const moment_t& m);
 }

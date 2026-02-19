@@ -30,7 +30,7 @@ namespace calendrical {
 
         static const fixed_date_t end_of_time;
     };
-    constexpr fixed_date_t fixed_date_t::end_of_time{ std::numeric_limits<int64_t>::max() };
+    inline constexpr fixed_date_t fixed_date_t::end_of_time{ std::numeric_limits<int64_t>::max() };
 }
 
 std::ostream& operator<<(std::ostream& out, const calendrical::fixed_date_t& rd);

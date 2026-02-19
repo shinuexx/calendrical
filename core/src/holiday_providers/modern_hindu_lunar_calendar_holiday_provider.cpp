@@ -56,7 +56,10 @@ namespace calendrical::holiday_providers {
     fixed_date_t modern_hindu_lunar_calendar_holiday_provider::tithi_occur(int32_t lmonth, const double& tithi, const moment_t& t, int32_t lyear) const
     {
         const auto approx = date_occur(lyear, lmonth, static_cast<int32_t>(std::floor(tithi)));
-        const auto lunar = modern_hindu_lunar_calendar::hindu_lunar_day_at_or_after(tithi, approx - 2);
+        const auto lunar = modern_hindu_lunar_calendar::hindu_lunar_day_at_or_after(
+            tithi,
+            moment_t{approx.subtract(2)}
+        );
         const auto try_ = lunar.to_fixed_date();
         if (const auto th = time_and_astronomy::standard_from_sundial(static_cast<double>(try_) + static_cast<moment_t>(t),
                                                                 modern_hindu_base::ujjain);
