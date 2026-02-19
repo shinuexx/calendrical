@@ -1,7 +1,5 @@
 #pragma once
 
-#include "types.hpp"
-
 namespace calendrical::datetypes {
     struct chinese_date{
         int32_t cycle;
@@ -16,7 +14,7 @@ namespace calendrical::datetypes {
 
         constexpr bool operator==(const chinese_date &other) const = default;
 
-        std::string to_string() const;
+        [[nodiscard]] std::string to_string() const;
 
         virtual ~chinese_date() = default;
     };

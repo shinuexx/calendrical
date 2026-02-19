@@ -11,8 +11,11 @@ namespace calendrical {
     public:
 
         constexpr moment_t() : m_v{ 0.0 } {}
+        // ReSharper disable once CppNonExplicitConvertingConstructor
         constexpr moment_t(double v) : m_v{ v } {} // NOLINT(*-explicit-constructor)
+        // ReSharper disable once CppNonExplicitConvertingConstructor
         constexpr moment_t(const fixed_date_t& rd) : m_v{ static_cast<double>(rd.operator int64_t()) } {} // NOLINT(*-explicit-constructor)
+        // ReSharper disable once CppNonExplicitConversionOperator
         constexpr operator double() const { return m_v; } // NOLINT(*-explicit-constructor)
         explicit operator fixed_date_t() const { return to_fixed_date(); }
 
@@ -44,9 +47,9 @@ namespace calendrical {
 
 std::ostream& operator<<(std::ostream& out, const calendrical::moment_t& m);
 
-constexpr calendrical::moment_t operator"" _m(unsigned long long x) {
+constexpr calendrical::moment_t operator""_m(unsigned long long x) {
     return calendrical::moment_t{ static_cast<double>(x) };
 }
-constexpr calendrical::moment_t operator"" _m(long double x) {
+constexpr calendrical::moment_t operator""_m(long double x) {
     return calendrical::moment_t{ static_cast<double>(x) };
 }

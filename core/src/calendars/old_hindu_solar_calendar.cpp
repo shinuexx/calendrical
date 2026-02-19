@@ -7,17 +7,17 @@ namespace calendrical::calendars {
     double old_hindu_solar_calendar::get_sun(const fixed_date_t& date) const {
         return day_count(date) + quarter;
     }
-
+    // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t old_hindu_solar_calendar::get_year(const double& sun) const {
         const auto y = floor_div(sun, arya_solar_year);
         return static_cast<int32_t>(y);
     }
-
+    // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t old_hindu_solar_calendar::get_month(const double& sun) const {
         const auto m = mod(floor_div(sun, arya_solar_month), 12) + 1;
         return static_cast<int32_t>(m);
     }
-
+    // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t old_hindu_solar_calendar::get_day(const double& sun) const {
         const auto d = std::floor(mod(sun, arya_solar_month)) + 1;
         return static_cast<int32_t>(d);

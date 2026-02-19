@@ -44,7 +44,7 @@ namespace calendrical::calendars{
         auto year1 = month >= hebrew_month::tishri ? year - 1 : year;
         const auto start = m_hebrew->to_fixed({year1, hebrew_month::nisan, 1});
         const auto gyear = m_gregorian->get_year(start.add(60));
-        auto new_year = first_of_nisan(gyear);
+        const auto new_year = first_of_nisan(gyear);
         const auto midmonth = new_year + static_cast<int64_t>(std::round(29.5 * (static_cast<int32_t>(month) - 1))) + 15;
         return phasis_on_or_before(midmonth, hebrew_location) + day - 1;
     }

@@ -81,7 +81,7 @@ namespace calendrical::calendars {
     }
     fixed_date_t modern_hindu_lunar_calendar::to_full_moon_fixed(lunar_date date) const {
         int32_t m;
-        if (date.leap_month || (date.day <= 15))
+        if (date.leap_month || date.day <= 15)
             m = date.month;
         else if (is_hindu_expunged(date.year, static_cast<int32_t>(adjusted_remainder(date.month - 1LL, 12))))
             m = static_cast<int32_t>(adjusted_remainder(date.month - 2LL, 12));

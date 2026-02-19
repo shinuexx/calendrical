@@ -35,7 +35,7 @@ namespace calendrical {
 
 std::ostream& operator<<(std::ostream& out, const calendrical::fixed_date_t& rd);
 
-constexpr calendrical::fixed_date_t operator"" _rd(unsigned long long x)
+constexpr calendrical::fixed_date_t operator""_rd(unsigned long long x)
 {
     return calendrical::fixed_date_t{ static_cast<int64_t>(x) };
 }

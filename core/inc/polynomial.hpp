@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <ranges>
 #include <array>
 
 namespace calendrical{

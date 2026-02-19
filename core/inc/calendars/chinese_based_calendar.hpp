@@ -3,6 +3,7 @@
 #include "chinese_base.hpp"
 #include "datetypes/chinese_date.hpp"
 #include "datetypes/sexagesimal_name.hpp"
+#include "types.hpp"
 
 namespace calendrical::calendars {
     using chinese_date = datetypes::chinese_date;

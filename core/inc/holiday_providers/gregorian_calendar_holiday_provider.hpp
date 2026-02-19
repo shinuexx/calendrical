@@ -8,13 +8,13 @@ namespace calendrical::holiday_providers{
         const calendars::gregorian_calendar* m_gregorian;
 
     public:
-        gregorian_calendar_holiday_provider(const calendars::gregorian_calendar* gregorian) : m_gregorian(gregorian){};
-        gregorian_calendar_holiday_provider() : m_gregorian(std::addressof(calendars::gregorian_calendar::standard)){};
+        explicit gregorian_calendar_holiday_provider(const calendars::gregorian_calendar* gregorian) : m_gregorian(gregorian){}
+        gregorian_calendar_holiday_provider() : m_gregorian(std::addressof(calendars::gregorian_calendar::standard)){}
 
-        const calendar_if* calendar() const override { return m_gregorian; };
-        std::vector<holiday_t> in_year(int32_t gyear) const override;
+        [[nodiscard]] const calendar_if* calendar() const override { return m_gregorian; }
+        [[nodiscard]] std::vector<holiday_t> in_year(int32_t gyear) const override;
 
-        fixed_date_t christmas(int32_t year) const;
+        [[nodiscard]] fixed_date_t christmas(int32_t year) const;
         fixed_date_t advent(int32_t year) const;
         fixed_date_t epiphany(int32_t year) const;
         fixed_date_t easter(int32_t year) const;

@@ -33,7 +33,7 @@ namespace calendrical {
         if (x == 0)
             r = sign(y) * 90;
         else {
-            auto a = degrees(std::atan(y / x));
+            const auto a = degrees(std::atan(y / x));
             r = x >= 0 ? a : a + 180;
         }
         return mod(r, 360);

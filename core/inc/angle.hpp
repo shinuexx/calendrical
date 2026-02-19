@@ -29,7 +29,7 @@ namespace calendrical
 
         [[nodiscard]] constexpr angle_t operator+(const angle_t &right) const { return m_v + right.m_v; }
         [[nodiscard]] constexpr angle_t operator-(const angle_t &right) const { return m_v - right.m_v; }
-        [[nodiscard]] constexpr angle_t operator*(double right) const { return m_v + right; }
+        [[nodiscard]] constexpr angle_t operator*(double right) const { return m_v * right; }
         [[nodiscard]] constexpr double operator/(const angle_t &right) const { return m_v / right.m_v; }
 
         [[nodiscard]] static constexpr angle_t dms(double d, double m = 0, double s = 0) { return d + (m + s / 60) / 60; }
@@ -64,11 +64,11 @@ namespace calendrical
     angle_t arctan(double y, double x);
 }
 
-constexpr calendrical::angle_t operator"" _deg(long double x)
+constexpr calendrical::angle_t operator""_deg(long double x)
 {
     return static_cast<double>(x);
 }
-constexpr calendrical::angle_t operator"" _deg(unsigned long long x)
+constexpr calendrical::angle_t operator""_deg(unsigned long long x)
 {
     return static_cast<double>(x);
 }

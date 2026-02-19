@@ -47,7 +47,7 @@ namespace calendrical{
 
     template<typename T, typename MT, typename FD>
     concept month_aware_calendar = requires(const T& value, const FD& date){
-        { value.get_month(date) } ->std::convertible_to<int32_t>;
+        { value.get_month(date) } ->std::convertible_to<MT>;
     };
 
     template<typename T, typename MT, typename FD>
@@ -67,7 +67,7 @@ namespace calendrical{
 
     template<typename T, typename FD>
     concept leap_day_aware_calendar = day_aware_calendar<T,FD> && requires(const T& value, const FD& date){
-        { value.is_leap_day(date) } -> std::convertible_to<int32_t>;
+        { value.is_leap_day(date) } -> std::convertible_to<bool>;
     };
 
     template<typename T, typename FD>
@@ -76,8 +76,8 @@ namespace calendrical{
     };
 
     template<typename T, typename FD>
-    concept new_year_aware_calendar = requires(const T& value, const FD& date){
-        { value.get_new_year(date) } -> std::convertible_to<int32_t>;
+    concept new_year_aware_calendar = requires(int32_t year, const T& value, const FD& date){
+        { value.get_new_year(year) } -> std::convertible_to<FD>;
     };
 
     template<typename T, typename FD>

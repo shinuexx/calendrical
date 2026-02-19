@@ -10,8 +10,7 @@ namespace calendrical::holiday_providers {
         const calendars::modern_hindu_lunar_calendar* m_lunar;
 
     public:
-
-        modern_hindu_lunar_calendar_holiday_provider(const calendars::modern_hindu_lunar_calendar* lunar) : m_lunar{ lunar } {}
+        explicit modern_hindu_lunar_calendar_holiday_provider(const calendars::modern_hindu_lunar_calendar* lunar) : m_lunar{ lunar } {}
 
         [[nodiscard]] const calendar_if* calendar() const override;
         [[nodiscard]] std::vector<holiday_t> in_year(int32_t gyear) const override;
@@ -23,7 +22,7 @@ namespace calendrical::holiday_providers {
 
         [[nodiscard]] std::vector<fixed_date_t> diwali(int32_t gyear) const;
 
-        [[nodiscard]]fixed_date_t tithi_occur(int32_t lmonth, const double& tithi, const moment_t& t, int32_t lyear) const;
+        [[nodiscard]] fixed_date_t tithi_occur(int32_t lmonth, const double& tithi, const moment_t& t, int32_t lyear) const;
         [[nodiscard]] std::vector<fixed_date_t> lunar_event(int32_t lmonth, const double& tithi, const moment_t& t, int32_t gyear) const;
 
         [[nodiscard]] std::vector<fixed_date_t> shiva(int32_t gyear) const;

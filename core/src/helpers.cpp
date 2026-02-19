@@ -4,7 +4,7 @@
 namespace calendrical{
     bool is_integer(double x)
     {
-        return std::isfinite(x) && (std::fmod(x, 1) == 0);
+        return std::isfinite(x) && std::fmod(x, 1) == 0;
     }
 
     double floor_div(double x, double y)

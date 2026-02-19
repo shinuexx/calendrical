@@ -7,7 +7,7 @@ namespace calendrical::calendars {
 
     angle_t tibetan_calendar::tibetan_sun_equation(const angle_t& a)
     {
-        static const std::array<double, 4> t{
+        static constexpr std::array<double, 4> t{
             0,
             angle_t::dms(0, 6),
             angle_t::dms(0, 10),
@@ -24,13 +24,13 @@ namespace calendrical::calendars {
         const angle_t ca{std::ceil(a)};
         const angle_t fa{std::floor(a)};
 
-        return mod(a,1) * (tibetan_sun_equation(ca)) +
-            mod(-a, 1) * (tibetan_sun_equation(fa));
+        return mod(a,1) * tibetan_sun_equation(ca) +
+            mod(-a, 1) * tibetan_sun_equation(fa);
 
     }
     angle_t tibetan_calendar::tibetan_moon_equation(const angle_t& a)
     {
-        static const std::array<double, 8> t{
+        static constexpr std::array<double, 8> t{
             0,
             angle_t::dms(0,5),
             angle_t::dms(0,10),
@@ -51,8 +51,8 @@ namespace calendrical::calendars {
         const angle_t ca{ceil(a)};
         const angle_t fa{floor(a)};
 
-        return mod(a, 1) * (tibetan_moon_equation(ca)) +
-            mod(-a, 1) * (tibetan_moon_equation(fa));
+        return mod(a, 1) * tibetan_moon_equation(ca) +
+            mod(-a, 1) * tibetan_moon_equation(fa);
     }
     lunar_date tibetan_calendar::to_date(const fixed_date_t& date) const
     {

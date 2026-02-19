@@ -1,6 +1,10 @@
 {
-  "dependencies" : [ "boost", {
-    "name" : "gtest",
-    "version>=" : "1.15.2"
-  } ]
+  "dependencies": [
+    {
+      "name": "gtest",
+      "version>=": "1.15.2"
+    }
+  ],
+  "version": "1.0.0",
+  "name": "calendrical"
 }

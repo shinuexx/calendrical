@@ -64,7 +64,7 @@ namespace calendrical::calendars {
         return static_cast<int32_t>(floor_div(hindu_lunar_phase(t), 12)) + 1;
     }
 
-    static constexpr double hindu_E{std::pow(2, -100)};
+    static constexpr double hindu_E{0x1p-100}; //{std::pow(2, -100)};
 
     moment_t modern_hindu_base::hindu_new_moon_before(const moment_t& t)
     {
@@ -84,7 +84,7 @@ namespace calendrical::calendars {
     angle_t modern_hindu_base::hindu_ascensional_difference(const fixed_date_t& date, const location& location)
     {
         const double sin_d =  1397.0 / 3438 * hindu_sine(hindu_tropical_longitude(date));
-        auto psi = location.latitude;
+        const auto psi = location.latitude;
         const auto diurnal_radius = hindu_sine(90_deg + hindu_arcsin(sin_d));
         const auto tan_psi = hindu_sine(psi) / hindu_sine(90_deg + psi);
         const double earth_sine = sin_d * tan_psi;

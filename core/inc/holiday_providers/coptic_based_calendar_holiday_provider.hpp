@@ -11,7 +11,7 @@ namespace calendrical::holiday_providers {
         const calendars::gregorian_calendar* m_gregorian;
 
     public:
-        coptic_based_calendar_holiday_provider(const calendars::coptic_based_calendar* calendar) :
+        explicit coptic_based_calendar_holiday_provider(const calendars::coptic_based_calendar* calendar) :
             m_calendar(calendar),
             m_gregorian(std::addressof(calendars::gregorian_calendar::standard)) {}
 

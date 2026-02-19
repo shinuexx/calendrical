@@ -42,11 +42,10 @@ namespace calendrical{
         }
 
         int64_t quotient = x / y;
-        int64_t remainder = x % y;
 
         // If the signs of x and y are different and the remainder is non-zero,
         // adjust the quotient to floor division.
-        if (((x < 0 && y > 0) || (x > 0 && y < 0)) && remainder != 0)
+        if (const int64_t remainder = x % y; ((x < 0 && y > 0) || (x > 0 && y < 0)) && remainder != 0)
         {
             quotient--;
         }
@@ -160,7 +159,7 @@ namespace calendrical{
     }
 
     template <typename TIn, typename TOut>
-        value_function_t<double> make_value_function(const std::function<TOut(const TIn&)>& func)
+    value_function_t<double> make_value_function(const std::function<TOut(const TIn&)>& func)
     {
         return [func](const double& x)
         {
@@ -190,12 +189,12 @@ namespace calendrical{
 
     template<typename TIn>
     predicate_t<int64_t> make_predicate(std::function<bool(const TIn&)>&& func) {
-        return [&func](const int64_t& x) { return func(static_cast<TIn>(x)); };
+        return [func = std::move(func)](const int64_t& x) { return func(static_cast<TIn>(x)); };
     }
 
     template<typename TIn>
     predicate_t<int64_t> make_predicate(const std::function<bool(const TIn&)>& func) {
-        return [&func](const int64_t& x) { return func(static_cast<TIn>(x)); };
+        return [func](const int64_t& x) { return func(static_cast<TIn>(x)); };
     }
 
     template<typename TIn>
