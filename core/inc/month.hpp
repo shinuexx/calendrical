@@ -2,7 +2,6 @@
 
 #include <string>
 #include <iostream>
-#include "types.hpp"
 
 namespace calendrical {
     /**
@@ -12,45 +11,34 @@ namespace calendrical {
      */
     enum class month
     {
+        /** @brief January (month 1). */
         january = 1,
+        /** @brief February (month 2). */
         february,
+        /** @brief March (month 3). */
         march,
+        /** @brief April (month 4). */
         april,
+        /** @brief May (month 5). */
         may,
+        /** @brief June (month 6). */
         june,
+        /** @brief July (month 7). */
         july,
+        /** @brief August (month 8). */
         august,
+        /** @brief September (month 9). */
         september,
+        /** @brief October (month 10). */
         october,
+        /** @brief November (month 11). */
         november,
+        /** @brief December (month 12). */
         december
     };
 
     /** @brief Returns the lowercase month name. */
     std::string to_string(const month& m);
-
-    /**
-     * @brief Parser specialization for @ref calendrical::month from lowercase text.
-     */
-    template<>
-    struct from_parser<month> {
-        /** @brief Parses a lowercase English month name. */
-        static month from_string(const std::string &s) {
-            if (s == "january") return month::january;
-            if (s == "february") return month::february;
-            if (s == "march") return month::march;
-            if (s == "april") return month::april;
-            if (s == "may") return month::may;
-            if (s == "june") return month::june;
-            if (s == "july") return month::july;
-            if (s == "august") return month::august;
-            if (s == "september") return month::september;
-            if (s == "october") return month::october;
-            if (s == "november") return month::november;
-            if (s == "december") return month::december;
-            return static_cast<month>(-1);
-        }
-    };
 
 }
 

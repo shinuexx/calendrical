@@ -28,28 +28,28 @@ namespace calendrical::calendars{
         auto [year, month, day] = m_julian.to_date(date);
         auto month1 = static_cast<calendrical::month>(adjusted_remainder(static_cast<std::underlying_type_t<calendrical::month>>(month) + 1, 12));
         auto year1 = month1 != month::january ? year : year != -1 ? year + 1 : 1;
-        const auto kalends1 = to_fixed({ year1, month1, roman_event::KALENDS, 1, false });
+        const auto kalends1 = to_fixed({ year1, month1, roman_event::kalends, 1, false });
         if (day == 1)
-            return {year, month, roman_event::KALENDS, 1, false};
+            return {year, month, roman_event::kalends, 1, false};
         if (day <= nones_of_month(month))
-            return {year, month, roman_event::NONES, nones_of_month(month) - day + 1, false};
+            return {year, month, roman_event::nones, nones_of_month(month) - day + 1, false};
         if (day <= ides_of_month(month))
-            return {year, month, roman_event::IDES, ides_of_month(month) - day + 1, false};
+            return {year, month, roman_event::ides, ides_of_month(month) - day + 1, false};
         if (month != month::february || !is_leap_year(year))
-            return {year1, month1, roman_event::KALENDS, static_cast<int32_t>(kalends1 - date + 1), false};
+            return {year1, month1, roman_event::kalends, static_cast<int32_t>(kalends1 - date + 1), false};
         if (day < 25)
-            return {year, month::march, roman_event::KALENDS, 30 - day, false};
-        return {year, month::march, roman_event::KALENDS, 31 - day, day == 25};
+            return {year, month::march, roman_event::kalends, 30 - day, false};
+        return {year, month::march, roman_event::kalends, 31 - day, day == 25};
     }
     fixed_date_t roman_calendar::to_fixed(const roman_date& date) const {
         int64_t a{}, b{}, c{};
-        if (date.event == roman_event::KALENDS)
+        if (date.event == roman_event::kalends)
             a = m_julian.to_fixed({ date.year, date.month, 1 });
-        else if (date.event == roman_event::NONES)
+        else if (date.event == roman_event::nones)
             a = m_julian.to_fixed({ date.year, date.month, nones_of_month(date.month) });
-        else if (date.event == roman_event::IDES)
+        else if (date.event == roman_event::ides)
             a = m_julian.to_fixed({ date.year, date.month, ides_of_month(date.month) });
-        b = is_leap_year(date.year) && date.month == month::march && date.event == roman_event::KALENDS && in(range_closed_between(6, 16), date.count) ? 0 : 1;
+        b = is_leap_year(date.year) && date.month == month::march && date.event == roman_event::kalends && in(range_closed_between(6, 16), date.count) ? 0 : 1;
         c = date.leap ? 1 : 0;
         return a - date.count + b + c;
     }

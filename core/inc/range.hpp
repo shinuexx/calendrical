@@ -11,9 +11,13 @@ namespace calendrical {
      * @brief Interval boundary policy.
      */
     enum class range_type {
+        /** @brief Open interval `(min, max)`. */
         opened,
+        /** @brief Closed interval `[min, max]`. */
         closed,
+        /** @brief Left-closed interval `[min, max)`. */
         left_closed,
+        /** @brief Right-closed interval `(min, max]`. */
         right_closed
     };
 

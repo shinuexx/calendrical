@@ -21,8 +21,11 @@
 #include "datetypes/sexagesimal_name.hpp"
 #include "datetypes/simple_date.hpp"
 #include "datetypes/simple_lunar_date.hpp"
+#include "chinese_marriage_augury.hpp"
 #include "hebrew_month.hpp"
+#include "lunar_phase.hpp"
 #include "month.hpp"
+#include "range.hpp"
 #include "roman_event.hpp"
 #include "season.hpp"
 #include "weekday.hpp"
@@ -30,9 +33,9 @@
 namespace calendrical::calendar_traits {
     template<typename EnumT>
     /**
-     * @brief Converts enum values to/from textual representations.
+     * @brief Converts symbolic values (primarily enums) to/from textual representations.
      *
-     * Explicit specializations provide parsing logic for supported enums.
+     * Explicit specializations provide parsing logic for supported enum and enum-like types.
      */
     struct enum_string_converter {
         // ReSharper disable once CppFunctionIsNotImplemented
@@ -182,11 +185,20 @@ namespace calendrical::calendar_traits {
                 throw std::runtime_error("Invalid month value: " + std::string(value));
             }
 
-            const auto parsed = from_parser<month>::from_string(detail::lower_copy(value));
-            if (parsed == static_cast<month>(-1)) {
-                throw std::runtime_error("Invalid month value: " + std::string(value));
-            }
-            return parsed;
+            const auto lower = detail::lower_copy(value);
+            if (lower == "january") return month::january;
+            if (lower == "february") return month::february;
+            if (lower == "march") return month::march;
+            if (lower == "april") return month::april;
+            if (lower == "may") return month::may;
+            if (lower == "june") return month::june;
+            if (lower == "july") return month::july;
+            if (lower == "august") return month::august;
+            if (lower == "september") return month::september;
+            if (lower == "october") return month::october;
+            if (lower == "november") return month::november;
+            if (lower == "december") return month::december;
+            throw std::runtime_error("Invalid month value: " + std::string(value));
         }
     };
 
@@ -203,11 +215,21 @@ namespace calendrical::calendar_traits {
                 throw std::runtime_error("Invalid hebrew month value: " + std::string(value));
             }
 
-            const auto parsed = from_parser<hebrew_month>::from_string(detail::lower_copy(value));
-            if (parsed == static_cast<hebrew_month>(-1)) {
-                throw std::runtime_error("Invalid hebrew month value: " + std::string(value));
-            }
-            return parsed;
+            const auto lower = detail::lower_copy(value);
+            if (lower == "nisan") return hebrew_month::nisan;
+            if (lower == "iyyar") return hebrew_month::iyyar;
+            if (lower == "sivan") return hebrew_month::sivan;
+            if (lower == "tammuz") return hebrew_month::tammuz;
+            if (lower == "av") return hebrew_month::av;
+            if (lower == "elul") return hebrew_month::elul;
+            if (lower == "tishri") return hebrew_month::tishri;
+            if (lower == "marheshvan") return hebrew_month::marheshvan;
+            if (lower == "kislev") return hebrew_month::kislev;
+            if (lower == "tevet") return hebrew_month::tevet;
+            if (lower == "shevat") return hebrew_month::shevat;
+            if (lower == "adar") return hebrew_month::adar;
+            if (lower == "adarii" || lower == "adar2") return hebrew_month::adarii;
+            throw std::runtime_error("Invalid hebrew month value: " + std::string(value));
         }
     };
 
@@ -217,16 +239,16 @@ namespace calendrical::calendar_traits {
         /** @brief Accepts season name or canonical solar-longitude angle value. */
         static season from_string(std::string_view value) {
             const auto lower = detail::lower_copy(value);
-            if (lower == "spring") return season::SPRING;
-            if (lower == "summer") return season::SUMMER;
-            if (lower == "autumn") return season::AUTUMN;
-            if (lower == "winter") return season::WINTER;
+            if (lower == "spring") return season::spring;
+            if (lower == "summer") return season::summer;
+            if (lower == "autumn") return season::autumn;
+            if (lower == "winter") return season::winter;
 
             switch (const auto numeric = detail::parse_int32(value, "season")) {
-                case static_cast<int32_t>(season::SPRING): return season::SPRING;
-                case static_cast<int32_t>(season::SUMMER): return season::SUMMER;
-                case static_cast<int32_t>(season::AUTUMN): return season::AUTUMN;
-                case static_cast<int32_t>(season::WINTER): return season::WINTER;
+                case static_cast<int32_t>(season::spring): return season::spring;
+                case static_cast<int32_t>(season::summer): return season::summer;
+                case static_cast<int32_t>(season::autumn): return season::autumn;
+                case static_cast<int32_t>(season::winter): return season::winter;
                 default: throw std::runtime_error("Invalid season value: " + std::string(value));
             }
         }
@@ -238,16 +260,101 @@ namespace calendrical::calendar_traits {
         /** @brief Accepts Roman event name or numeric enum value. */
         static roman_event from_string(std::string_view value) {
             const auto lower = detail::lower_copy(value);
-            if (lower == "kalends") return roman_event::KALENDS;
-            if (lower == "nones") return roman_event::NONES;
-            if (lower == "ides") return roman_event::IDES;
+            if (lower == "kalends") return roman_event::kalends;
+            if (lower == "nones") return roman_event::nones;
+            if (lower == "ides") return roman_event::ides;
 
             switch (const auto numeric = detail::parse_int32(value, "roman_event")) {
-                case static_cast<int32_t>(roman_event::KALENDS): return roman_event::KALENDS;
-                case static_cast<int32_t>(roman_event::NONES): return roman_event::NONES;
-                case static_cast<int32_t>(roman_event::IDES): return roman_event::IDES;
+                case static_cast<int32_t>(roman_event::kalends): return roman_event::kalends;
+                case static_cast<int32_t>(roman_event::nones): return roman_event::nones;
+                case static_cast<int32_t>(roman_event::ides): return roman_event::ides;
                 default: throw std::runtime_error("Invalid roman_event value: " + std::string(value));
             }
+        }
+    };
+
+    template<>
+    /** @brief Parser specialization for @ref calendrical::lunar_phase. */
+    struct enum_string_converter<lunar_phase> {
+        /** @brief Accepts canonical lowercase phase names or numeric phase angle values. */
+        static lunar_phase from_string(std::string_view value) {
+            const auto lower = detail::lower_copy(value);
+            if (lower == "new_moon" || lower == "new") return lunar_phase::new_moon;
+            if (lower == "first_quarter") return lunar_phase::first_quarter;
+            if (lower == "full_moon" || lower == "full") return lunar_phase::full_moon;
+            if (lower == "last_quarter") return lunar_phase::last_quarter;
+
+            switch (const auto numeric = detail::parse_int32(value, "lunar_phase")) {
+                case static_cast<int32_t>(lunar_phase::new_moon): return lunar_phase::new_moon;
+                case static_cast<int32_t>(lunar_phase::first_quarter): return lunar_phase::first_quarter;
+                case static_cast<int32_t>(lunar_phase::full_moon): return lunar_phase::full_moon;
+                case static_cast<int32_t>(lunar_phase::last_quarter): return lunar_phase::last_quarter;
+                default: throw std::runtime_error("Invalid lunar_phase value: " + std::string(value));
+            }
+        }
+    };
+
+    template<>
+    /** @brief Parser specialization for @ref calendrical::chinese_marriage_augury. */
+    struct enum_string_converter<chinese_marriage_augury> {
+        /** @brief Accepts lowercase augury names or numeric enum values. */
+        static chinese_marriage_augury from_string(std::string_view value) {
+            const auto lower = detail::lower_copy(value);
+            if (lower == "double_bright") return chinese_marriage_augury::double_bright;
+            if (lower == "bright") return chinese_marriage_augury::bright;
+            if (lower == "blind") return chinese_marriage_augury::blind;
+            if (lower == "widow") return chinese_marriage_augury::widow;
+
+            switch (const auto numeric = detail::parse_int32(value, "chinese_marriage_augury")) {
+                case static_cast<int32_t>(chinese_marriage_augury::double_bright): return chinese_marriage_augury::double_bright;
+                case static_cast<int32_t>(chinese_marriage_augury::bright): return chinese_marriage_augury::bright;
+                case static_cast<int32_t>(chinese_marriage_augury::blind): return chinese_marriage_augury::blind;
+                case static_cast<int32_t>(chinese_marriage_augury::widow): return chinese_marriage_augury::widow;
+                default: throw std::runtime_error("Invalid chinese_marriage_augury value: " + std::string(value));
+            }
+        }
+    };
+
+    template<>
+    /** @brief Parser specialization for @ref calendrical::range_type. */
+    struct enum_string_converter<range_type> {
+        /** @brief Accepts lowercase range boundary policy names or numeric enum values. */
+        static range_type from_string(std::string_view value) {
+            const auto lower = detail::lower_copy(value);
+            if (lower == "opened") return range_type::opened;
+            if (lower == "closed") return range_type::closed;
+            if (lower == "left_closed") return range_type::left_closed;
+            if (lower == "right_closed") return range_type::right_closed;
+
+            switch (const auto numeric = detail::parse_int32(value, "range_type")) {
+                case static_cast<int32_t>(range_type::opened): return range_type::opened;
+                case static_cast<int32_t>(range_type::closed): return range_type::closed;
+                case static_cast<int32_t>(range_type::left_closed): return range_type::left_closed;
+                case static_cast<int32_t>(range_type::right_closed): return range_type::right_closed;
+                default: throw std::runtime_error("Invalid range_type value: " + std::string(value));
+            }
+        }
+    };
+
+    template<>
+    /** @brief Parser specialization for @ref calendrical::weekday. */
+    struct enum_string_converter<weekday> {
+        /** @brief Accepts weekday name (`monday`) or numeric index (`0..6`). */
+        static weekday from_string(std::string_view value) {
+            const auto lower = detail::lower_copy(value);
+            constexpr std::array names{
+                "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"
+            };
+            for (int i = 0; i < static_cast<int>(names.size()); ++i) {
+                if (lower == names[i]) return weekday{i};
+            }
+
+            const auto numeric = detail::parse_int32(value, "weekday");
+            weekday wd{numeric};
+            if (!wd.valid()) {
+                throw std::runtime_error("Invalid weekday value: " + std::string(value));
+            }
+            return wd;
         }
     };
 
@@ -270,6 +377,21 @@ namespace calendrical::calendar_traits {
         /** @brief Convenience wrapper for Roman event parsing. */
         inline roman_event parse_roman_event(std::string_view value) {
             return enum_string_converter<roman_event>::from_string(value);
+        }
+
+        /** @brief Convenience wrapper for lunar phase parsing. */
+        inline lunar_phase parse_lunar_phase(std::string_view value) {
+            return enum_string_converter<lunar_phase>::from_string(value);
+        }
+
+        /** @brief Convenience wrapper for Chinese marriage augury parsing. */
+        inline chinese_marriage_augury parse_chinese_marriage_augury(std::string_view value) {
+            return enum_string_converter<chinese_marriage_augury>::from_string(value);
+        }
+
+        /** @brief Convenience wrapper for range boundary policy parsing. */
+        inline range_type parse_range_type(std::string_view value) {
+            return enum_string_converter<range_type>::from_string(value);
         }
     }
 

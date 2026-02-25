@@ -14,12 +14,12 @@ namespace calendrical::calendars {
         const auto set = sunset(date - 1, locations::mecca);
         const auto t = universal_from_standard(set, locations::mecca);
         const auto phase = time_and_astronomy::lunar_phase(t);
-        return range_opened_between<angle_t>(lunar_phase::NEW, lunar_phase::FIRST_QUARTER).contains(phase)
+        return range_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
             && moonlag(date - 1, locations::mecca) > moment_t{ 0 };
     }
     fixed_date_t saudi_islamic_calendar::new_month_on_or_before(const fixed_date_t& date)
     {
-        const auto moon = lunar_phase_at_or_before(lunar_phase::NEW, date).to_fixed_date();
+        const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, date).to_fixed_date();
         const auto age = date - moon;
         const auto T = age <= 3 && !saudi_criterion(date) ? moon.subtract(30) : moon;
         return least_passing(make_predicate(saudi_criterion), T);

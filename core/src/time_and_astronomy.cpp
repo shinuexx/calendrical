@@ -273,7 +273,7 @@ namespace calendrical::time_and_astronomy {
 
     moment_t urbana_winter(int32_t gyear)
     {
-        return standard_from_universal(season_in_gregorian(season::WINTER, gyear), locations::urbana);
+        return standard_from_universal(season_in_gregorian(season::winter, gyear), locations::urbana);
     }
 
     static constexpr auto precession_n_p = make_polynomial(47.0029, -0.03302, 0.00006);
@@ -913,7 +913,7 @@ namespace calendrical::time_and_astronomy {
         const auto phase = lunar_phase(t);
         const auto h = lunar_altitude(t, location);
         const auto ARCL = arc_of_light(t);
-        return range_opened_between<angle_t>(lunar_phase::NEW, lunar_phase::FIRST_QUARTER).contains(phase)
+        return range_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
             && range_closed_between<double>(10.6, 90).contains(ARCL)
             && h > 4.1_deg;
     }
@@ -943,7 +943,7 @@ namespace calendrical::time_and_astronomy {
         const auto W = D * (1 - cos(ARCL));
         const auto ARCV = arg_of_vision(t, location);
         const auto q1 = yallop_criterion_p(W);
-        return range_opened_between<angle_t>(lunar_phase::NEW, lunar_phase::FIRST_QUARTER).contains(phase)
+        return range_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
             && ARCV > angle_t(q1 + e);
     }
     double lunar_semi_diameter(const moment_t& t, const location& location) {
@@ -956,14 +956,14 @@ namespace calendrical::time_and_astronomy {
     }
 
     fixed_date_t phasis_on_or_before(const fixed_date_t& date, const location& location) {
-        const auto moon = lunar_phase_at_or_before(lunar_phase::NEW, date).to_fixed_date();
+        const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, date).to_fixed_date();
         const auto age = date - moon;
         const auto T = age <= 3 && !visible_crescent(date, location) ? moon.subtract(30) : moon;
         const auto f = [&](const int64_t& x) { return visible_crescent(x, location); };
         return least_passing(f, T);
     }
     fixed_date_t phasis_on_or_after(const fixed_date_t& date, const location& location) {
-        const auto moon = lunar_phase_at_or_before(lunar_phase::NEW, date).to_fixed_date();
+        const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, date).to_fixed_date();
         const auto age = date - moon;
         const auto T = 4 <= age || visible_crescent(date.subtract(1), location) ? moon.add(29) : date;
         const auto f = [&](const int64_t& x) { return visible_crescent(x, location); };

@@ -58,14 +58,4 @@ namespace calendrical{
         virtual ~holiday_provider_if() = default;
     };
 
-    template<typename T,typename = std::enable_if_t<std::is_enum_v<T>>>
-    /**
-     * @brief Default string parser hook for enum types.
-     *
-     * Specific enums provide explicit specializations.
-     */
-    struct from_parser {
-        /** @brief Fallback parser that returns a default-initialized enum value. */
-        static T from_string(const std::string& ) { return T{}; }
-    };
 }

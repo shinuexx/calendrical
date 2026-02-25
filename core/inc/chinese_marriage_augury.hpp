@@ -8,10 +8,14 @@ namespace calendrical {
      * @brief Traditional Chinese marriage augury categories.
      */
     enum class chinese_marriage_augury {
-        DOUBLE_BRIGHT = 3,
-        BRIGHT = 2,
-        BLIND = 1,
-        WIDOW = 0
+        /** @brief Most auspicious category in the traditional classification. */
+        double_bright = 3,
+        /** @brief Favorable category in the traditional classification. */
+        bright = 2,
+        /** @brief Unfavorable "blind" category in the traditional classification. */
+        blind = 1,
+        /** @brief Unfavorable "widow" category in the traditional classification. */
+        widow = 0
     };
 
     /** @brief Returns the lowercase augury category name. */

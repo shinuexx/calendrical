@@ -11,10 +11,14 @@ namespace calendrical {
      * quarter.
      */
     enum class lunar_phase {
-        NEW = 0,
-        FIRST_QUARTER = 90,
-        FULL = 180,
-        LAST_QUARTER = 270
+        /** @brief New moon phase (0° elongation). */
+        new_moon = 0,
+        /** @brief First quarter phase (90° elongation). */
+        first_quarter = 90,
+        /** @brief Full moon phase (180° elongation). */
+        full_moon = 180,
+        /** @brief Last quarter phase (270° elongation). */
+        last_quarter = 270
     };
 
     /** @brief Returns the lowercase lunar phase name. */

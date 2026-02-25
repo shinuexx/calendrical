@@ -7,9 +7,9 @@ namespace calendrical {
         std::ostringstream oss{};
         switch (event)
         {
-        case roman_event::KALENDS: oss << "KALENDS"; break;
-        case roman_event::NONES: oss << "NONES"; break;
-        case roman_event::IDES: oss << "IDES"; break;
+        case roman_event::kalends: oss << "kalends"; break;
+        case roman_event::nones: oss << "nones"; break;
+        case roman_event::ides: oss << "ides"; break;
         default: oss << "roman_event{" << static_cast<int32_t>(event) << '}'; break;
         }
         return oss.str();

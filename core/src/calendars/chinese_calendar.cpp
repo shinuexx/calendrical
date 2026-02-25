@@ -17,11 +17,11 @@ namespace calendrical::calendars {
         const auto first_minor_term = current_major_solar_term(new_year);
         const auto next_first_minor_term = current_major_solar_term(next_new_year);
         if (first_minor_term == 1 && next_first_minor_term == 12)
-            return chinese_marriage_augury::WIDOW;
+            return chinese_marriage_augury::widow;
         if (first_minor_term == 1)
-            return chinese_marriage_augury::BLIND;
+            return chinese_marriage_augury::blind;
         if (next_first_minor_term == 12)
-            return chinese_marriage_augury::BRIGHT;
-        return chinese_marriage_augury::DOUBLE_BRIGHT;
+            return chinese_marriage_augury::bright;
+        return chinese_marriage_augury::double_bright;
     }
 }

@@ -54,10 +54,10 @@ namespace tests {
 
     TEST_P(next_solstice_test, calculate) {
         auto &[rd, output] = GetParam();
-        const auto actual = std::min({solar_longitude_after(season::SPRING, rd),
-            solar_longitude_after(season::SUMMER, rd),
-            solar_longitude_after(season::AUTUMN, rd),
-            solar_longitude_after(season::WINTER, rd)});
+        const auto actual = std::min({solar_longitude_after(season::spring, rd),
+            solar_longitude_after(season::summer, rd),
+            solar_longitude_after(season::autumn, rd),
+            solar_longitude_after(season::winter, rd)});
         if (is_bogus(output)){
             EXPECT_TRUE(is_bogus(actual)) << output << " : " << actual<< " : " << rd << std::endl;
         } else {

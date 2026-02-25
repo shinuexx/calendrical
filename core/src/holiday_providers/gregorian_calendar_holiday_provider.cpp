@@ -62,8 +62,8 @@ namespace calendrical::holiday_providers {
     // ReSharper disable once CppMemberFunctionMayBeStatic
     fixed_date_t gregorian_calendar_holiday_provider::astronomical_easter(int32_t year) const { // NOLINT(*-convert-member-functions-to-static)
         using namespace time_and_astronomy;
-        const auto equinox = season_in_gregorian(season::SPRING, year);
-        const auto full_moon = lunar_phase_at_or_after(lunar_phase::FULL, equinox);
+        const auto equinox = season_in_gregorian(season::spring, year);
+        const auto full_moon = lunar_phase_at_or_after(lunar_phase::full_moon, equinox);
         const auto paschal_moon = apparent_from_universal(full_moon, locations::jerusalem).to_fixed_date();
         return weekday::sunday.after(paschal_moon);
     }

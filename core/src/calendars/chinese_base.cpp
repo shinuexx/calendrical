@@ -42,8 +42,8 @@ namespace calendrical::calendars{
     }
     fixed_date_t chinese_base::winter_solstice_on_or_before(const fixed_date_t& date) const
     {
-        const auto approx = estimate_prior_solar_longitude(season::WINTER, midnight_in_china(date + 1));
-        return least_passing([&](const int64_t& day) { return angle_t{season::WINTER} < solar_longitude(midnight_in_china(day + 1)); }, static_cast<int64_t>(std::floor(approx)) - 1);
+        const auto approx = estimate_prior_solar_longitude(season::winter, midnight_in_china(date + 1));
+        return least_passing([&](const int64_t& day) { return angle_t{season::winter} < solar_longitude(midnight_in_china(day + 1)); }, static_cast<int64_t>(std::floor(approx)) - 1);
     }
     fixed_date_t chinese_base::new_moon_on_or_after(const fixed_date_t& date) const
     {

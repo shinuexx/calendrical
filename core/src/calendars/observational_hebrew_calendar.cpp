@@ -12,7 +12,7 @@ namespace calendrical::calendars{
     }
 
     fixed_date_t observational_hebrew_calendar::first_of_nisan(int32_t gyear) {
-        const auto equinox = season_in_gregorian(season::SPRING, gyear);
+        const auto equinox = season_in_gregorian(season::spring, gyear);
         const auto set = universal_from_standard(sunset(static_cast<int64_t>(std::floor(equinox)), hebrew_location),
                                            hebrew_location);
         return phasis_on_or_after(static_cast<int64_t>(std::floor(equinox) - (equinox < set ? 14 : 13)),

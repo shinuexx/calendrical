@@ -42,7 +42,7 @@ namespace calendrical::calendars {
     fixed_date_t icelandic_calendar::to_fixed(const icelandic_date &date) const {
         int64_t start;
         weekday shift;
-        if (date.season == season::SUMMER) {
+        if (date.season == season::summer) {
             start = summer(date.year);
             shift = weekday::thursday;
         }else {
@@ -58,7 +58,7 @@ namespace calendrical::calendars {
         const auto midsummer = winter(year).subtract(90);
         const auto t1 = summer(year);
         int64_t start;
-        if (season == season::WINTER)
+        if (season == season::winter)
             start = midsummer + 90;
         else if (date >= midsummer)
             start = midsummer - 90;
@@ -87,11 +87,11 @@ namespace calendrical::calendars {
     }
 
     season icelandic_calendar::get_season(const fixed_date_t &date, int32_t year) const {
-        return date < winter(year) ? season::SUMMER : season::WINTER;
+        return date < winter(year) ? season::summer : season::winter;
     }
 
     int32_t icelandic_calendar::get_week(const fixed_date_t &date, int32_t year, season s) const {
-        const auto start = s == season::SUMMER ? summer(year) : winter(year);
+        const auto start = s == season::summer ? summer(year) : winter(year);
         return static_cast<int32_t>(floor_div(date - start, 7)) + 1;
     }
 

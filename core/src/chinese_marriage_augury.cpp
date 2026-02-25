@@ -7,10 +7,10 @@ namespace calendrical {
         std::ostringstream oss{};
         switch (augury)
         {
-        case chinese_marriage_augury::DOUBLE_BRIGHT: oss << "DOUBLE_BRIGHT"; break;
-        case chinese_marriage_augury::BRIGHT: oss << "BRIGHT"; break;
-        case chinese_marriage_augury::BLIND: oss << "BLIND"; break;
-        case chinese_marriage_augury::WIDOW: oss << "WIDOW"; break;
+        case chinese_marriage_augury::double_bright: oss << "double_bright"; break;
+        case chinese_marriage_augury::bright: oss << "bright"; break;
+        case chinese_marriage_augury::blind: oss << "blind"; break;
+        case chinese_marriage_augury::widow: oss << "widow"; break;
         default: oss << "chinese_marriage_augury{" << static_cast<int32_t>(augury) << '}'; break;
         }
         return oss.str();

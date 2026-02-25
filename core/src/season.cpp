@@ -6,10 +6,10 @@ namespace calendrical {
         std::ostringstream oss{};
         switch (s)
         {
-        case season::SPRING: oss << "SPRING"; break;
-        case season::SUMMER: oss << "SUMMER"; break;
-        case season::AUTUMN: oss << "AUTUMN"; break;
-        case season::WINTER: oss << "WINTER"; break;
+        case season::spring: oss << "spring"; break;
+        case season::summer: oss << "summer"; break;
+        case season::autumn: oss << "autumn"; break;
+        case season::winter: oss << "winter"; break;
         default: oss << "season{" << static_cast<int>(s) << '}'; break;
         }
         return oss.str();
