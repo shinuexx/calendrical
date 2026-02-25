@@ -3,10 +3,17 @@
 #include <string_view>
 
 namespace calendrical {
+    /**
+     * @brief Returns a compile-time string view describing type `T`.
+     *
+     * The implementation extracts the type name from compiler-specific function
+     * signature strings.
+     */
     template <typename T>
     constexpr std::string_view type_name();
 
     template <>
+    /** @brief Specialized type name for `void`. */
     constexpr std::string_view type_name<void>()
     {
         return std::string_view{ "void" };
@@ -15,9 +22,11 @@ namespace calendrical {
     namespace detail
     {
 
+        /** @brief Probe type used to infer compiler-specific wrapper formatting. */
         using type_name_prober = void;
 
         template <typename T>
+        /** @brief Returns the raw compiler signature string containing `T`. */
         constexpr std::string_view wrapped_type_name()
         {
 #ifdef __clang__
@@ -31,11 +40,13 @@ namespace calendrical {
 #endif
         }
 
+        /** @brief Prefix length before the extracted type name inside the wrapper. */
         constexpr std::size_t wrapped_type_name_prefix_length()
         {
             return wrapped_type_name<type_name_prober>().find(type_name<type_name_prober>());
         }
 
+        /** @brief Suffix length after the extracted type name inside the wrapper. */
         constexpr std::size_t wrapped_type_name_suffix_length()
         {
             return wrapped_type_name<type_name_prober>().length() - wrapped_type_name_prefix_length() - type_name<type_name_prober>().length();
@@ -44,6 +55,7 @@ namespace calendrical {
     } // namespace detail
 
     template <typename T>
+    /** @brief Returns a trimmed compiler-derived type name for `T`. */
     constexpr std::string_view type_name()
     {
         constexpr auto wrapped_name = detail::wrapped_type_name<T>();
