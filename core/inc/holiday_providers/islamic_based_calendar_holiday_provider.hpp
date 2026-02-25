@@ -31,5 +31,21 @@ namespace calendrical::holiday_providers {
 
         /** @brief Mawlid dates in Gregorian year @p year. */
         [[nodiscard]] std::vector<fixed_date_t> mawlid(int32_t year) const;
+        /** @brief Islamic New Year (Muharram 1) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> islamic_new_year(int32_t year) const;
+        /** @brief Ashura (Muharram 10) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> ashura(int32_t year) const;
+        /** @brief Lailat al-Miraj (Rajab 27) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> lailat_al_miraj(int32_t year) const;
+        /** @brief Lailat al-Baraa (Shaban 15) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> lailat_al_baraa(int32_t year) const;
+        /** @brief Ramadan start (Ramadan 1) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> ramadan(int32_t year) const;
+        /** @brief Lailat al-Qadr (Ramadan 27) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> lailat_al_qadr(int32_t year) const;
+        /** @brief Eid ul-Fitr (Shawwal 1) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> eid_ul_fitr(int32_t year) const;
+        /** @brief Eid ul-Adha (Dhu al-Hijja 10) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> eid_ul_adha(int32_t year) const;
     };
 }
