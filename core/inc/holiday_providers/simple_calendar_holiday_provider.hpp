@@ -5,7 +5,7 @@
 
 namespace calendrical::holiday_providers{
     /**
-     * @brief Holiday provider helper for fixed-pattern holidays in a @ref simple_calendar.
+     * @brief Holiday provider helper for fixed-pattern holidays in a @ref calendrical::calendars::simple_calendar.
      */
     class simple_calendar_holiday_provider final :
         public holiday_provider_if

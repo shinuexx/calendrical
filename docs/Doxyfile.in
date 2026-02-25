@@ -3,7 +3,7 @@ PROJECT_BRIEF          = "@DOXYGEN_PROJECT_BRIEF@"
 OUTPUT_DIRECTORY       = "@DOXYGEN_OUTPUT_DIR@"
 CREATE_SUBDIRS         = NO
 
-INPUT                  = @DOXYGEN_INPUT@
+INPUT                  = @DOXYGEN_INPUT_STR@
 RECURSIVE              = @DOXYGEN_RECURSIVE@
 FILE_PATTERNS          = *.hpp *.h *.md
 

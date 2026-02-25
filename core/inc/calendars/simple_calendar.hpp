@@ -22,9 +22,9 @@ namespace calendrical::calendars{
         /** @brief Returns the calendar epoch. */
         [[nodiscard]] constexpr fixed_date_t epoch() const override { return m_epoch; }
 
-        /** @brief Converts a fixed date to a @ref simple_date. */
+        /** @brief Converts a fixed date to a @ref calendrical::datetypes::simple_date. */
         [[nodiscard]] simple_date to_date(const fixed_date_t& date) const override;
-        /** @brief Converts a @ref simple_date to a fixed date. */
+        /** @brief Converts a @ref calendrical::datetypes::simple_date to a fixed date. */
         [[nodiscard]] fixed_date_t to_fixed(const simple_date& date) const override;
 
         /** @brief Returns the first day of the given year. */

@@ -40,6 +40,7 @@ if (CALENDRICAL_BUILD_DOCS)
       "${CMAKE_SOURCE_DIR}/cli/inc"
       "${CMAKE_SOURCE_DIR}/README.md"
     )
+    string(REPLACE ";" " " DOXYGEN_INPUT_STR "${DOXYGEN_INPUT}")
 
     configure_file(
       "${CMAKE_SOURCE_DIR}/docs/Doxyfile.in"
