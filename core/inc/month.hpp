@@ -29,6 +29,9 @@ namespace calendrical {
     /** @brief Returns the lowercase month name. */
     std::string to_string(const month& m);
 
+    /**
+     * @brief Parser specialization for @ref calendrical::month from lowercase text.
+     */
     template<>
     struct from_parser<month> {
         /** @brief Parses a lowercase English month name. */

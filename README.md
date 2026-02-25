@@ -1,37 +1,49 @@
 # calendrical
 
-Biblioteka C++20 do obliczeń kalendarzowych i astronomicznych (wiele systemów kalendarzowych + providery świąt), z binarką `calendrical_cli` i testami opartymi o GoogleTest.
+C++20 library for calendrical and astronomical calculations (many calendar systems plus holiday providers), with a `calendrical_cli` executable and GoogleTest-based tests.
 
-## Krok 1: Wymagania
+This README is also used as the Doxygen main page.
+
+## Overview
+
+The project provides:
+
+- Calendar conversions to and from a fixed-date internal representation (`fixed_date_t`)
+- Time and astronomy utilities (sunrise/sunset, lunar phase, solar longitude, etc.)
+- Holiday providers for selected calendar systems
+- A CLI for conversions and holiday queries
+
+## Requirements
 
 - CMake >= 3.10
-- Kompilator C++20 (`g++`, `clang++` lub MSVC)
-- `vcpkg` (do zależności)
-- Generator builda (np. `Ninja`)
+- C++20 compiler (`g++`, `clang++`, or MSVC)
+- `vcpkg` (for dependencies)
+- Build generator (for example `Ninja`)
 
-Zależności projektu (manifest `vcpkg.json`):
+Project dependencies (from `vcpkg.json`):
+
 - `gtest`
 
-## Krok 2: Konfiguracja środowiska
+## Environment Setup
 
-1. Ustaw `VCPKG_ROOT` na katalog z `vcpkg`.
-2. Upewnij się, że masz dostępny generator builda (np. `ninja --version`).
+1. Set `VCPKG_ROOT` to your `vcpkg` directory.
+2. Make sure your build generator is available (for example `ninja --version`).
 
-Przykład (Linux/macOS):
+Example (Linux/macOS):
 
 ```bash
-export VCPKG_ROOT=/sciezka/do/vcpkg
+export VCPKG_ROOT=/path/to/vcpkg
 ```
 
-## Krok 3: Konfiguracja CMake
+## Configure With CMake
 
-Najprościej przez preset:
+Using a preset (recommended if available in your environment):
 
 ```bash
 cmake --preset "Configure preset using toolchain file"
 ```
 
-Alternatywnie ręcznie (często wygodniejsze w CI/skryptach):
+Manual configuration (useful in CI/scripts):
 
 ```bash
 cmake -S . -B cmake-build-debug \
@@ -40,44 +52,59 @@ cmake -S . -B cmake-build-debug \
   -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
 ```
 
-## Krok 4: Build
+## Build
 
 ```bash
 cmake --build cmake-build-debug -j4
 ```
 
-Po buildzie dostępne są m.in.:
+Typical outputs:
+
 - `cmake-build-debug/core/liblibcalendrical.a`
 - `cmake-build-debug/cli/calendrical_cli`
 - `cmake-build-debug/tests/tests`
 
-## Krok 5: Testy
+## Run Tests
 
-Uruchom testy przez CTest (root build-dir):
+Using CTest:
 
 ```bash
 ctest --test-dir cmake-build-debug --output-on-failure
 ```
 
-Lub bezpośrednio binarkę testową:
+Or directly:
 
 ```bash
 ./cmake-build-debug/tests/tests
 ```
 
-Przegląd zarejestrowanych testów GTest:
+List registered GoogleTest tests:
 
 ```bash
 ./cmake-build-debug/tests/tests --gtest_list_tests
 ```
 
-## Krok 6: Uruchomienie CLI
+## Build API Documentation (Doxygen)
+
+If `doxygen` is installed, the project exposes a `docs` target.
+
+```bash
+cmake --build cmake-build-debug --target docs
+```
+
+Generated HTML documentation is written to:
+
+- `cmake-build-debug/docs/html/index.html`
+
+## CLI Usage
+
+Show help:
 
 ```bash
 ./cmake-build-debug/cli/calendrical_cli --help
 ```
 
-CLI działa w modelu komend:
+Examples:
 
 ```bash
 ./cmake-build-debug/cli/calendrical_cli list commands
@@ -91,7 +118,7 @@ CLI działa w modelu komend:
 ./cmake-build-debug/cli/calendrical_cli holidays --as-gregorian gregorian 2026
 ```
 
-Aktualna składnia CLI:
+CLI syntax:
 
 ```text
 calendrical_cli <command> [args]
@@ -108,12 +135,14 @@ calendrical_cli list [topic]
 calendrical_cli list --help
 ```
 
-`list [topic]`:
-- `commands` (domyślnie)
+`list [topic]` values:
+
+- `commands` (default)
 - `calendars`
 - `holiday-calendars`
 
-Konwertery (`convert`) aktualnie zarejestrowane w kodzie:
+## Registered Convert Converters
+
 - `rd`
 - `jd`
 - `mjd`
@@ -153,12 +182,15 @@ Konwertery (`convert`) aktualnie zarejestrowane w kodzie:
 - `tibetan`
 - `vietnamese`
 
-Format `date` dla `convert` (zależnie od konwertera):
+## Convert Date Input Formats
+
+Depending on converter:
+
 - `rd`, `mjd`: `N`
-- `jd`: `N` lub `N.frac`
+- `jd`: `N` or `N.frac`
 - `unix`, `unix_timestamp`: `seconds_since_epoch`
-- kalendarze proste: `YEAR-MONTH-DAY`
-- `gregorian`, `julian`, `hebrew`, `observational_hebrew`: `YEAR-MONTH-DAY` (MONTH jako nazwa lub numer)
+- simple calendars: `YEAR-MONTH-DAY`
+- `gregorian`, `julian`, `hebrew`, `observational_hebrew`: `YEAR-MONTH-DAY` (`MONTH` may be a name or number)
 - `iso`: `YEAR-WEEK-DAY`
 - `icelandic`: `YEAR-SEASON-WEEK-WEEKDAY`
 - `bahai`, `astro_bahai`: `MAJOR-CYCLE-YEAR-MONTH-DAY`
@@ -167,7 +199,8 @@ Format `date` dla `convert` (zależnie od konwertera):
 - `old_hindu_lunar`, `babylonian`: `YEAR-MONTH-LEAP_MONTH-DAY`
 - `roman`: `YEAR-MONTH-EVENT-COUNT-LEAP`
 
-Providery (`holidays`) aktualnie zarejestrowane:
+## Registered Holidays Providers
+
 - `gregorian`
 - `julian`
 - `islamic_based`
@@ -180,7 +213,8 @@ Providery (`holidays`) aktualnie zarejestrowane:
 - `egyptian`
 - `armenian`
 
-Aliasy providerów wspierane przez parser `holidays`:
+Provider aliases supported by the `holidays` parser:
+
 - `gregorian_calendar` -> `gregorian`
 - `julian_calendar` -> `julian`
 - `islamic` / `islamic_based_calendar` -> `islamic_based`
@@ -189,9 +223,7 @@ Aliasy providerów wspierane przez parser `holidays`:
 - `persian` / `persian_based_calendar` -> `persian_based`
 - `modern_hindu_lunar_calendar` -> `modern_hindu_lunar`
 
-## Krok 7: Użycie biblioteki w kodzie
-
-Przykładowy minimalny kod:
+## Library Usage Example
 
 ```cpp
 #include <calendars/modern_hindu_solar_calendar.hpp>
@@ -206,49 +238,49 @@ int main() {
 }
 ```
 
-Nagłówki publiczne są w `core/inc`, implementacje w `core/src`.
+Public headers live in `core/inc`, implementations in `core/src`.
 
-## Krok 8: Struktura projektu
+## Project Structure
 
-- `core/`:
-  - `inc/` publiczne API biblioteki
-  - `src/` implementacje
-- `cli/`: mały program demonstracyjny
-- `tests/`: testy GTest
-- `vcpkg.json`, `vcpkg-configuration.json`: zarządzanie zależnościami
-- `CMakeLists.txt`: konfiguracja top-level
+- `core/`
+- `core/inc/` public library API
+- `core/src/` implementations
+- `cli/` CLI application
+- `tests/` GoogleTest-based tests
+- `vcpkg.json`, `vcpkg-configuration.json` dependency management
+- `CMakeLists.txt` top-level build configuration
 
-## Krok 9: Zakres funkcjonalny (skrót)
+## Feature Scope (Short Summary)
 
-- Kalendarze: m.in. gregoriański, juliański, islamskie, hebrajskie, perskie, chińskie, hinduskie, bahaickie, tybetańskie, ISO itd.
-- Astronomia czasu: m.in. wschody/zachody, długości ekliptyczne, fazy księżyca, korekty efemeryd.
-- Providery świąt dla wybranych kalendarzy.
+- Calendars: Gregorian, Julian, Islamic variants, Hebrew variants, Persian variants, Chinese-family calendars, Hindu calendars, Baha'i calendars, Tibetan, ISO, and more
+- Time and astronomy: sunrise/sunset, ecliptic longitudes, lunar phases, ephemeris corrections, etc.
+- Holiday providers for selected calendars
 
-## Krok 10: Workflow developerski
+## Developer Workflow
 
-1. Zmieniasz kod.
+1. Modify code.
 2. Build:
    ```bash
    cmake --build cmake-build-debug -j4
    ```
-3. Testy:
+3. Test:
    ```bash
    ctest --test-dir cmake-build-debug --output-on-failure
    ```
-4. Sprawdzasz diff i robisz commit.
+4. Review diff and commit.
 
-## Krok 11: Ważne decyzje API (aktualny stan)
+## API Notes (Current State)
 
-- `calendar_provider` został usunięty (cel: uproszczenie API i własności obiektów).
-- `holiday_t` porównuje obiekty tylko po `date`:
-  - sortowanie i porządek są czysto chronologiczne,
-  - święta o tej samej dacie są traktowane jako równe.
-- `leap_day_aware_calendar` wymaga logicznego `is_leap_day(...)` (`bool`).
+- `calendar_provider` has been removed to simplify API ownership/lifetimes.
+- `holiday_t` compares objects by `date` only:
+  - ordering is purely chronological
+  - holidays on the same date compare equal
+- `leap_day_aware_calendar` requires logical `is_leap_day(...)` (`bool`)
 
-## Krok 12: Typowe problemy
+## Common Issues
 
-- `vcpkg lock / permission denied` podczas konfiguracji:
-  - zamknij procesy, które trzymają lock,
-  - ponów `cmake -S . -B ...`.
-- `ctest` nie znajduje testów:
-  - uruchamiaj `ctest --test-dir cmake-build-debug --output-on-failure` po poprawnej konfiguracji/buildzie.
+- `vcpkg` lock / permission errors during configure:
+  - close processes holding the lock
+  - rerun `cmake -S . -B ...`
+- `ctest` finds no tests:
+  - run `ctest --test-dir cmake-build-debug --output-on-failure` after a successful configure/build

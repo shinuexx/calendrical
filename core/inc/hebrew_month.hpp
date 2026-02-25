@@ -30,6 +30,9 @@ namespace calendrical {
     /** @brief Returns the lowercase transliterated Hebrew month name. */
     std::string to_string(const hebrew_month& m);
 
+    /**
+     * @brief Parser specialization for @ref calendrical::hebrew_month from transliterated text.
+     */
     template<>
     struct from_parser<hebrew_month> {
         /** @brief Parses a lowercase transliterated month name (supports `adar2`). */

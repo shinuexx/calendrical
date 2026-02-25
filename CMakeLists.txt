@@ -37,7 +37,7 @@ if (CALENDRICAL_BUILD_DOCS)
     set(DOXYGEN_PROJECT_BRIEF "Calendrical calculations library and CLI")
     set(DOXYGEN_INPUT
       "${CMAKE_SOURCE_DIR}/core/inc"
-      "${CMAKE_SOURCE_DIR}/cli/inc"
+      "${CMAKE_SOURCE_DIR}/docs/namespaces.dox"
       "${CMAKE_SOURCE_DIR}/README.md"
     )
     string(REPLACE ";" " " DOXYGEN_INPUT_STR "${DOXYGEN_INPUT}")
