@@ -22,7 +22,7 @@ namespace calendrical::cli {
             std::cout << "Options:\n";
             std::cout << "  -h, --help  Show help\n\n";
             std::cout << "Arguments:\n";
-            std::cout << "  topic  commands|calendars|holiday-calendars (default: commands)\n";
+            std::cout << "  topic  commands|calendars|holiday-calendars|convert|holidays (default: commands)\n";
             return 0;
         }
 
@@ -38,14 +38,14 @@ namespace calendrical::cli {
             std::cout << "  list\n";
             return 0;
         }
-        if (topic == "calendars") {
+        if (topic == "calendars" || topic == "convert") {
             std::cout << "calendars (convert):\n";
             for (const auto& [name, converter] : m_converter_provider->converters()) {
                 std::cout << "  " << name << " (" << converter->format() << ")\n";
             }
             return 0;
         }
-        if (topic == "holiday-calendars") {
+        if (topic == "holiday-calendars" || topic == "holidays") {
             std::cout << "calendars (holidays):\n";
             for (const auto &name: m_holiday_provider_provider->holiday_providers() | std::views::keys) {
                 std::cout << "  " << name << '\n';
