@@ -30,5 +30,15 @@ namespace calendrical::holiday_providers {
 
         /** @brief Christmas dates associated with Gregorian year @p year. */
         [[nodiscard]] std::vector<fixed_date_t> christmas(int32_t year) const;
+        /** @brief Building of the Cross (Thoout 17) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> building_of_the_cross(int32_t year) const;
+        /** @brief Jesus's Circumcision (Tobe 6) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> jesus_circumcision(int32_t year) const;
+        /** @brief Epiphany (Tobe 11) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> epiphany(int32_t year) const;
+        /** @brief Mary's Announcement (Paremotep 29) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> mary_announcement(int32_t year) const;
+        /** @brief Jesus's Transfiguration (Mesore 13) dates in Gregorian year @p year. */
+        [[nodiscard]] std::vector<fixed_date_t> jesus_transfiguration(int32_t year) const;
     };
 }
