@@ -1,0 +1,83 @@
+/**
+ * @file namespaces.dox
+ * @brief Namespace-level documentation for the calendrical library.
+ */
+
+/**
+ * @namespace calendrical
+ * @brief Root namespace for the calendrical library.
+ *
+ * Contains core primitives, calendar-independent utilities, astronomical
+ * helpers, and common interfaces shared across calendar implementations.
+ */
+
+/**
+ * @namespace calendrical::calendars
+ * @brief Calendar system implementations and conversion APIs.
+ *
+ * Includes concrete calendar classes (Gregorian, Hebrew, Persian, Chinese
+ * family, Hindu family, etc.) and shared base classes for related calendars.
+ */
+
+/**
+ * @namespace calendrical::datetypes
+ * @brief Plain date value types used by calendar conversion APIs.
+ *
+ * These are lightweight structs (for example Gregorian, Hebrew, Roman, lunar
+ * variants) returned by calendars and accepted as conversion inputs.
+ */
+
+/**
+ * @namespace calendrical::locations
+ * @brief Predefined geographic locations used by astronomical/calendar algorithms.
+ *
+ * Contains convenient constants such as Greenwich, Jerusalem, Mecca, and other
+ * reference locations used by astronomical computations and calendar rules.
+ */
+
+/**
+ * @namespace calendrical::holiday_providers
+ * @brief Holiday and feast calculators built on top of calendar implementations.
+ *
+ * Providers expose holiday sets for a Gregorian year and helper methods for
+ * selected observances in their underlying calendar systems.
+ */
+
+/**
+ * @namespace calendrical::time_and_astronomy
+ * @brief Astronomical and time-scale conversion utilities.
+ *
+ * Contains solar/lunar position calculations, rise/set and twilight helpers,
+ * crescent visibility criteria, and time conversion helpers (local/standard/UT).
+ */
+
+/**
+ * @namespace calendrical::primitives
+ * @brief Conversions between library time/date primitives and common epochs.
+ *
+ * Includes helpers for Julian Day, Modified Julian Day, and Unix time
+ * conversions.
+ */
+
+/**
+ * @namespace calendrical::detail
+ * @brief Internal implementation helpers not intended as stable public API.
+ *
+ * Used by generic utilities (for example type-name extraction) and may change
+ * without compatibility guarantees.
+ */
+
+/**
+ * @namespace calendrical::calendar_traits
+ * @brief String conversion traits for date and enum types used by the CLI/API.
+ *
+ * Provides parser/serializer helpers for structured and compact date formats.
+ */
+
+/**
+ * @namespace calendrical::calendar_traits::detail
+ * @brief Internal parsing helpers for `calendar_traits`.
+ *
+ * Contains low-level string trimming, tokenization, field parsing, and enum
+ * parsing adapters used by the public converter traits.
+ */

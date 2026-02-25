@@ -5,6 +5,9 @@
 #include "calendars/astro_bahai_calendar.hpp"
 
 namespace calendrical::holiday_providers {
+    /**
+     * @brief Holiday provider for Baha'i holidays (classic and astronomical variants).
+     */
     class bahai_based_calendar_holiday_provider:
         public holiday_provider_if
     {
@@ -13,6 +16,7 @@ namespace calendrical::holiday_providers {
         const calendars::gregorian_calendar* m_gregorian;
 
     public:
+        /** @brief Constructs a provider with both astronomical and classic Baha'i calendars. */
         bahai_based_calendar_holiday_provider(const calendars::astro_bahai_calendar* astro, const calendars::bahai_calendar* classic) {
             m_astro = astro;
             m_classic = classic;
@@ -21,14 +25,21 @@ namespace calendrical::holiday_providers {
 
         ~bahai_based_calendar_holiday_provider() override = default;
 
+        /** @brief Returns the default backing calendar interface (classic Baha'i). */
         [[nodiscard]] const calendar_if* calendar() const override { return m_classic; }
+        /** @brief Returns either the astronomical or classic Baha'i calendar backend. */
         [[nodiscard]] const calendars::bahai_based_calendar* calendar(bool astro) const;
 
+        /** @brief Baha'i New Year date associated with Gregorian year @p gyear. */
         [[nodiscard]] fixed_date_t new_year(int32_t gyear) const;
+        /** @brief Naw-Ruz date associated with Gregorian year @p gyear. */
         [[nodiscard]] fixed_date_t naw_ruz(int32_t gyear) const;
+        /** @brief First day of Ridvan associated with Gregorian year @p gyear. */
         [[nodiscard]] fixed_date_t feast_of_ridvan(int32_t gyear) const;
+        /** @brief Birth of the Bab holiday date associated with Gregorian year @p gyear. */
         [[nodiscard]] fixed_date_t birth_of_the_bab(int32_t gyear) const;
 
+        /** @brief Returns the provider's Baha'i holiday set for Gregorian year @p year. */
         [[nodiscard]] std::vector<holiday_t> in_year(int32_t year) const override;
     };
 }

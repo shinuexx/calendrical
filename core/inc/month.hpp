@@ -5,6 +5,11 @@
 #include "types.hpp"
 
 namespace calendrical {
+    /**
+     * @brief Gregorian month enumeration.
+     *
+     * Values follow the conventional 1-based month numbering.
+     */
     enum class month
     {
         january = 1,
@@ -21,10 +26,15 @@ namespace calendrical {
         december
     };
 
+    /** @brief Returns the lowercase month name. */
     std::string to_string(const month& m);
 
+    /**
+     * @brief Parser specialization for @ref calendrical::month from lowercase text.
+     */
     template<>
     struct from_parser<month> {
+        /** @brief Parses a lowercase English month name. */
         static month from_string(const std::string &s) {
             if (s == "january") return month::january;
             if (s == "february") return month::february;
@@ -44,4 +54,5 @@ namespace calendrical {
 
 }
 
+/** @brief Stream output for @ref calendrical::month. */
 std::ostream& operator<<(std::ostream& out, const calendrical::month& m);

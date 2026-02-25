@@ -5,6 +5,12 @@
 #include "types.hpp"
 
 namespace calendrical {
+    /**
+     * @brief Hebrew calendar month enumeration.
+     *
+     * Values follow the numbering used by the library's Hebrew calendar
+     * algorithms, with `adarii` representing Adar II in leap years.
+     */
     enum class hebrew_month {
         nisan = 1,
         iyyar,
@@ -21,10 +27,15 @@ namespace calendrical {
         adarii
     };
 
+    /** @brief Returns the lowercase transliterated Hebrew month name. */
     std::string to_string(const hebrew_month& m);
 
+    /**
+     * @brief Parser specialization for @ref calendrical::hebrew_month from transliterated text.
+     */
     template<>
     struct from_parser<hebrew_month> {
+        /** @brief Parses a lowercase transliterated month name (supports `adar2`). */
         static hebrew_month from_string(const std::string &s) {
             if (s == "nisan") return hebrew_month::nisan;
             if (s == "iyyar") return hebrew_month::iyyar;
@@ -44,4 +55,5 @@ namespace calendrical {
     };
 }
 
+/** @brief Stream output for @ref calendrical::hebrew_month. */
 std::ostream& operator<<(std::ostream& out, const calendrical::hebrew_month& m);

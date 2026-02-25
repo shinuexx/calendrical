@@ -29,12 +29,19 @@
 
 namespace calendrical::calendar_traits {
     template<typename EnumT>
+    /**
+     * @brief Converts enum values to/from textual representations.
+     *
+     * Explicit specializations provide parsing logic for supported enums.
+     */
     struct enum_string_converter {
         // ReSharper disable once CppFunctionIsNotImplemented
+        /** @brief Parses an enum value from text. Implemented by specializations. */
         static EnumT from_string(std::string_view);
     };
 
     namespace detail {
+        /** @brief Trims ASCII whitespace from both ends of a string view. */
         inline std::string_view trim(std::string_view value) {
             std::size_t begin = 0;
             while (begin < value.size() && std::isspace(static_cast<unsigned char>(value[begin])) != 0) {
@@ -49,6 +56,7 @@ namespace calendrical::calendar_traits {
             return value.substr(begin, end - begin);
         }
 
+        /** @brief Returns a lowercased copy of the input (ASCII semantics). */
         inline std::string lower_copy(std::string_view value) {
             std::string out{value};
             for (auto& c : out) {
@@ -57,6 +65,7 @@ namespace calendrical::calendar_traits {
             return out;
         }
 
+        /** @brief Parses a signed 32-bit integer or throws with field context. */
         inline int32_t parse_int32(std::string_view value, std::string_view field_name) {
             int32_t parsed{};
             if (const auto [ptr, ec] = std::from_chars(value.data(), value.data() + value.size(), parsed);
@@ -66,12 +75,16 @@ namespace calendrical::calendar_traits {
             return parsed;
         }
 
+        /** @brief Parses a boolean (`true/false/1/0`) or throws with field context. */
         inline bool parse_bool(std::string_view value, std::string_view field_name) {
             if (value == "true" || value == "1") return true;
             if (value == "false" || value == "0") return false;
             throw std::runtime_error("Invalid bool value for field '" + std::string(field_name) + "': " + std::string(value));
         }
 
+        /**
+         * @brief Parses `type{key:value,...}` record syntax into a field map.
+         */
         inline std::map<std::string, std::string_view, std::less<>> parse_record(
             std::string_view input,
             std::string_view type_name) {
@@ -109,6 +122,7 @@ namespace calendrical::calendar_traits {
             return fields;
         }
 
+        /** @brief Splits a delimited string and trims each part. */
         inline std::vector<std::string_view> split_parts(std::string_view input, char delimiter) {
             std::vector<std::string_view> parts;
             std::size_t start = 0;
@@ -124,6 +138,7 @@ namespace calendrical::calendar_traits {
             return parts;
         }
 
+        /** @brief Returns a required field value or throws if the key is missing. */
         inline std::string_view get_required_field(
             const std::map<std::string, std::string_view, std::less<>>& fields,
             std::string_view field_name,
@@ -134,6 +149,7 @@ namespace calendrical::calendar_traits {
             throw std::runtime_error("Missing field '" + std::string(field_name) + "' in " + std::string(type_name));
         }
 
+        /** @brief Parses weekday from name (`monday`) or numeric index (`0..6`). */
         inline weekday parse_weekday(std::string_view value) {
             const auto lower = lower_copy(value);
             constexpr std::array names{
@@ -154,7 +170,9 @@ namespace calendrical::calendar_traits {
     }
 
     template<>
+    /** @brief Parser specialization for @ref calendrical::month. */
     struct enum_string_converter<month> {
+        /** @brief Accepts numeric month or lowercase English month name. */
         static month from_string(std::string_view value) {
             if (!value.empty() && std::isdigit(static_cast<unsigned char>(value.front())) != 0) {
                 if (const auto m = detail::parse_int32(value, "month");
@@ -173,7 +191,9 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief Parser specialization for @ref calendrical::hebrew_month. */
     struct enum_string_converter<hebrew_month> {
+        /** @brief Accepts numeric month or supported transliterated month name. */
         static hebrew_month from_string(std::string_view value) {
             if (!value.empty() && std::isdigit(static_cast<unsigned char>(value.front())) != 0) {
                 if (const auto m = detail::parse_int32(value, "hebrew_month");
@@ -192,7 +212,9 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief Parser specialization for @ref calendrical::season. */
     struct enum_string_converter<season> {
+        /** @brief Accepts season name or canonical solar-longitude angle value. */
         static season from_string(std::string_view value) {
             const auto lower = detail::lower_copy(value);
             if (lower == "spring") return season::SPRING;
@@ -211,7 +233,9 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief Parser specialization for @ref calendrical::roman_event. */
     struct enum_string_converter<roman_event> {
+        /** @brief Accepts Roman event name or numeric enum value. */
         static roman_event from_string(std::string_view value) {
             const auto lower = detail::lower_copy(value);
             if (lower == "kalends") return roman_event::KALENDS;
@@ -228,29 +252,42 @@ namespace calendrical::calendar_traits {
     };
 
     namespace detail {
+        /** @brief Convenience wrapper for month parsing. */
         inline month parse_month(std::string_view value) {
             return enum_string_converter<month>::from_string(value);
         }
 
+        /** @brief Convenience wrapper for Hebrew month parsing. */
         inline hebrew_month parse_hebrew_month(std::string_view value) {
             return enum_string_converter<hebrew_month>::from_string(value);
         }
 
+        /** @brief Convenience wrapper for season parsing. */
         inline season parse_season(std::string_view value) {
             return enum_string_converter<season>::from_string(value);
         }
 
+        /** @brief Convenience wrapper for Roman event parsing. */
         inline roman_event parse_roman_event(std::string_view value) {
             return enum_string_converter<roman_event>::from_string(value);
         }
     }
 
     template<typename DateT>
+    /**
+     * @brief Converts date-like value types to/from textual representations.
+     *
+     * Explicit specializations support structured (`type{...}`) and compact
+     * (`a-b-c`) formats.
+     */
     struct datetype_string_converter;
 
     template<>
+    /** @brief String conversion for @ref datetypes::simple_date. */
     struct datetype_string_converter<datetypes::simple_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::simple_date& date) { return date.to_string(); }
+        /** @brief Parses `simple_date{year:...,month:...,day:...}`. */
         static datetypes::simple_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "simple_date");
             return {
@@ -259,6 +296,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "day", "simple_date"), "day")
             };
         }
+        /** @brief Parses compact `year-month-day` representation. */
         static datetypes::simple_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("simple_date compact format: year-month-day");
@@ -271,8 +309,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::gregorian_date. */
     struct datetype_string_converter<datetypes::gregorian_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::gregorian_date& date) { return date.to_string(); }
+        /** @brief Parses `gregorian_date{year:...,month:...,day:...}`. */
         static datetypes::gregorian_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "gregorian_date");
             return {
@@ -281,6 +322,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "day", "gregorian_date"), "day")
             };
         }
+        /** @brief Parses compact `year-month-day` representation. */
         static datetypes::gregorian_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("gregorian_date compact format: year-month-day");
@@ -293,8 +335,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::julian_date. */
     struct datetype_string_converter<datetypes::julian_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::julian_date& date) { return date.to_string(); }
+        /** @brief Parses `julian_date{year:...,month:...,day:...}`. */
         static datetypes::julian_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "julian_date");
             return {
@@ -303,6 +348,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "day", "julian_date"), "day")
             };
         }
+        /** @brief Parses compact `year-month-day` representation. */
         static datetypes::julian_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("julian_date compact format: year-month-day");
@@ -315,8 +361,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::iso_date. */
     struct datetype_string_converter<datetypes::iso_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::iso_date& date) { return date.to_string(); }
+        /** @brief Parses `iso_date{year:...,week:...,day:...}`. */
         static datetypes::iso_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "iso_date");
             return {
@@ -325,6 +374,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "day", "iso_date"), "day")
             };
         }
+        /** @brief Parses compact `year-week-day` representation. */
         static datetypes::iso_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("iso_date compact format: year-week-day");
@@ -337,8 +387,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::hebrew_date. */
     struct datetype_string_converter<datetypes::hebrew_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::hebrew_date& date) { return date.to_string(); }
+        /** @brief Parses `hebrew_date{year:...,month:...,day:...}`. */
         static datetypes::hebrew_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "hebrew_date");
             return {
@@ -347,6 +400,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "day", "hebrew_date"), "day")
             };
         }
+        /** @brief Parses compact `year-month-day` representation. */
         static datetypes::hebrew_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("hebrew_date compact format: year-month-day");
@@ -359,8 +413,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::simple_lunar_date. */
     struct datetype_string_converter<datetypes::simple_lunar_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::simple_lunar_date& date) { return date.to_string(); }
+        /** @brief Parses `simple_lunar_date{...}` including `leap_month`. */
         static datetypes::simple_lunar_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "simple_lunar_date");
             return {
@@ -370,6 +427,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "day", "simple_lunar_date"), "day")
             };
         }
+        /** @brief Parses compact `year-month-leap_month-day` representation. */
         static datetypes::simple_lunar_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 4) throw std::runtime_error("simple_lunar_date compact format: year-month-leap_month-day");
@@ -383,8 +441,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::lunar_date. */
     struct datetype_string_converter<datetypes::lunar_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::lunar_date& date) { return date.to_string(); }
+        /** @brief Parses `lunar_date{...}` including leap-month and leap-day markers. */
         static datetypes::lunar_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "lunar_date");
             return {
@@ -395,6 +456,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_bool(detail::get_required_field(fields, "leap_day", "lunar_date"), "leap_day")
             };
         }
+        /** @brief Parses compact `year-month-leap_month-day-leap_day` representation. */
         static datetypes::lunar_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 5) throw std::runtime_error("lunar_date compact format: year-month-leap_month-day-leap_day");
@@ -409,8 +471,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::bahai_date. */
     struct datetype_string_converter<datetypes::bahai_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::bahai_date& date) { return date.to_string(); }
+        /** @brief Parses `bahai_date{major:...,cycle:...,year:...,month:...,day:...}`. */
         static datetypes::bahai_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "bahai_date");
             return {
@@ -421,6 +486,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "day", "bahai_date"), "day")
             };
         }
+        /** @brief Parses compact `major-cycle-year-month-day` representation. */
         static datetypes::bahai_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 5) throw std::runtime_error("bahai_date compact format: major-cycle-year-month-day");
@@ -435,8 +501,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::chinese_date. */
     struct datetype_string_converter<datetypes::chinese_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::chinese_date& date) { return date.to_string(); }
+        /** @brief Parses `chinese_date{...}` including cycle and leap-month marker. */
         static datetypes::chinese_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "chinese_date");
             return {
@@ -447,6 +516,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "day", "chinese_date"), "day")
             };
         }
+        /** @brief Parses compact `cycle-year-month-leap_month-day` representation. */
         static datetypes::chinese_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 5) throw std::runtime_error("chinese_date compact format: cycle-year-month-leap_month-day");
@@ -461,8 +531,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::icelandic_date. */
     struct datetype_string_converter<datetypes::icelandic_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::icelandic_date& date) { return date.to_string(); }
+        /** @brief Parses `icelandic_date{year:...,season:...,week:...,weekday:...}`. */
         static datetypes::icelandic_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "icelandic_date");
             return {
@@ -472,6 +545,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_weekday(detail::get_required_field(fields, "weekday", "icelandic_date"))
             };
         }
+        /** @brief Parses compact `year-season-week-weekday` representation. */
         static datetypes::icelandic_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 4) throw std::runtime_error("icelandic_date compact format: year-season-week-weekday");
@@ -485,8 +559,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::roman_date. */
     struct datetype_string_converter<datetypes::roman_date> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::roman_date& date) { return date.to_string(); }
+        /** @brief Parses `roman_date{year:...,month:...,event:...,count:...,leap:...}`. */
         static datetypes::roman_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "roman_date");
             return {
@@ -497,6 +574,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_bool(detail::get_required_field(fields, "leap", "roman_date"), "leap")
             };
         }
+        /** @brief Parses compact `year-month-event-count-leap` representation. */
         static datetypes::roman_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 5) throw std::runtime_error("roman_date compact format: year-month-event-count-leap");
@@ -511,8 +589,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::sexagesimal_name. */
     struct datetype_string_converter<datetypes::sexagesimal_name> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::sexagesimal_name& value) { return value.to_string(); }
+        /** @brief Parses `sexagesimal_name{stem:...,branch:...}`. */
         static datetypes::sexagesimal_name from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "sexagesimal_name");
             return {
@@ -520,6 +601,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "branch", "sexagesimal_name"), "branch")
             };
         }
+        /** @brief Parses compact `stem-branch` representation. */
         static datetypes::sexagesimal_name from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 2) throw std::runtime_error("sexagesimal_name compact format: stem-branch");
@@ -531,8 +613,11 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
+    /** @brief String conversion for @ref datetypes::olympiad. */
     struct datetype_string_converter<datetypes::olympiad> {
+        /** @brief Serializes to the canonical structured string form. */
         static std::string to_string(const datetypes::olympiad& value) { return datetypes::to_string(value); }
+        /** @brief Parses `olympiad{cycle:...,year:...}`. */
         static datetypes::olympiad from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "olympiad");
             return {
@@ -540,6 +625,7 @@ namespace calendrical::calendar_traits {
                 detail::parse_int32(detail::get_required_field(fields, "year", "olympiad"), "year")
             };
         }
+        /** @brief Parses compact `cycle-year` representation. */
         static datetypes::olympiad from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 2) throw std::runtime_error("olympiad compact format: cycle-year");
@@ -551,16 +637,19 @@ namespace calendrical::calendar_traits {
     };
 
     template<typename DateT>
+    /** @brief Serializes a supported date-like type using its converter specialization. */
     std::string datetype_to_string(const DateT& date) {
         return datetype_string_converter<DateT>::to_string(date);
     }
 
     template<typename DateT>
+    /** @brief Parses a supported date-like type from structured `type{...}` syntax. */
     DateT datetype_from_string(std::string_view input) {
         return datetype_string_converter<DateT>::from_string(input);
     }
 
     template<typename DateT>
+    /** @brief Parses a supported date-like type from compact dash-separated syntax. */
     DateT datetype_from_compact_string(std::string_view input) {
         return datetype_string_converter<DateT>::from_compact_string(input);
     }
