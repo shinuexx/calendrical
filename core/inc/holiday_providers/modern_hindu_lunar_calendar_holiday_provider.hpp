@@ -29,8 +29,42 @@ namespace calendrical::holiday_providers {
         /** @brief Hindu lunar holiday dates in Gregorian year @p gyear. */
         [[nodiscard]] std::vector<fixed_date_t> lunar_holiday(int32_t lmonth, int32_t lday, int32_t gyear) const;
 
-        /** @brief Diwali dates in Gregorian year @p gyear. */
+        /** @brief Main Diwali day (Kartika 1) dates in Gregorian year @p gyear. */
         [[nodiscard]] std::vector<fixed_date_t> diwali(int32_t gyear) const;
+        /** @brief Diwali festival dates (Ashvina 29 through Kartika 1) in Gregorian year @p gyear. */
+        [[nodiscard]] std::vector<fixed_date_t> diwali_days(int32_t gyear) const;
+        /** @brief Janmashtami (Shravana 23) dates in Gregorian year @p gyear. */
+        [[nodiscard]] std::vector<fixed_date_t> janmashtami(int32_t gyear) const;
+        /** @brief Ganesha Chaturthi (Bhadrapada 4) dates in Gregorian year @p gyear. */
+        [[nodiscard]] std::vector<fixed_date_t> ganesha_chaturthi(int32_t gyear) const;
+        /** @brief Durga Ashtami (Ashvina 8) dates in Gregorian year @p gyear. */
+        [[nodiscard]] std::vector<fixed_date_t> durga_ashtami(int32_t gyear) const;
+        /** @brief Sarasvati Puja (Ashvina 9) dates in Gregorian year @p gyear. */
+        [[nodiscard]] std::vector<fixed_date_t> sarasvati_puja(int32_t gyear) const;
+        /** @brief Dasra (Ashvina 10) dates in Gregorian year @p gyear. */
+        [[nodiscard]] std::vector<fixed_date_t> dasra(int32_t gyear) const;
+        /** @brief Karthikai Deepam (Kartika 15) dates in Gregorian year @p gyear. */
+        [[nodiscard]] std::vector<fixed_date_t> karthikai_deepam(int32_t gyear) const;
+        /** @brief Vaikunta Ekadashi (Margashirsha 11) dates in Gregorian year @p gyear. */
+        [[nodiscard]] std::vector<fixed_date_t> vaikunta_ekadashi(int32_t gyear) const;
+        /**
+         * @brief Buddha's Birthday dates in Gregorian year @p gyear.
+         *
+         * This provider uses the simple Vaiśākha 15 convention; actual observance varies by tradition.
+         */
+        [[nodiscard]] std::vector<fixed_date_t> buddha_birthday(int32_t gyear) const;
+        /**
+         * @brief Varalakshmi Vratam dates in Gregorian year @p gyear.
+         *
+         * Computed as the Friday strictly before Shravana 15.
+         */
+        [[nodiscard]] std::vector<fixed_date_t> varalakshmi_vratam(int32_t gyear) const;
+        /**
+         * @brief Holi dates in Gregorian year @p gyear.
+         *
+         * Modeled as the date on which lunar day Phalguna 15 is current in the evening.
+         */
+        [[nodiscard]] std::vector<fixed_date_t> holi(int32_t gyear) const;
 
         /** @brief Occurrence date of a tithi-based event in Hindu year @p lyear. */
         [[nodiscard]] fixed_date_t tithi_occur(int32_t lmonth, const double& tithi, const moment_t& t, int32_t lyear) const;

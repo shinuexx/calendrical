@@ -5,6 +5,7 @@
 #include "calendars/hebrew_calendar.hpp"
 #include "calendars/islamic_calendar.hpp"
 #include "calendars/modern_hindu_lunar_calendar.hpp"
+#include "calendars/modern_hindu_solar_calendar.hpp"
 #include "calendars/persian_calendar.hpp"
 #include "calendars/samaritan_calendar.hpp"
 #include "holiday_providers/bahai_based_calendar_holiday_provider.hpp"
@@ -13,6 +14,7 @@
 #include "holiday_providers/islamic_based_calendar_holiday_provider.hpp"
 #include "holiday_providers/julian_calendar_holiday_provider.hpp"
 #include "holiday_providers/modern_hindu_lunar_calendar_holiday_provider.hpp"
+#include "holiday_providers/modern_hindu_solar_calendar_holiday_provider.hpp"
 #include "holiday_providers/persian_based_calendar_holiday_provider.hpp"
 #include "holiday_providers/samaritan_calendar_holiday_provider.hpp"
 #include "holiday_providers/simple_calendar_holiday_provider.hpp"
@@ -55,6 +57,10 @@ namespace calendrical::cli {
         provider.add<holiday_providers::modern_hindu_lunar_calendar_holiday_provider>(
             "modern_hindu_lunar",
             std::addressof(calendar_instance<calendars::modern_hindu_lunar_calendar>())
+        );
+        provider.add<holiday_providers::modern_hindu_solar_calendar_holiday_provider>(
+            "modern_hindu_solar",
+            std::addressof(calendar_instance<calendars::modern_hindu_solar_calendar>())
         );
 
         provider.add<holiday_providers::coptic_based_calendar_holiday_provider>("coptic", &calendars::coptic_calendar);
