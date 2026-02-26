@@ -6,6 +6,7 @@
 #include "calendars/islamic_calendar.hpp"
 #include "calendars/modern_hindu_lunar_calendar.hpp"
 #include "calendars/persian_calendar.hpp"
+#include "calendars/samaritan_calendar.hpp"
 #include "holiday_providers/bahai_based_calendar_holiday_provider.hpp"
 #include "holiday_providers/gregorian_calendar_holiday_provider.hpp"
 #include "holiday_providers/hebrew_based_calendar_holiday_provider.hpp"
@@ -13,6 +14,7 @@
 #include "holiday_providers/julian_calendar_holiday_provider.hpp"
 #include "holiday_providers/modern_hindu_lunar_calendar_holiday_provider.hpp"
 #include "holiday_providers/persian_based_calendar_holiday_provider.hpp"
+#include "holiday_providers/samaritan_calendar_holiday_provider.hpp"
 #include "holiday_providers/simple_calendar_holiday_provider.hpp"
 
 namespace calendrical::cli {
@@ -45,6 +47,10 @@ namespace calendrical::cli {
         provider.add<holiday_providers::persian_based_calendar_holiday_provider>(
             "persian_based",
             std::addressof(calendar_instance<calendars::persian_calendar>())
+        );
+        provider.add<holiday_providers::samaritan_calendar_holiday_provider>(
+            "samaritan",
+            std::addressof(calendar_instance<calendars::samaritan_calendar>())
         );
         provider.add<holiday_providers::modern_hindu_lunar_calendar_holiday_provider>(
             "modern_hindu_lunar",
