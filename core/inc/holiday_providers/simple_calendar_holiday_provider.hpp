@@ -20,10 +20,16 @@ namespace calendrical::holiday_providers{
 
         /** @brief Returns the backing calendar interface. */
         [[nodiscard]] const calendar_if* calendar() const override { return m_calendar; };
-        /** @brief Returns holidays for Gregorian year @p gyear (empty in this base helper). */
-        [[nodiscard]] std::vector<holiday_t> in_year(int32_t gyear) const override { return {}; }
+        /**
+         * @brief Returns holidays for Gregorian year @p gyear.
+         *
+         * This generic helper provides a minimal fixed-date observance set (currently `navasard` on month 1/day 1).
+         */
+        [[nodiscard]] std::vector<holiday_t> in_year(int32_t gyear) const override;
 
         /** @brief Maps a simple-calendar month/day occurrence into Gregorian year @p gyear. */
         [[nodiscard]] std::vector<fixed_date_t> in_gregorian(int32_t cmonth, int32_t cday, int32_t gyear) const;
+        /** @brief Navasard (month 1, day 1) occurrences in Gregorian year @p gyear. */
+        [[nodiscard]] std::vector<fixed_date_t> navasard(int32_t gyear) const;
     };
 }
