@@ -206,7 +206,7 @@ namespace calendrical::holiday_providers {
         return sacred_wednesdays_in_range(gregorian_calendar::standard.get_year_range(gyear));
     }
 
-    std::vector<fixed_date_t> modern_hindu_lunar_calendar_holiday_provider::sacred_wednesdays_in_range(const range<fixed_date_t>& range) const
+    std::vector<fixed_date_t> modern_hindu_lunar_calendar_holiday_provider::sacred_wednesdays_in_range(const interval<fixed_date_t>& range) const
     {
         std::vector<fixed_date_t> days{};
         for (auto wed = weekday::wednesday.on_or_after(range.min); wed < range.max; wed = weekday::wednesday.on_or_after(wed.add(1)))

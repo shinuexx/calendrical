@@ -32,7 +32,7 @@ namespace calendrical::calendars {
     // ReSharper disable once CppMemberFunctionMayBeStatic
     bool old_hindu_lunar_calendar::get_leap(const double& new_moon) const // NOLINT(*-convert-member-functions-to-static)
     {
-        constexpr auto r = range_right_closed_between<double>(0, arya_solar_lunar_month_difference);
+        constexpr auto r = interval_right_closed_between<double>(0, arya_solar_lunar_month_difference);
         return r(mod(new_moon, arya_solar_month));
     }
     // ReSharper disable once CppMemberFunctionMayBeStatic

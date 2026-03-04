@@ -2,7 +2,7 @@
 #include "time_and_astronomy.hpp"
 #include "location.hpp"
 #include "lunar_phase.hpp"
-#include "range.hpp"
+#include "interval.hpp"
 #include <cmath>
 
 namespace calendrical::calendars {
@@ -14,7 +14,7 @@ namespace calendrical::calendars {
         const auto set = sunset(date - 1, locations::mecca);
         const auto t = universal_from_standard(set, locations::mecca);
         const auto phase = time_and_astronomy::lunar_phase(t);
-        return range_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
+        return interval_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
             && moonlag(date - 1, locations::mecca) > moment_t{ 0 };
     }
     fixed_date_t saudi_islamic_calendar::new_month_on_or_before(const fixed_date_t& date)

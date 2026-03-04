@@ -1,6 +1,6 @@
 #include "calendars/babylonian_calendar.hpp"
 #include "time_and_astronomy.hpp"
-#include "range.hpp"
+#include "interval.hpp"
 #include "lunar_phase.hpp"
 #include <cmath>
 
@@ -12,7 +12,7 @@ namespace calendrical::calendars {
         const auto set = sunset(date.subtract(1), babylon);
         const auto t = universal_from_standard(set, babylon);
         const auto phase = time_and_astronomy::lunar_phase(t);
-        return range_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase) &&
+        return interval_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase) &&
                static_cast<double>(new_moon_before(t)) <= static_cast<double>(t) - 1 &&
                moonlag(date - 1, babylon) > m48;
     }

@@ -1,16 +1,17 @@
 #pragma once
 
+#include <concepts>
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <concepts>
+
 #include "type_name.hpp"
 
 namespace calendrical {
     /**
      * @brief Interval boundary policy.
      */
-    enum class range_type {
+    enum class interval_type {
         /** @brief Open interval `(min, max)`. */
         opened,
         /** @brief Closed interval `[min, max]`. */
@@ -22,16 +23,31 @@ namespace calendrical {
     };
 
     /** @brief Returns a string representation of the boundary policy. */
-    std::string to_string(const range_type& type);
+    inline std::string to_string(const interval_type& type)
+    {
+        switch (type)
+        {
+        case interval_type::opened:
+            return "opened";
+        case interval_type::closed:
+            return "closed";
+        case interval_type::left_closed:
+            return "left_closed";
+        case interval_type::right_closed:
+            return "right_closed";
+        default:
+            return "unknown";
+        }
+    }
 
     template <typename T>
     /**
      * @brief Generic interval with configurable open/closed endpoints.
      */
-    struct range
+    struct interval
     {
         /** @brief Endpoint inclusion policy. */
-        range_type type;
+        interval_type type;
         /** @brief Lower bound. */
         T min;
         /** @brief Upper bound. */
@@ -49,68 +65,73 @@ namespace calendrical {
         {
             switch (type)
             {
-            case range_type::opened:
+            case interval_type::opened:
                 return in_open(value);
-            case range_type::closed:
+            case interval_type::closed:
                 return in_closed(value);
-            case range_type::left_closed:
+            case interval_type::left_closed:
                 return in_left_closed(value);
-            case range_type::right_closed:
+            case interval_type::right_closed:
                 return in_right_closed(value);
             default:
                 return false;
             }
         }
+
         /** @brief Function-call shorthand for @ref contains. */
         constexpr bool operator()(const T& value) const { return contains(value); }
 
         template <typename T2, typename = std::enable_if_t<std::convertible_to<T, T2> || std::constructible_from<T, T2>>>
         /** @brief Casts endpoints to another value type while preserving boundary policy. */
-        constexpr range<T2> cast() const { return { type, static_cast<T2>(min), static_cast<T2>(max) }; }
+        constexpr interval<T2> cast() const { return { type, static_cast<T2>(min), static_cast<T2>(max) }; }
+
         template <typename T2, typename = std::enable_if_t<std::convertible_to<T, T2> || std::constructible_from<T, T2>>>
         // ReSharper disable once CppNonExplicitConversionOperator
-        /** @brief Implicit conversion to another `range<T2>` via @ref cast. */
-        constexpr operator range<T2>() const { return cast<T2>(); } // NOLINT(*-explicit-constructor)
+        /** @brief Implicit conversion to another `interval<T2>` via @ref cast. */
+        constexpr operator interval<T2>() const { return cast<T2>(); } // NOLINT(*-explicit-constructor)
 
         /** @brief Returns the same bounds with both endpoints open. */
-        constexpr range open() const { return { range_type::opened, min, max }; }
+        constexpr interval open() const { return { interval_type::opened, min, max }; }
         /** @brief Returns the same bounds with both endpoints closed. */
-        constexpr range close() const { return { range_type::closed, min, max }; }
+        constexpr interval close() const { return { interval_type::closed, min, max }; }
         /** @brief Returns the same bounds with a closed left endpoint. */
-        constexpr range close_left() const { return { range_type::left_closed, min, max }; }
+        constexpr interval close_left() const { return { interval_type::left_closed, min, max }; }
         /** @brief Returns the same bounds with a closed right endpoint. */
-        constexpr range close_right() const { return { range_type::right_closed, min, max }; }
+        constexpr interval close_right() const { return { interval_type::right_closed, min, max }; }
 
         /** @brief Equality comparison on type and endpoints. */
-        constexpr bool operator==(const range& other) const = default;
+        constexpr bool operator==(const interval& other) const = default;
     };
 
     template <typename T>
-    /** @brief Returns a debug-friendly textual representation of a range. */
-    std::string to_string(const range<T>& range)
+    /** @brief Returns a debug-friendly textual representation of an interval. */
+    std::string to_string(const interval<T>& value)
     {
         std::ostringstream oss{};
-        oss << "range<" << calendrical::type_name<T>() << ">{type:" << calendrical::to_string(range.type) << ",min:" << range.min << ",max:" << range.max << "}";
+        oss << "interval<" << calendrical::type_name<T>() << ">{type:" << calendrical::to_string(value.type) << ",min:" << value.min << ",max:" << value.max << "}";
         return oss.str();
     }
 
     template <typename T>
     /** @brief Factory for an open interval `(min, max)`. */
-    constexpr range<T> range_opened_between(const T& min, const T& max) { return { range_type::opened, min, max }; }
+    constexpr interval<T> interval_opened_between(const T& min, const T& max) { return { interval_type::opened, min, max }; }
+
     template <typename T>
     /** @brief Factory for a closed interval `[min, max]`. */
-    constexpr range<T> range_closed_between(const T& min, const T& max) { return { range_type::closed, min, max }; }
+    constexpr interval<T> interval_closed_between(const T& min, const T& max) { return { interval_type::closed, min, max }; }
+
     template <typename T>
     /** @brief Factory for a left-closed interval `[min, max)`. */
-    constexpr range<T> range_left_closed_between(const T& min, const T& max) { return { range_type::left_closed, min, max }; }
+    constexpr interval<T> interval_left_closed_between(const T& min, const T& max) { return { interval_type::left_closed, min, max }; }
+
     template <typename T>
     /** @brief Factory for a right-closed interval `(min, max]`. */
-    constexpr range<T> range_right_closed_between(const T& min, const T& max) { return { range_type::right_closed, min, max }; }
+    constexpr interval<T> interval_right_closed_between(const T& min, const T& max) { return { interval_type::right_closed, min, max }; }
 }
 
 template <typename T>
-/** @brief Stream output for @ref calendrical::range. */
-std::ostream& operator<<(std::ostream& out, const calendrical::range<T>& range)
+/** @brief Stream output for @ref calendrical::interval. */
+std::ostream& operator<<(std::ostream& out, const calendrical::interval<T>& value)
 {
-    return out << calendrical::to_string(range);
+    return out << calendrical::to_string(value);
 }

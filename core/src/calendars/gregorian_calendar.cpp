@@ -68,8 +68,8 @@ namespace calendrical::calendars{
         return to_fixed({year, month::december, 31});
     }
 
-    range<fixed_date_t> gregorian_calendar::get_year_range(int32_t year) const {
-        return range_left_closed_between(get_new_year(year), get_new_year(year + 1));
+    interval<fixed_date_t> gregorian_calendar::get_year_range(int32_t year) const {
+        return interval_left_closed_between(get_new_year(year), get_new_year(year + 1));
     }
 
     int32_t gregorian_calendar::get_remaining_days(const gregorian_date &date) const {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "datetypes/gregorian_date.hpp"
-#include "range.hpp"
+#include "interval.hpp"
 #include "moment.hpp"
 #include "angle.hpp"
 
@@ -51,7 +51,7 @@ namespace calendrical::calendars{
         /** @brief Returns the last fixed date in the given Gregorian year. */
         [[nodiscard]] fixed_date_t get_year_end(int32_t year) const;
         /** @brief Returns the inclusive fixed-date range for a Gregorian year. */
-        [[nodiscard]] range<fixed_date_t> get_year_range(int32_t year) const;
+        [[nodiscard]] interval<fixed_date_t> get_year_range(int32_t year) const;
 
         /** @brief Returns days remaining in the Gregorian year after @p date. */
         [[nodiscard]] int32_t get_remaining_days(const gregorian_date &date) const;

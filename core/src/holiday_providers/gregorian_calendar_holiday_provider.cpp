@@ -46,7 +46,7 @@ namespace calendrical::holiday_providers {
         return easter(year).add(49);
     }
 
-    std::vector<fixed_date_t> gregorian_calendar_holiday_provider::unlucky_fridays_in_range(const range<fixed_date_t>& range) const {
+    std::vector<fixed_date_t> gregorian_calendar_holiday_provider::unlucky_fridays_in_range(const interval<fixed_date_t>& range) const {
         std::vector<fixed_date_t> fridays{};
         for (auto fri = weekday::friday.on_or_after(range.min); fri < range.max; fri = weekday::friday.on_or_after(fri.add(1))) {
             if (m_gregorian->to_date(fri).day == 13)

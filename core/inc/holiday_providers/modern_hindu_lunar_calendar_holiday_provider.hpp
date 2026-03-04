@@ -82,6 +82,6 @@ namespace calendrical::holiday_providers {
         /** @brief Sacred Wednesday dates in Gregorian year @p gyear. */
         [[nodiscard]] std::vector<fixed_date_t> sacred_wednesdays(int32_t gyear) const;
         /** @brief Sacred Wednesday dates within an explicit fixed-date range. */
-        [[nodiscard]] std::vector<fixed_date_t> sacred_wednesdays_in_range(const range<fixed_date_t>& range) const;
+        [[nodiscard]] std::vector<fixed_date_t> sacred_wednesdays_in_range(const interval<fixed_date_t>& range) const;
     };
 }

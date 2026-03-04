@@ -49,7 +49,7 @@ namespace calendrical::calendars{
             a = m_julian.to_fixed({ date.year, date.month, nones_of_month(date.month) });
         else if (date.event == roman_event::ides)
             a = m_julian.to_fixed({ date.year, date.month, ides_of_month(date.month) });
-        b = is_leap_year(date.year) && date.month == month::march && date.event == roman_event::kalends && in(range_closed_between(6, 16), date.count) ? 0 : 1;
+        b = is_leap_year(date.year) && date.month == month::march && date.event == roman_event::kalends && in(interval_closed_between(6, 16), date.count) ? 0 : 1;
         c = date.leap ? 1 : 0;
         return a - date.count + b + c;
     }
@@ -64,14 +64,14 @@ namespace calendrical::calendars{
     }
     // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t roman_calendar::julian_year_from_auc(int32_t year) const { // NOLINT(*-convert-member-functions-to-static)
-        if (in(range_closed_between(1, -year_rome_founded), year)) {
+        if (in(interval_closed_between(1, -year_rome_founded), year)) {
             return year + year_rome_founded - 1;
         }
         return year + year_rome_founded;
     }
     // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t roman_calendar::auc_year_from_julian(int32_t year) const { // NOLINT(*-convert-member-functions-to-static)
-        if (in(range_closed_between(year_rome_founded, -1), year)) {
+        if (in(interval_closed_between(year_rome_founded, -1), year)) {
             return year - year_rome_founded + 1;
         }
         return year - year_rome_founded;

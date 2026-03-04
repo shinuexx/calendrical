@@ -36,7 +36,7 @@ namespace calendrical::calendars {
         const auto k = astro_hindu_lunar_day_from_moment(static_cast<double>(s) + 0.25);
         auto est = s + day;
         const auto mid = to_date(s - 15);
-        if (range_opened_between(3, 27).contains(k)) {
+        if (interval_opened_between(3, 27).contains(k)) {
             est -= k;
         } else if (mid.month != month || (mid.leap_month && !leap_month)) {
             est -= interval_modulus(k, -15, 15);

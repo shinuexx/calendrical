@@ -33,7 +33,7 @@ namespace calendrical::holiday_providers{
         fixed_date_t pentecost(int32_t year) const;
 
         /** @brief Friday-the-13th dates within an explicit fixed-date range. */
-        std::vector<fixed_date_t> unlucky_fridays_in_range(const range<fixed_date_t>& range) const;
+        std::vector<fixed_date_t> unlucky_fridays_in_range(const interval<fixed_date_t>& range) const;
         /** @brief Friday-the-13th dates in Gregorian year @p year. */
         std::vector<fixed_date_t> unlucky_fridays(int32_t year) const;
 

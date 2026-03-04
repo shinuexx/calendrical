@@ -25,7 +25,7 @@
 #include "hebrew_month.hpp"
 #include "lunar_phase.hpp"
 #include "month.hpp"
-#include "range.hpp"
+#include "interval.hpp"
 #include "roman_event.hpp"
 #include "season.hpp"
 #include "weekday.hpp"
@@ -316,22 +316,22 @@ namespace calendrical::calendar_traits {
     };
 
     template<>
-    /** @brief Parser specialization for @ref calendrical::range_type. */
-    struct enum_string_converter<range_type> {
-        /** @brief Accepts lowercase range boundary policy names or numeric enum values. */
-        static range_type from_string(std::string_view value) {
+    /** @brief Parser specialization for @ref calendrical::interval_type. */
+    struct enum_string_converter<interval_type> {
+        /** @brief Accepts lowercase interval boundary policy names or numeric enum values. */
+        static interval_type from_string(std::string_view value) {
             const auto lower = detail::lower_copy(value);
-            if (lower == "opened") return range_type::opened;
-            if (lower == "closed") return range_type::closed;
-            if (lower == "left_closed") return range_type::left_closed;
-            if (lower == "right_closed") return range_type::right_closed;
+            if (lower == "opened") return interval_type::opened;
+            if (lower == "closed") return interval_type::closed;
+            if (lower == "left_closed") return interval_type::left_closed;
+            if (lower == "right_closed") return interval_type::right_closed;
 
-            switch (const auto numeric = detail::parse_int32(value, "range_type")) {
-                case static_cast<int32_t>(range_type::opened): return range_type::opened;
-                case static_cast<int32_t>(range_type::closed): return range_type::closed;
-                case static_cast<int32_t>(range_type::left_closed): return range_type::left_closed;
-                case static_cast<int32_t>(range_type::right_closed): return range_type::right_closed;
-                default: throw std::runtime_error("Invalid range_type value: " + std::string(value));
+            switch (const auto numeric = detail::parse_int32(value, "interval_type")) {
+                case static_cast<int32_t>(interval_type::opened): return interval_type::opened;
+                case static_cast<int32_t>(interval_type::closed): return interval_type::closed;
+                case static_cast<int32_t>(interval_type::left_closed): return interval_type::left_closed;
+                case static_cast<int32_t>(interval_type::right_closed): return interval_type::right_closed;
+                default: throw std::runtime_error("Invalid interval_type value: " + std::string(value));
             }
         }
     };
@@ -389,9 +389,9 @@ namespace calendrical::calendar_traits {
             return enum_string_converter<chinese_marriage_augury>::from_string(value);
         }
 
-        /** @brief Convenience wrapper for range boundary policy parsing. */
-        inline range_type parse_range_type(std::string_view value) {
-            return enum_string_converter<range_type>::from_string(value);
+        /** @brief Convenience wrapper for interval boundary policy parsing. */
+        inline interval_type parse_interval_type(std::string_view value) {
+            return enum_string_converter<interval_type>::from_string(value);
         }
     }
 

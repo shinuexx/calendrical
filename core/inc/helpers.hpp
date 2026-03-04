@@ -5,7 +5,7 @@
 #include <numbers>
 #include <ranges>
 #include <vector>
-#include "range.hpp"
+#include "interval.hpp"
 
 #include <chrono>
 
@@ -132,7 +132,7 @@ namespace calendrical{
 
     template<typename T>
     /** @brief Returns periodic positions within a range using period @p c and offset data. */
-    std::vector<T> positions_in_range(const T& p, const T& c, const T& D, const range<T>& rng)
+    std::vector<T> positions_in_range(const T& p, const T& c, const T& D, const interval<T>& rng)
     {
         auto a = rng.min;
         auto tmp = p - D;
@@ -160,12 +160,12 @@ namespace calendrical{
     }
 
     template <typename T>
-    /** @brief Returns whether @p value is contained in a @ref range. */
-    static constexpr bool in(const range<T>& range, const T& value) { return range.contains(value); }
+    /** @brief Returns whether @p value is contained in an @ref interval. */
+    static constexpr bool in(const interval<T>& range, const T& value) { return range.contains(value); }
 
     template <typename T>
-    /** @brief Negated form of @ref in(range, value). */
-    static constexpr bool not_in(const range<T>& range, const T& value) { return !range.contains(value); }
+    /** @brief Negated form of @ref in(interval, value). */
+    static constexpr bool not_in(const interval<T>& range, const T& value) { return !range.contains(value); }
 
     template <typename T, typename ContainerT>
     /** @brief Returns whether @p value is present in a generic container. */

@@ -14,15 +14,15 @@ namespace calendrical::time_and_astronomy {
 
     static const lazy<calendars::gregorian_calendar> gregorian = make_deferred_default_lazy<calendars::gregorian_calendar>();
 
-    static constexpr auto r2051 = range_closed_between<int32_t>(2051, 2150);
-    static constexpr auto r2006 = range_closed_between<int32_t>(2006, 2050);
-    static constexpr auto r1987 = range_closed_between<int32_t>(1987, 2005);
-    static constexpr auto r1900 = range_closed_between<int32_t>(1900, 1986);
-    static constexpr auto r1800 = range_closed_between<int32_t>(1800, 1899);
-    static constexpr auto r1700 = range_closed_between<int32_t>(1700, 1799);
-    static constexpr auto r1600 = range_closed_between<int32_t>(1600, 1699);
-    static constexpr auto r500 = range_closed_between<int32_t>(500, 1599);
-    static constexpr auto r0 = range_opened_between<int32_t>(-500, 500);
+    static constexpr auto r2051 = interval_closed_between<int32_t>(2051, 2150);
+    static constexpr auto r2006 = interval_closed_between<int32_t>(2006, 2050);
+    static constexpr auto r1987 = interval_closed_between<int32_t>(1987, 2005);
+    static constexpr auto r1900 = interval_closed_between<int32_t>(1900, 1986);
+    static constexpr auto r1800 = interval_closed_between<int32_t>(1800, 1899);
+    static constexpr auto r1700 = interval_closed_between<int32_t>(1700, 1799);
+    static constexpr auto r1600 = interval_closed_between<int32_t>(1600, 1699);
+    static constexpr auto r500 = interval_closed_between<int32_t>(500, 1599);
+    static constexpr auto r0 = interval_opened_between<int32_t>(-500, 500);
 
     static constexpr auto p2006 = make_polynomial(62.92, 0.32217, 0.005589);
     static constexpr auto p1987 = make_polynomial(63.86, 0.3345, -0.060374, 0.0017275, 0.000651814, 0.00002373599);
@@ -857,7 +857,7 @@ namespace calendrical::time_and_astronomy {
         const auto date = t.to_fixed_date();
         const auto hour = 24 * t.time();
         double a, b, h;
-        if (range_closed_between<double>(6, 18)(hour))
+        if (interval_closed_between<double>(6, 18)(hour))
         {
             h = daytime_temporal_hour(date, location);
             a = sunrise(date, location);
@@ -913,8 +913,8 @@ namespace calendrical::time_and_astronomy {
         const auto phase = lunar_phase(t);
         const auto h = lunar_altitude(t, location);
         const auto ARCL = arc_of_light(t);
-        return range_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
-            && range_closed_between<double>(10.6, 90).contains(ARCL)
+        return interval_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
+            && interval_closed_between<double>(10.6, 90).contains(ARCL)
             && h > 4.1_deg;
     }
     angle_t arg_of_vision(const moment_t& t, const location& location) {
@@ -943,7 +943,7 @@ namespace calendrical::time_and_astronomy {
         const auto W = D * (1 - cos(ARCL));
         const auto ARCV = arg_of_vision(t, location);
         const auto q1 = yallop_criterion_p(W);
-        return range_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
+        return interval_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
             && ARCV > angle_t(q1 + e);
     }
     double lunar_semi_diameter(const moment_t& t, const location& location) {
