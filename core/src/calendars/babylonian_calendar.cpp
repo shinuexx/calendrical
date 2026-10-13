@@ -20,10 +20,10 @@ namespace calendrical::calendars {
     fixed_date_t babylonian_calendar::new_month_on_or_before( // NOLINT(*-convert-member-functions-to-static)
             const fixed_date_t &date) const
     {
-        const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, date).to_fixed_date();
+        const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, moment_t{ date }).to_fixed_date();
         const auto age = date - moon;
         const auto T = age <= 3 && !babylonian_criterion(date) ? moon.subtract(30) : moon;
-        return least_passing(make_predicate(babylonian_criterion), T);
+        return fixed_date_t{ least_passing(make_predicate(babylonian_criterion), T) };
     }
 
     // ReSharper disable once CppMemberFunctionMayBeStatic

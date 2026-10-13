@@ -15,13 +15,13 @@ namespace calendrical::calendars{
     fixed_date_t french_calendar::new_year_on_or_before(const fixed_date_t& date) const
     {
         const auto approx = estimate_prior_solar_longitude(season::autumn, midnight_in_paris(date));
-        return least_passing([&](const int64_t& day) { return angle_t{season::autumn} <= solar_longitude(midnight_in_paris(day)); }, static_cast<int64_t>(std::floor(approx) - 1));
+        return fixed_date_t{ least_passing([&](const int64_t& day) { return angle_t{season::autumn} <= solar_longitude(midnight_in_paris(fixed_date_t{ day })); }, static_cast<int64_t>(std::floor(approx) - 1)) };
     }
 
     fixed_date_t french_calendar::get_new_year(int32_t year) const
     {
         const auto approx = std::floor(ms_epoch + 180 + mean_tropical_year * (year - 1));
-        return new_year_on_or_before(static_cast<int64_t>(approx));
+        return new_year_on_or_before(fixed_date_t{ static_cast<int64_t>(approx) });
     }
     int32_t french_calendar::get_year(const fixed_date_t& date) const
     {

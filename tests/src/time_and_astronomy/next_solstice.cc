@@ -11,53 +11,53 @@
 namespace tests {
     using namespace calendrical::time_and_astronomy;
 
-    static constexpr auto bogus = std::numeric_limits<double>::quiet_NaN();
-    static constexpr auto is_bogus(double value) { return value <=> 0 == std::partial_ordering::unordered; }
+    static constexpr auto bogus = moment_t{ std::numeric_limits<double>::quiet_NaN() };
+    static constexpr auto is_bogus(moment_t value) { return static_cast<double>(value) <=> 0 == std::partial_ordering::unordered; }
 
     static constexpr auto results = std::array<moment_t, 33>{
-        -214131.147334,
-        -61371.053052,
-        25556.789090,
-        49297.584568,
-        171378.539292,
-        210187.908137,
-        253468.413001,
-        369798.559125,
-        400113.618511,
-        434446.328561,
-        452615.134851,
-        470240.017391,
-        473892.432571,
-        507859.911980,
-        524202.622400,
-        544749.318739,
-        567122.512168,
-        569492.673245,
-        601727.018725,
-        613508.259061,
-        626656.970915,
-        645556.001954,
-        664276.907718,
-        671488.166885,
-        694863.628311,
-        704453.536160,
-        708926.239052,
-        709473.300039,
-        709656.728163,
-        727277.366581,
-        728738.335351,
-        744354.792807,
-        764718.468836
+        -214131.147334_m,
+        -61371.053052_m,
+        25556.789090_m,
+        49297.584568_m,
+        171378.539292_m,
+        210187.908137_m,
+        253468.413001_m,
+        369798.559125_m,
+        400113.618511_m,
+        434446.328561_m,
+        452615.134851_m,
+        470240.017391_m,
+        473892.432571_m,
+        507859.911980_m,
+        524202.622400_m,
+        544749.318739_m,
+        567122.512168_m,
+        569492.673245_m,
+        601727.018725_m,
+        613508.259061_m,
+        626656.970915_m,
+        645556.001954_m,
+        664276.907718_m,
+        671488.166885_m,
+        694863.628311_m,
+        704453.536160_m,
+        708926.239052_m,
+        709473.300039_m,
+        709656.728163_m,
+        727277.366581_m,
+        728738.335351_m,
+        744354.792807_m,
+        764718.468836_m
     };
 
     class next_solstice_test : public helpers::input_output_test<fixed_date_t, moment_t>{};
 
     TEST_P(next_solstice_test, calculate) {
         auto &[rd, output] = GetParam();
-        const auto actual = std::min({solar_longitude_after(season::spring, rd),
-            solar_longitude_after(season::summer, rd),
-            solar_longitude_after(season::autumn, rd),
-            solar_longitude_after(season::winter, rd)});
+        const auto actual = std::min({solar_longitude_after(season::spring, moment_t{ rd }),
+            solar_longitude_after(season::summer, moment_t{ rd }),
+            solar_longitude_after(season::autumn, moment_t{ rd }),
+            solar_longitude_after(season::winter, moment_t{ rd })});
         if (is_bogus(output)){
             EXPECT_TRUE(is_bogus(actual)) << output << " : " << actual<< " : " << rd << std::endl;
         } else {

@@ -23,7 +23,7 @@ namespace calendrical::calendars {
 
     public:
         /** @brief Reference location used by the observational Islamic model. */
-        static constexpr location islamic_location{ 30.1, 31.3, 200, moment_t::hms(2) };
+        static constexpr location islamic_location{ 30.1_deg, 31.3_deg, 200, moment_t::hms(2) };
 
         /** @brief Constructs an observational Islamic calendar instance. */
         observational_islamic_calendar() = default;

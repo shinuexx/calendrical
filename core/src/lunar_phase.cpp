@@ -14,9 +14,9 @@ namespace calendrical {
         }
         return oss.str();
     }
-}
 
-std::ostream& operator<<(std::ostream& out, const calendrical::lunar_phase& phase)
-{
-    return out << to_string(phase);
+    std::ostream& operator<<(std::ostream& out, const lunar_phase& phase)
+    {
+        return out << to_string(phase);
+    }
 }

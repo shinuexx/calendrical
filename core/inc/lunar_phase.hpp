@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include "angle.hpp"
 
 namespace calendrical {
     /**
@@ -21,9 +22,12 @@ namespace calendrical {
         last_quarter = 270
     };
 
+    template<>
+    struct angle_enum_type<lunar_phase> : std::true_type{};
+
     /** @brief Returns the lowercase lunar phase name. */
     std::string to_string(const lunar_phase& phase);
-}
 
-/** @brief Stream output for @ref calendrical::lunar_phase. */
-std::ostream& operator<<(std::ostream& out, const calendrical::lunar_phase& phase);
+    /** @brief Stream output for @ref lunar_phase. */
+    std::ostream& operator<<(std::ostream& out, const lunar_phase& phase);
+}

@@ -18,7 +18,7 @@ namespace calendrical::holiday_providers {
             result.emplace_back("mary announcement", x);
         for (const auto &x : jesus_transfiguration(year))
             result.emplace_back("jesus transfiguration", x);
-        std::ranges::sort(result);
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
 

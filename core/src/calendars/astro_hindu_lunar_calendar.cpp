@@ -16,7 +16,7 @@ namespace calendrical::calendars {
         const auto solar_month = sidereal_zodiac(last_new_moon);
         auto leap_month = solar_month == sidereal_zodiac(next_new_moon);
         auto month = static_cast<int32_t>(adjusted_remainder(solar_month + 1LL, 12));
-        auto year = astro_hindu_calendar_year(month <= 2 ? date.add(180) : date) - hindu_lunar_era;
+        auto year = astro_hindu_calendar_year(moment_t{ month <= 2 ? date.add(180) : date }) - hindu_lunar_era;
         return {
             year,
             month,
@@ -32,10 +32,10 @@ namespace calendrical::calendars {
         const auto approx = static_cast<int64_t>(ms_epoch) + mean_sidereal_year * (year + hindu_lunar_era + m);
         const auto s = static_cast<int64_t>(
                 std::floor(approx - mean_sidereal_year *
-                                       interval_modulus(sidereal_solar_longitude(approx) / 360_deg - m, -0.5, 0.5)));
-        const auto k = astro_hindu_lunar_day_from_moment(static_cast<double>(s) + 0.25);
+                                       interval_modulus(sidereal_solar_longitude(moment_t{ approx }) / 360_deg - m, -0.5, 0.5)));
+        const auto k = astro_hindu_lunar_day_from_moment(moment_t{ static_cast<double>(s) + 0.25 });
         auto est = s + day;
-        const auto mid = to_date(s - 15);
+        const auto mid = to_date(fixed_date_t{ s - 15 });
         if (interval_opened_between(3, 27).contains(k)) {
             est -= k;
         } else if (mid.month != month || (mid.leap_month && !leap_month)) {
@@ -43,9 +43,9 @@ namespace calendrical::calendars {
         } else {
             est -= interval_modulus(k, 15, 45);
         }
-        const auto T = est - interval_modulus(astro_hindu_lunar_day_from_moment(static_cast<double>(est) + 0.25) - static_cast<int64_t>(day), -15, 15LL);
+        const auto T = est - interval_modulus(astro_hindu_lunar_day_from_moment(moment_t{ static_cast<double>(est) + 0.25 }) - static_cast<int64_t>(day), -15, 15LL);
         const std::array<int64_t, 2> dates{day, adjusted_remainder(day + 1, 30)};
-        const auto ddate = least_passing([&](const int64_t& d) { return in(dates, astro_hindu_lunar_day_from_moment(alt_hindu_sunrise(d))); }, T - 1);
+        const auto ddate = fixed_date_t{ least_passing([&](const int64_t& d) { return in(dates, astro_hindu_lunar_day_from_moment(alt_hindu_sunrise(fixed_date_t{ d }))); }, T - 1) };
         return leap_day ? ddate + 1 : ddate;
     }
     int32_t astro_hindu_lunar_calendar::get_year(const fixed_date_t& date) const

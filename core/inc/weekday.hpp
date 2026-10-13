@@ -102,6 +102,7 @@ namespace calendrical {
         return days | std::views::transform([D](const weekday& wd)
                                { return static_cast<weekday>(static_cast<int32_t>(mod(static_cast<int32_t>(wd) + D, 7))); });
     }
-}
 
-std::ostream& operator<<(std::ostream& out, const calendrical::weekday& wd);
+    /** @brief Stream output for @ref weekday. */
+    std::ostream& operator<<(std::ostream& out, const weekday& wd);
+}

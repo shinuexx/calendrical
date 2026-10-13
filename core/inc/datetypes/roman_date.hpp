@@ -44,7 +44,7 @@ namespace calendrical::datetypes {
 
     /** @brief Returns a debug-friendly string representation of an olympiad value. */
     std::string to_string(const olympiad& odate);
-}
 
-/** @brief Stream output for @ref calendrical::datetypes::olympiad. */
-std::ostream& operator<<(std::ostream& out, const calendrical::datetypes::olympiad& odate);
+    /** @brief Stream output for @ref olympiad. */
+    std::ostream& operator<<(std::ostream& out, const olympiad& odate);
+}

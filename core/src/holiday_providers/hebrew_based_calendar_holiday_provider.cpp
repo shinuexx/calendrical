@@ -54,6 +54,7 @@ namespace calendrical::holiday_providers {
             result.emplace_back( "intermediate days of passover", x );
         for (auto& x : hanukkah_days(gyear))
             result.emplace_back( "hanukkah", x );
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
 
@@ -256,7 +257,7 @@ namespace calendrical::holiday_providers {
         constexpr auto Y = 365.25;
         const auto start = static_cast<double>(m_start_1_adar_21) + 0.75;
         const auto offset = season / angle_t::full_circle * Y;
-        auto r = m_gregorian->cycle_in_gregorian(season, year, Y, start + offset);
+        auto r = m_gregorian->cycle_in_gregorian(season, year, Y, moment_t{ start + offset });
         return {r.begin(), r.end()};
     }
 

@@ -23,8 +23,8 @@ namespace calendrical {
         }
         return oss.str();
     }
-} // namespace calendrical
 
-std::ostream& operator<<(std::ostream& out, const calendrical::hebrew_month& m) {
-    return out << to_string(m);
-}
+    std::ostream& operator<<(std::ostream& out, const hebrew_month& m) {
+        return out << to_string(m);
+    }
+} // namespace calendrical

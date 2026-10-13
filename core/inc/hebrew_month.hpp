@@ -42,7 +42,6 @@ namespace calendrical {
     /** @brief Returns the lowercase transliterated Hebrew month name. */
     std::string to_string(const hebrew_month& m);
 
+    /** @brief Stream output for @ref hebrew_month. */
+    std::ostream& operator<<(std::ostream& out, const hebrew_month& m);
 }
-
-/** @brief Stream output for @ref calendrical::hebrew_month. */
-std::ostream& operator<<(std::ostream& out, const calendrical::hebrew_month& m);

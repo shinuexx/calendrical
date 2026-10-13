@@ -7,8 +7,8 @@ namespace calendrical::calendars {
 
     angle_t tibetan_calendar::tibetan_sun_equation(const angle_t& a)
     {
-        static constexpr std::array<double, 4> t{
-            0,
+        static constexpr std::array<angle_t, 4> t{
+            0_deg,
             angle_t::dms(0, 6),
             angle_t::dms(0, 10),
             angle_t::dms(0, 11)
@@ -16,7 +16,7 @@ namespace calendrical::calendars {
         if (a > 6_deg)
             return -tibetan_sun_equation(a - 6_deg);
         if (a > 3_deg)
-            return tibetan_sun_equation(angle_t{6} - a);
+            return tibetan_sun_equation(6_deg - a);
         if (is_integer(a)) {
             const auto i = static_cast<int32_t>(static_cast<double>(a));
             return t[i];
@@ -30,8 +30,8 @@ namespace calendrical::calendars {
     }
     angle_t tibetan_calendar::tibetan_moon_equation(const angle_t& a)
     {
-        static constexpr std::array<double, 8> t{
-            0,
+        static constexpr std::array<angle_t, 8> t{
+            0_deg,
             angle_t::dms(0,5),
             angle_t::dms(0,10),
             angle_t::dms(0,15),
@@ -43,7 +43,7 @@ namespace calendrical::calendars {
         if (a > 14_deg)
             return -tibetan_moon_equation(a - 14_deg);
         if (a > 7_deg)
-            return tibetan_moon_equation(angle_t{14} - a);
+            return tibetan_moon_equation(14_deg - a);
         if (is_integer(a)) {
             const auto i = static_cast<int32_t>(static_cast<double>(a));
             return t[i];
@@ -83,9 +83,9 @@ namespace calendrical::calendars {
         const auto mean = days * 11135 / 11312.0 - 30 + (leap_day ? 0 : -1) +  1071/1616.0;
         const auto solar_anomaly = mod(days *  13 / 4824.0 +  2117 / 4824.0, 1);
         const auto lunar_anomaly = mod(days *  3781 / 105840.0 + 2837 / 15120.0, 1);
-        const auto sun = -tibetan_sun_equation(12 * solar_anomaly);
-        const auto moon = tibetan_moon_equation(28 * lunar_anomaly);
-        return static_cast<int64_t>(floor(static_cast<int64_t>(ms_epoch) + mean + sun + moon));
+        const auto sun = -tibetan_sun_equation(angle_t{12 * solar_anomaly});
+        const auto moon = tibetan_moon_equation(angle_t{28 * lunar_anomaly});
+        return fixed_date_t{ static_cast<int64_t>(floor(static_cast<int64_t>(ms_epoch) + mean + sun + moon)) };
     }
 
     int32_t tibetan_calendar::get_month(const fixed_date_t& date) const

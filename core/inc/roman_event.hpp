@@ -18,7 +18,7 @@ namespace calendrical {
 
     /** @brief Returns the lowercase Roman event name. */
     std::string to_string(const roman_event& event);
-}
 
-/** @brief Stream output for @ref calendrical::roman_event. */
-std::ostream& operator<<(std::ostream& out, const calendrical::roman_event& event);
+    /** @brief Stream output for @ref roman_event. */
+    std::ostream& operator<<(std::ostream& out, const roman_event& event);
+}

@@ -29,6 +29,14 @@
 #include "roman_event.hpp"
 #include "season.hpp"
 #include "weekday.hpp"
+#include "calendars/gregorian_calendar.hpp"
+#include "calendars/julian_calendar.hpp"
+#include "calendars/iso_calendar.hpp"
+#include "calendars/hebrew_calendar.hpp"
+#include "calendars/icelandic_calendar.hpp"
+#include "calendars/roman_calendar.hpp"
+#include "calendars/bahai_calendar.hpp"
+#include "calendars/chinese_calendar.hpp"
 
 namespace calendrical::calendar_traits {
     template<typename EnumT>
@@ -412,21 +420,29 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `simple_date{year:...,month:...,day:...}`. */
         static datetypes::simple_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "simple_date");
-            return {
+            const datetypes::simple_date date{
                 detail::parse_int32(detail::get_required_field(fields, "year", "simple_date"), "year"),
                 detail::parse_int32(detail::get_required_field(fields, "month", "simple_date"), "month"),
                 detail::parse_int32(detail::get_required_field(fields, "day", "simple_date"), "day")
             };
+            if (date.month < 1 || date.day < 1) {
+                throw std::invalid_argument("Invalid simple_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `year-month-day` representation. */
         static datetypes::simple_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("simple_date compact format: year-month-day");
-            return {
+            const datetypes::simple_date date{
                 detail::parse_int32(parts[0], "year"),
                 detail::parse_int32(parts[1], "month"),
                 detail::parse_int32(parts[2], "day")
             };
+            if (date.month < 1 || date.day < 1) {
+                throw std::invalid_argument("Invalid simple_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -438,21 +454,29 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `gregorian_date{year:...,month:...,day:...}`. */
         static datetypes::gregorian_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "gregorian_date");
-            return {
+            const datetypes::gregorian_date date{
                 detail::parse_int32(detail::get_required_field(fields, "year", "gregorian_date"), "year"),
                 detail::parse_month(detail::get_required_field(fields, "month", "gregorian_date")),
                 detail::parse_int32(detail::get_required_field(fields, "day", "gregorian_date"), "day")
             };
+            if (!calendars::gregorian_calendar::standard.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid gregorian_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `year-month-day` representation. */
         static datetypes::gregorian_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("gregorian_date compact format: year-month-day");
-            return {
+            const datetypes::gregorian_date date{
                 detail::parse_int32(parts[0], "year"),
                 detail::parse_month(parts[1]),
                 detail::parse_int32(parts[2], "day")
             };
+            if (!calendars::gregorian_calendar::standard.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid gregorian_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -464,21 +488,29 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `julian_date{year:...,month:...,day:...}`. */
         static datetypes::julian_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "julian_date");
-            return {
+            const datetypes::julian_date date{
                 detail::parse_int32(detail::get_required_field(fields, "year", "julian_date"), "year"),
                 detail::parse_month(detail::get_required_field(fields, "month", "julian_date")),
                 detail::parse_int32(detail::get_required_field(fields, "day", "julian_date"), "day")
             };
+            if (!calendars::julian_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid julian_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `year-month-day` representation. */
         static datetypes::julian_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("julian_date compact format: year-month-day");
-            return {
+            const datetypes::julian_date date{
                 detail::parse_int32(parts[0], "year"),
                 detail::parse_month(parts[1]),
                 detail::parse_int32(parts[2], "day")
             };
+            if (!calendars::julian_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid julian_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -490,21 +522,29 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `iso_date{year:...,week:...,day:...}`. */
         static datetypes::iso_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "iso_date");
-            return {
+            const datetypes::iso_date date{
                 detail::parse_int32(detail::get_required_field(fields, "year", "iso_date"), "year"),
                 detail::parse_int32(detail::get_required_field(fields, "week", "iso_date"), "week"),
                 detail::parse_int32(detail::get_required_field(fields, "day", "iso_date"), "day")
             };
+            if (date.week < 1 || date.day < 1 || date.day > 7 || !calendars::iso_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid iso_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `year-week-day` representation. */
         static datetypes::iso_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("iso_date compact format: year-week-day");
-            return {
+            const datetypes::iso_date date{
                 detail::parse_int32(parts[0], "year"),
                 detail::parse_int32(parts[1], "week"),
                 detail::parse_int32(parts[2], "day")
             };
+            if (date.week < 1 || date.day < 1 || date.day > 7 || !calendars::iso_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid iso_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -516,21 +556,29 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `hebrew_date{year:...,month:...,day:...}`. */
         static datetypes::hebrew_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "hebrew_date");
-            return {
+            const datetypes::hebrew_date date{
                 detail::parse_int32(detail::get_required_field(fields, "year", "hebrew_date"), "year"),
                 detail::parse_hebrew_month(detail::get_required_field(fields, "month", "hebrew_date")),
                 detail::parse_int32(detail::get_required_field(fields, "day", "hebrew_date"), "day")
             };
+            if (!calendars::hebrew_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid hebrew_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `year-month-day` representation. */
         static datetypes::hebrew_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 3) throw std::runtime_error("hebrew_date compact format: year-month-day");
-            return {
+            const datetypes::hebrew_date date{
                 detail::parse_int32(parts[0], "year"),
                 detail::parse_hebrew_month(parts[1]),
                 detail::parse_int32(parts[2], "day")
             };
+            if (!calendars::hebrew_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid hebrew_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -542,23 +590,31 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `simple_lunar_date{...}` including `leap_month`. */
         static datetypes::simple_lunar_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "simple_lunar_date");
-            return {
+            const datetypes::simple_lunar_date date{
                 detail::parse_int32(detail::get_required_field(fields, "year", "simple_lunar_date"), "year"),
                 detail::parse_int32(detail::get_required_field(fields, "month", "simple_lunar_date"), "month"),
                 detail::parse_bool(detail::get_required_field(fields, "leap_month", "simple_lunar_date"), "leap_month"),
                 detail::parse_int32(detail::get_required_field(fields, "day", "simple_lunar_date"), "day")
             };
+            if (date.month < 1 || date.month > 13 || date.day < 1 || date.day > 30) {
+                throw std::invalid_argument("Invalid simple_lunar_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `year-month-leap_month-day` representation. */
         static datetypes::simple_lunar_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 4) throw std::runtime_error("simple_lunar_date compact format: year-month-leap_month-day");
-            return {
+            const datetypes::simple_lunar_date date{
                 detail::parse_int32(parts[0], "year"),
                 detail::parse_int32(parts[1], "month"),
                 detail::parse_bool(parts[2], "leap_month"),
                 detail::parse_int32(parts[3], "day")
             };
+            if (date.month < 1 || date.month > 13 || date.day < 1 || date.day > 30) {
+                throw std::invalid_argument("Invalid simple_lunar_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -570,25 +626,33 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `lunar_date{...}` including leap-month and leap-day markers. */
         static datetypes::lunar_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "lunar_date");
-            return {
+            const datetypes::lunar_date date{
                 detail::parse_int32(detail::get_required_field(fields, "year", "lunar_date"), "year"),
                 detail::parse_int32(detail::get_required_field(fields, "month", "lunar_date"), "month"),
                 detail::parse_bool(detail::get_required_field(fields, "leap_month", "lunar_date"), "leap_month"),
                 detail::parse_int32(detail::get_required_field(fields, "day", "lunar_date"), "day"),
                 detail::parse_bool(detail::get_required_field(fields, "leap_day", "lunar_date"), "leap_day")
             };
+            if (date.month < 1 || date.month > 13 || date.day < 1 || date.day > 30) {
+                throw std::invalid_argument("Invalid lunar_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `year-month-leap_month-day-leap_day` representation. */
         static datetypes::lunar_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 5) throw std::runtime_error("lunar_date compact format: year-month-leap_month-day-leap_day");
-            return {
+            const datetypes::lunar_date date{
                 detail::parse_int32(parts[0], "year"),
                 detail::parse_int32(parts[1], "month"),
                 detail::parse_bool(parts[2], "leap_month"),
                 detail::parse_int32(parts[3], "day"),
                 detail::parse_bool(parts[4], "leap_day")
             };
+            if (date.month < 1 || date.month > 13 || date.day < 1 || date.day > 30) {
+                throw std::invalid_argument("Invalid lunar_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -600,25 +664,33 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `bahai_date{major:...,cycle:...,year:...,month:...,day:...}`. */
         static datetypes::bahai_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "bahai_date");
-            return {
+            const datetypes::bahai_date date{
                 detail::parse_int32(detail::get_required_field(fields, "major", "bahai_date"), "major"),
                 detail::parse_int32(detail::get_required_field(fields, "cycle", "bahai_date"), "cycle"),
                 detail::parse_int32(detail::get_required_field(fields, "year", "bahai_date"), "year"),
                 detail::parse_int32(detail::get_required_field(fields, "month", "bahai_date"), "month"),
                 detail::parse_int32(detail::get_required_field(fields, "day", "bahai_date"), "day")
             };
+            if (!calendars::bahai_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid bahai_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `major-cycle-year-month-day` representation. */
         static datetypes::bahai_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 5) throw std::runtime_error("bahai_date compact format: major-cycle-year-month-day");
-            return {
+            const datetypes::bahai_date date{
                 detail::parse_int32(parts[0], "major"),
                 detail::parse_int32(parts[1], "cycle"),
                 detail::parse_int32(parts[2], "year"),
                 detail::parse_int32(parts[3], "month"),
                 detail::parse_int32(parts[4], "day")
             };
+            if (!calendars::bahai_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid bahai_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -630,25 +702,33 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `chinese_date{...}` including cycle and leap-month marker. */
         static datetypes::chinese_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "chinese_date");
-            return {
+            const datetypes::chinese_date date{
                 detail::parse_int32(detail::get_required_field(fields, "cycle", "chinese_date"), "cycle"),
                 detail::parse_int32(detail::get_required_field(fields, "year", "chinese_date"), "year"),
                 detail::parse_int32(detail::get_required_field(fields, "month", "chinese_date"), "month"),
                 detail::parse_bool(detail::get_required_field(fields, "leap_month", "chinese_date"), "leap_month"),
                 detail::parse_int32(detail::get_required_field(fields, "day", "chinese_date"), "day")
             };
+            if (date.cycle < 1 || date.year < 1 || date.year > 60 || date.month < 1 || date.month > 12 || date.day < 1 || date.day > 30 || !calendars::chinese_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid chinese_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `cycle-year-month-leap_month-day` representation. */
         static datetypes::chinese_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 5) throw std::runtime_error("chinese_date compact format: cycle-year-month-leap_month-day");
-            return {
+            const datetypes::chinese_date date{
                 detail::parse_int32(parts[0], "cycle"),
                 detail::parse_int32(parts[1], "year"),
                 detail::parse_int32(parts[2], "month"),
                 detail::parse_bool(parts[3], "leap_month"),
                 detail::parse_int32(parts[4], "day")
             };
+            if (date.cycle < 1 || date.year < 1 || date.year > 60 || date.month < 1 || date.month > 12 || date.day < 1 || date.day > 30 || !calendars::chinese_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid chinese_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -660,23 +740,31 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `icelandic_date{year:...,season:...,week:...,weekday:...}`. */
         static datetypes::icelandic_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "icelandic_date");
-            return {
+            const datetypes::icelandic_date date{
                 detail::parse_int32(detail::get_required_field(fields, "year", "icelandic_date"), "year"),
                 detail::parse_season(detail::get_required_field(fields, "season", "icelandic_date")),
                 detail::parse_int32(detail::get_required_field(fields, "week", "icelandic_date"), "week"),
                 detail::parse_weekday(detail::get_required_field(fields, "weekday", "icelandic_date"))
             };
+            if (date.week < 1 || !calendars::icelandic_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid icelandic_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `year-season-week-weekday` representation. */
         static datetypes::icelandic_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 4) throw std::runtime_error("icelandic_date compact format: year-season-week-weekday");
-            return {
+            const datetypes::icelandic_date date{
                 detail::parse_int32(parts[0], "year"),
                 detail::parse_season(parts[1]),
                 detail::parse_int32(parts[2], "week"),
                 detail::parse_weekday(parts[3])
             };
+            if (date.week < 1 || !calendars::icelandic_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid icelandic_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -688,25 +776,33 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `roman_date{year:...,month:...,event:...,count:...,leap:...}`. */
         static datetypes::roman_date from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "roman_date");
-            return {
+            const datetypes::roman_date date{
                 detail::parse_int32(detail::get_required_field(fields, "year", "roman_date"), "year"),
                 detail::parse_month(detail::get_required_field(fields, "month", "roman_date")),
                 detail::parse_roman_event(detail::get_required_field(fields, "event", "roman_date")),
                 detail::parse_int32(detail::get_required_field(fields, "count", "roman_date"), "count"),
                 detail::parse_bool(detail::get_required_field(fields, "leap", "roman_date"), "leap")
             };
+            if (date.count < 1 || !calendars::roman_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid roman_date: " + std::string(input));
+            }
+            return date;
         }
         /** @brief Parses compact `year-month-event-count-leap` representation. */
         static datetypes::roman_date from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 5) throw std::runtime_error("roman_date compact format: year-month-event-count-leap");
-            return {
+            const datetypes::roman_date date{
                 detail::parse_int32(parts[0], "year"),
                 detail::parse_month(parts[1]),
                 detail::parse_roman_event(parts[2]),
                 detail::parse_int32(parts[3], "count"),
                 detail::parse_bool(parts[4], "leap")
             };
+            if (date.count < 1 || !calendars::roman_calendar{}.is_valid_date(date)) {
+                throw std::invalid_argument("Invalid roman_date: " + std::string(input));
+            }
+            return date;
         }
     };
 
@@ -718,19 +814,27 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `sexagesimal_name{stem:...,branch:...}`. */
         static datetypes::sexagesimal_name from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "sexagesimal_name");
-            return {
+            const datetypes::sexagesimal_name name{
                 detail::parse_int32(detail::get_required_field(fields, "stem", "sexagesimal_name"), "stem"),
                 detail::parse_int32(detail::get_required_field(fields, "branch", "sexagesimal_name"), "branch")
             };
+            if (name.stem < 1 || name.stem > 10 || name.branch < 1 || name.branch > 12 || (name.stem % 2 != name.branch % 2)) {
+                throw std::invalid_argument("Invalid sexagesimal_name: " + std::string(input));
+            }
+            return name;
         }
         /** @brief Parses compact `stem-branch` representation. */
         static datetypes::sexagesimal_name from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 2) throw std::runtime_error("sexagesimal_name compact format: stem-branch");
-            return {
+            const datetypes::sexagesimal_name name{
                 detail::parse_int32(parts[0], "stem"),
                 detail::parse_int32(parts[1], "branch")
             };
+            if (name.stem < 1 || name.stem > 10 || name.branch < 1 || name.branch > 12 || (name.stem % 2 != name.branch % 2)) {
+                throw std::invalid_argument("Invalid sexagesimal_name: " + std::string(input));
+            }
+            return name;
         }
     };
 
@@ -742,19 +846,27 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `olympiad{cycle:...,year:...}`. */
         static datetypes::olympiad from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "olympiad");
-            return {
+            const datetypes::olympiad o{
                 detail::parse_int32(detail::get_required_field(fields, "cycle", "olympiad"), "cycle"),
                 detail::parse_int32(detail::get_required_field(fields, "year", "olympiad"), "year")
             };
+            if (o.cycle < 1 || o.year < 1 || o.year > 4) {
+                throw std::invalid_argument("Invalid olympiad: " + std::string(input));
+            }
+            return o;
         }
         /** @brief Parses compact `cycle-year` representation. */
         static datetypes::olympiad from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 2) throw std::runtime_error("olympiad compact format: cycle-year");
-            return {
+            const datetypes::olympiad o{
                 detail::parse_int32(parts[0], "cycle"),
                 detail::parse_int32(parts[1], "year")
             };
+            if (o.cycle < 1 || o.year < 1 || o.year > 4) {
+                throw std::invalid_argument("Invalid olympiad: " + std::string(input));
+            }
+            return o;
         }
     };
 

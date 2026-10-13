@@ -1,41 +1,39 @@
 #pragma once
 
 #include "location.hpp"
-#include "lazy.hpp"
 
 namespace calendrical::time_and_astronomy {
     /** @brief Converts local mean solar time to universal time using longitude. */
-    static constexpr moment_t universal_from_local(const moment_t& t, const location& location) {
+    inline constexpr moment_t universal_from_local(const moment_t& t, const location& location) {
         return t - location.get_longitude_zone();
     }
     /** @brief Converts universal time to local mean solar time using longitude. */
-    static constexpr moment_t local_from_universal(const moment_t& t, const location& location) {
+    inline constexpr moment_t local_from_universal(const moment_t& t, const location& location) {
         return t + location.get_longitude_zone();
     }
     /** @brief Converts universal time to local standard time using time zone offset. */
-    static constexpr moment_t standard_from_universal(const moment_t& t, const location& location) {
+    inline constexpr moment_t standard_from_universal(const moment_t& t, const location& location) {
         return t + location.zone;
     }
     /** @brief Converts local standard time to universal time using time zone offset. */
-    static constexpr moment_t universal_from_standard(const moment_t& t, const location& location) {
+    inline constexpr moment_t universal_from_standard(const moment_t& t, const location& location) {
         return t - location.zone;
     }
 
     /** @brief Converts local mean solar time directly to local standard time. */
-    static constexpr moment_t standard_from_local(const moment_t& t, const location& location) {
+    inline constexpr moment_t standard_from_local(const moment_t& t, const location& location) {
         return standard_from_universal(universal_from_local(t, location), location);
     }
     /** @brief Converts local standard time directly to local mean solar time. */
-    static constexpr moment_t local_from_standard(const moment_t& t, const location& location) {
+    inline constexpr moment_t local_from_standard(const moment_t& t, const location& location) {
         return local_from_universal(universal_from_standard(t, location), location);
     }
 
     /** @brief Delta-T style ephemeris correction (dynamical minus universal time). */
     moment_t ephemeris_correction(const moment_t& t);
 
-    //const extern moment_t J2000;
-    /** @brief Lazily initialized J2000 epoch moment (`2000-01-01 12:00 TT`-based reference). */
-    const extern lazy<moment_t> J2000;
+    /** @brief J2000 epoch moment (`2000-01-01 12:00 TT`-based reference). */
+    inline constexpr moment_t J2000{ 730120.5 };
 
     /** @brief Converts universal time to dynamical time. */
     moment_t dynamic_from_universal(const moment_t& t);
@@ -82,15 +80,15 @@ namespace calendrical::time_and_astronomy {
     angle_t aberration(const moment_t& t);
 
     /** @brief Mean tropical year length in days. */
-    static constexpr auto mean_tropical_year{ 365.242189 };
+    inline constexpr auto mean_tropical_year{ 365.242189 };
     /** @brief Mean sidereal year length in days. */
-    static constexpr auto mean_sidereal_year{ 365.25636 };
+    inline constexpr auto mean_sidereal_year{ 365.25636 };
 
     /** @brief Reference sidereal solar longitude offset (degrees). */
-    static constexpr angle_t sidereal_start{ 336.136058652892810 }; //148.66025426221921 // 156.13605090692624
+    inline constexpr angle_t sidereal_start{ 336.136058652892810 }; //148.66025426221921 // 156.13605090692624
 
     /** @brief Mean synodic month length in days. */
-    static constexpr auto mean_synodic_month{ 29.530588861 };
+    inline constexpr auto mean_synodic_month{ 29.530588861 };
 
     /** @brief First moment after @p t when solar longitude reaches @p l. */
     moment_t solar_longitude_after(const angle_t& l, const moment_t& t);
@@ -167,9 +165,9 @@ namespace calendrical::time_and_astronomy {
     moment_t moment_of_depression(const moment_t& approx, const location& location, const angle_t& a, bool early);
 
     /** @brief Boolean flag selecting morning branch of rise/depression calculations. */
-    static constexpr auto morning{ true };
+    inline constexpr auto morning{ true };
     /** @brief Boolean flag selecting evening branch of rise/depression calculations. */
-    static constexpr auto evening{ false };
+    inline constexpr auto evening{ false };
 
     /** @brief Dawn time when solar depression equals @p a. */
     moment_t dawn(const fixed_date_t& date, const location& location, const angle_t& a);
@@ -243,7 +241,7 @@ namespace calendrical::time_and_astronomy {
     angle_t lunar_diameter(const moment_t& t);
 
     /** @brief Default crescent-visibility predicate alias used by observational calendars. */
-    static constexpr auto visible_crescent = shaukat_criterion;
+    inline constexpr auto visible_crescent = shaukat_criterion;
 
     /** @brief Most recent date on or before @p date with first visible crescent (phasis). */
     fixed_date_t phasis_on_or_before(const fixed_date_t& date, const location& location);

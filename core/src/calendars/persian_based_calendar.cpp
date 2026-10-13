@@ -3,7 +3,7 @@
 #include <cmath>
 
 namespace calendrical::calendars {
-    const fixed_date_t persian_based_calendar::ms_epoch = 226896;//julian_calendar{}.to_fixed({ 622, month::march, 19 });
+    const fixed_date_t persian_based_calendar::ms_epoch = 226896_rd;//julian_calendar{}.to_fixed({ 622, month::march, 19 });
 
     simple_date persian_based_calendar::to_date(const fixed_date_t& date) const
     {

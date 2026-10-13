@@ -24,7 +24,7 @@ namespace calendrical::calendars{
 
     public:
         /** @brief Reference location used for observational Hebrew calculations. */
-        static constexpr location hebrew_location{ 32.82, 35, 0, moment_t::hms(2) };
+        static constexpr location hebrew_location{ 32.82_deg, 35_deg, 0, moment_t::hms(2) };
 
         /** @brief Constructs an observational Hebrew calendar instance. */
         observational_hebrew_calendar();

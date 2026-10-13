@@ -83,7 +83,7 @@ namespace calendrical::calendars {
         const auto y = month < hebrew_month::tishri ? year + 1 : year;
         const auto months_elapsed = month - hebrew_month::tishri + floor_div(235 * y - 234, 19);
         const auto r = static_cast<int64_t>(ms_epoch) - molad_part + static_cast<double>(months_elapsed) * molad_month_length;
-        return r;
+        return moment_t{ r };
     }
 
     fixed_date_t hebrew_calendar::fixed_from_molad(const moment_t &moon) {

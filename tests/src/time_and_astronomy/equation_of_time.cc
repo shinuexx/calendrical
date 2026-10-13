@@ -47,7 +47,7 @@ namespace tests {
 
     TEST_P(equation_of_time_test, calculate) {
         auto &[input, output] = GetParam();
-        EXPECT_NEAR(equation_of_time(input), output, 1e-6) << output << " : " << equation_of_time(input) << " : " << input << std::endl;
+        EXPECT_NEAR(equation_of_time(moment_t{ input }), output, 1e-6) << output << " : " << equation_of_time(moment_t{ input }) << " : " << input << std::endl;
     }
 
 

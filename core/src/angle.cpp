@@ -18,17 +18,17 @@ namespace calendrical {
     }
 
     angle_t asin(double value) {
-        return degrees(std::asin(value));
+        return angle_t{degrees(std::asin(value))};
     }
     angle_t acos(double value) {
-        return degrees(std::acos(value));
+        return angle_t{degrees(std::acos(value))};
     }
     angle_t atan(double value) {
-        return degrees(std::atan(value));
+        return angle_t{degrees(std::atan(value))};
     }
     angle_t arctan(double y, double x) {
         if (x == 0 && y == 0)
-            return std::numeric_limits<double>::quiet_NaN();
+            return angle_t{std::numeric_limits<double>::quiet_NaN()};
         double r;
         if (x == 0)
             r = sign(y) * 90;
@@ -36,10 +36,10 @@ namespace calendrical {
             const auto a = degrees(std::atan(y / x));
             r = x >= 0 ? a : a + 180;
         }
-        return mod(r, 360);
+        return angle_t{mod(r, 360)};
     }
-}
 
-std::ostream& operator<<(std::ostream& out, const calendrical::angle_t& angle) {
-    return out << to_string(angle);
+    std::ostream& operator<<(std::ostream& out, const angle_t& angle) {
+        return out << to_string(angle);
+    }
 }

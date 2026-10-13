@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include "angle.hpp"
 
 namespace calendrical {
     /**
@@ -21,9 +22,12 @@ namespace calendrical {
         winter = 270
     };
 
+    template<>
+    struct angle_enum_type<season> : std::true_type{};
+
     /** @brief Returns the lowercase season name. */
     std::string to_string(const season& s);
-}
 
-/** @brief Stream output for @ref calendrical::season. */
-std::ostream& operator<<(std::ostream& out, const calendrical::season& s);
+    /** @brief Stream output for @ref season. */
+    std::ostream& operator<<(std::ostream& out, const season& s);
+}

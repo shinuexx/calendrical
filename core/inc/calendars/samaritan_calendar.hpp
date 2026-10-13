@@ -29,7 +29,7 @@ namespace calendrical::calendars{
 
     public:
         /** @brief Reference location used by the Samaritan calendar. */
-        static constexpr location samaritan_location{ 32.1994, 35.2728, 881, moment_t::hms(2) };
+        static constexpr location samaritan_location{ 32.1994_deg, 35.2728_deg, 881, moment_t::hms(2) };
         /** @brief Runtime epoch derived from the implemented Samaritan rules. */
         fixed_date_t m_epoch;
 

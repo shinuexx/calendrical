@@ -1,5 +1,6 @@
 #include "helpers.hpp"
 #include <cmath>
+#include <stdexcept>
 
 namespace calendrical{
     bool is_integer(double x)
@@ -9,6 +10,10 @@ namespace calendrical{
 
     double floor_div(double x, double y)
     {
+        if (y == 0.0)
+        {
+            throw std::invalid_argument("Division by zero in floor_div");
+        }
         return std::floor(x / y);
     }
 
@@ -51,6 +56,10 @@ namespace calendrical{
         const auto begin = d0;
         while (!phi(d0) && std::abs(begin - d0) < passing_guard)
             ++d0;
+        if (!phi(d0))
+        {
+            throw std::runtime_error("least_passing: predicate not satisfied within search guard");
+        }
         return d0;
     }
     int64_t last_passing(const predicate_t<int64_t>& phi, int64_t d0)
@@ -58,16 +67,28 @@ namespace calendrical{
         const auto begin = d0;
         while (phi(d0) && std::abs(begin - d0) < passing_guard)
             ++d0;
+        if (phi(d0))
+        {
+            throw std::runtime_error("last_passing: failed to find boundary within search guard");
+        }
         return d0 - 1;
     }
 
     double binary_search(const predicate_t<double>& phi, const double_predicate_t<double>& psi, double u, double v)
     {
+        constexpr int max_iterations = 1000;
+        int iterations = 0;
         while (!psi(u,v))
+        {
+            if (++iterations > max_iterations)
+            {
+                throw std::runtime_error("binary_search: failed to converge within maximum iterations");
+            }
             if (const auto x = 0.5 * (u + v); phi(x))
                 v = x;
             else
                 u = x;
+        }
         return 0.5 * (u + v);
     }
 

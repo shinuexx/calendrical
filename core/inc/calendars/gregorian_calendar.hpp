@@ -26,7 +26,7 @@ namespace calendrical::calendars{
         /** @brief Constructs a Gregorian calendar with a custom epoch. */
         constexpr gregorian_calendar(const fixed_date_t &date) : m_epoch{date} {} // NOLINT(*-explicit-constructor)
 
-        ~gregorian_calendar() override = default;
+        constexpr ~gregorian_calendar() override = default;
 
         /** @brief Returns the calendar epoch. */
         [[nodiscard]] constexpr fixed_date_t epoch() const override { return m_epoch; }
@@ -35,6 +35,8 @@ namespace calendrical::calendars{
         [[nodiscard]] gregorian_date to_date(const fixed_date_t& date) const override;
         /** @brief Converts Gregorian Y-M-D to fixed-date representation. */
         [[nodiscard]] fixed_date_t to_fixed(const gregorian_date& date) const override;
+        /** @brief Validates if the given date is valid for this calendar. */
+        [[nodiscard]] bool is_valid_date(const gregorian_date& date) const override;
 
         /** @brief Returns January 1 of the given Gregorian year. */
         [[nodiscard]] fixed_date_t get_new_year(int32_t year) const;
@@ -70,4 +72,6 @@ namespace calendrical::calendars{
         /** @brief Standard Gregorian calendar singleton instance. */
         static const gregorian_calendar standard;
     };
+
+    inline constexpr gregorian_calendar gregorian_calendar::standard{};
 }

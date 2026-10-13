@@ -26,7 +26,7 @@ namespace calendrical::calendars {
 
     public:
         /** @brief Tehran reference location used by astronomical Persian variants. */
-        static constexpr location tehran{ 35.68, 51.42, 1100, moment_t::hms(3.5) };
+        static constexpr location tehran{ 35.68_deg, 51.42_deg, 1100, moment_t::hms(3.5) };
 
         /** @brief Constructs a Persian-based calendar instance. */
         persian_based_calendar() = default;

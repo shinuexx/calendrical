@@ -20,7 +20,7 @@ namespace calendrical {
 
     /** @brief Returns the lowercase augury category name. */
     std::string to_string(const chinese_marriage_augury& augury);
-}
 
-/** @brief Stream output for @ref calendrical::chinese_marriage_augury. */
-std::ostream& operator<<(std::ostream& out, const calendrical::chinese_marriage_augury& augury);
+    /** @brief Stream output for @ref chinese_marriage_augury. */
+    std::ostream& operator<<(std::ostream& out, const chinese_marriage_augury& augury);
+}

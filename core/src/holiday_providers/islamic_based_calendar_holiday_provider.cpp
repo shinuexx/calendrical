@@ -24,7 +24,7 @@ namespace calendrical::holiday_providers {
             result.emplace_back("eid ul fitr", x);
         for (auto& x: eid_ul_adha(year))
             result.emplace_back("eid ul adha", x);
-        std::ranges::sort(result);
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
 

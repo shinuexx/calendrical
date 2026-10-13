@@ -81,11 +81,13 @@ namespace calendrical {
         /** @brief Function-call shorthand for @ref contains. */
         constexpr bool operator()(const T& value) const { return contains(value); }
 
-        template <typename T2, typename = std::enable_if_t<std::convertible_to<T, T2> || std::constructible_from<T, T2>>>
+        template <typename T2>
+            requires (std::convertible_to<T, T2> || std::constructible_from<T2, T>)
         /** @brief Casts endpoints to another value type while preserving boundary policy. */
         constexpr interval<T2> cast() const { return { type, static_cast<T2>(min), static_cast<T2>(max) }; }
 
-        template <typename T2, typename = std::enable_if_t<std::convertible_to<T, T2> || std::constructible_from<T, T2>>>
+        template <typename T2>
+            requires (std::convertible_to<T, T2> || std::constructible_from<T2, T>)
         // ReSharper disable once CppNonExplicitConversionOperator
         /** @brief Implicit conversion to another `interval<T2>` via @ref cast. */
         constexpr operator interval<T2>() const { return cast<T2>(); } // NOLINT(*-explicit-constructor)
@@ -127,11 +129,11 @@ namespace calendrical {
     template <typename T>
     /** @brief Factory for a right-closed interval `(min, max]`. */
     constexpr interval<T> interval_right_closed_between(const T& min, const T& max) { return { interval_type::right_closed, min, max }; }
-}
 
-template <typename T>
-/** @brief Stream output for @ref calendrical::interval. */
-std::ostream& operator<<(std::ostream& out, const calendrical::interval<T>& value)
-{
-    return out << calendrical::to_string(value);
+    template <typename T>
+    /** @brief Stream output for @ref calendrical::interval. */
+    inline std::ostream& operator<<(std::ostream& out, const interval<T>& value)
+    {
+        return out << to_string(value);
+    }
 }

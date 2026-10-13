@@ -25,7 +25,7 @@ namespace calendrical::holiday_providers {
             result.emplace_back("yalda night", x);
         for (const auto& x : sepandarmazgan(gyear))
             result.emplace_back("sepandarmazgan", x);
-        std::ranges::sort(result);
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
 

@@ -27,7 +27,7 @@ namespace calendrical::datetypes {
         /** @brief Equality comparison on stem and branch. */
         constexpr bool operator==(const sexagesimal_name &other) const = default;
     };
-}
 
-/** @brief Stream output for @ref calendrical::datetypes::sexagesimal_name. */
-std::ostream& operator<<(std::ostream& out, const calendrical::datetypes::sexagesimal_name& odate);
+    /** @brief Stream output for @ref sexagesimal_name. */
+    std::ostream& operator<<(std::ostream& out, const sexagesimal_name& odate);
+}

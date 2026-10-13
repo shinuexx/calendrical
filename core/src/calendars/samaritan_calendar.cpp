@@ -20,13 +20,13 @@ namespace calendrical::calendars {
     fixed_date_t samaritan_calendar::new_moon_after(const moment_t& t)
     {
         const auto a = apparent_from_universal(new_moon_on_or_after(t), samaritan_location) - 0.5;
-        return static_cast<int64_t>(std::ceil(a));
+        return fixed_date_t{ static_cast<int64_t>(std::ceil(a)) };
     }
 
     fixed_date_t samaritan_calendar::new_moon_at_or_before(const moment_t& t)
     {
         const auto a = apparent_from_universal(new_moon_before(t), samaritan_location) - 0.5;
-        return static_cast<int64_t>(std::ceil(a));
+        return fixed_date_t{ static_cast<int64_t>(std::ceil(a)) };
     }
     fixed_date_t samaritan_calendar::new_year_on_or_before(const fixed_date_t& date) const
     {
@@ -63,8 +63,8 @@ namespace calendrical::calendars {
     {
         auto [year, month, day] = date;
         const auto a = std::floor(static_cast<double>(m_epoch) + 50 + 365.25 * (year - std::ceil((month - 5.0) / 8)));
-        const auto ny = new_year_on_or_before(static_cast<int64_t>(a));
-        const auto nm = new_moon_at_or_before(static_cast<double>(ny) + 29.5 * (month - 1) + 15);
+        const auto ny = new_year_on_or_before(fixed_date_t{ static_cast<int64_t>(a) });
+        const auto nm = new_moon_at_or_before(moment_t{ static_cast<double>(ny) + 29.5 * (month - 1) + 15 });
         return nm + day - 1;
     }
     int32_t samaritan_calendar::get_month(const fixed_date_t& date) const

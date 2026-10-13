@@ -41,6 +41,8 @@ namespace calendrical::calendars {
         [[nodiscard]] int32_t get_day(const fixed_date_t& date) const;
         /** @brief Returns whether the year is leap in the Coptic-style scheme. */
         [[nodiscard]] bool is_leap_year(int32_t year) const;
+        /** @brief Validates if the given date is valid for this calendar. */
+        [[nodiscard]] bool is_valid_date(const simple_date& date) const override;
     };
 
     /** @brief Standard Coptic calendar instance. */

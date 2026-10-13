@@ -48,7 +48,7 @@ namespace calendrical::calendars {
             + (month - 1) * arya_solar_month
             + day
             - h30;
-        return static_cast<int64_t>(std::ceil(a));
+        return fixed_date_t{ static_cast<int64_t>(std::ceil(a)) };
     }
 
     int32_t old_hindu_solar_calendar::get_month(const fixed_date_t& date) const {

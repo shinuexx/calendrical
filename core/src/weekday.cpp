@@ -33,8 +33,8 @@ namespace calendrical {
         }
         return "weekday{" + std::to_string(m_v) + "}";
     }
-}
 
-std::ostream& operator<<(std::ostream& out, const calendrical::weekday& wd) {
-    return out << wd.to_string();
+    std::ostream& operator<<(std::ostream& out, const weekday& wd) {
+        return out << wd.to_string();
+    }
 }

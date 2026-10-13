@@ -40,7 +40,6 @@ namespace calendrical {
     /** @brief Returns the lowercase month name. */
     std::string to_string(const month& m);
 
+    /** @brief Stream output for @ref month. */
+    std::ostream& operator<<(std::ostream& out, const month& m);
 }
-
-/** @brief Stream output for @ref calendrical::month. */
-std::ostream& operator<<(std::ostream& out, const calendrical::month& m);

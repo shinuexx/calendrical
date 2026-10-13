@@ -14,8 +14,8 @@ namespace calendrical {
         }
         return oss.str();
     }
-}
 
-std::ostream& operator<<(std::ostream& out, const calendrical::roman_event& event) {
-    return out << to_string(event);
+    std::ostream& operator<<(std::ostream& out, const roman_event& event) {
+        return out << to_string(event);
+    }
 }

@@ -35,9 +35,8 @@ namespace calendrical {
         }
         return oss.str();
     }
+
+    std::ostream& operator<<(std::ostream& out, const month& m) {
+        return out << to_string(m);
+    }
 } // namespace calendrical
-
-
-std::ostream& operator<<(std::ostream& out, const calendrical::month& m) {
-    return out << to_string(m);
-}

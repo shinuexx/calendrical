@@ -3,7 +3,7 @@
 
 namespace calendrical {
     fixed_date_t moment_t::to_fixed_date() const {
-        return static_cast<int64_t>(std::floor(m_v));
+        return fixed_date_t{ static_cast<int64_t>(std::floor(m_v)) };
     }
     double moment_t::time() const {
         return mod(m_v, 1.0);
@@ -17,8 +17,8 @@ namespace calendrical {
         const std::chrono::milliseconds ms{time};
         return std::chrono::hh_mm_ss{ms};
     }
-}
 
-std::ostream& operator<<(std::ostream& out, const calendrical::moment_t& m) {
-    return out << to_string(m);
+    std::ostream& operator<<(std::ostream& out, const moment_t& m) {
+        return out << to_string(m);
+    }
 }

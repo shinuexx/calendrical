@@ -41,7 +41,7 @@ namespace calendrical::calendars {
         // return to_fixed({ year, 1, false, 1 });
         const auto mina = arya_solar_year * (12 * year - 1);
         const auto lunar_new_year = arya_lunar_month * (1 + floor_div(mina, arya_lunar_month));
-        return static_cast<int64_t>(std::ceil(static_cast<int64_t>(ms_epoch) + lunar_new_year - quarter));
+        return fixed_date_t{ static_cast<int64_t>(std::ceil(static_cast<int64_t>(ms_epoch) + lunar_new_year - quarter)) };
     }
     int32_t old_hindu_lunar_calendar::get_year(const fixed_date_t& date) const
     {
@@ -70,7 +70,7 @@ namespace calendrical::calendars {
             + m * arya_lunar_month
             + (day - 1) * arya_lunar_day
             - quarter;
-        return static_cast<int64_t>(ceil(a));
+        return fixed_date_t{ static_cast<int64_t>(ceil(a)) };
     }
     int32_t old_hindu_lunar_calendar::get_month(const fixed_date_t& date) const
     {

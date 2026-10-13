@@ -70,7 +70,7 @@ namespace calendrical::cli {
 
         void print_holidays(std::vector<holiday_t> holidays, bool as_gregorian) {
             const auto& gregorian = calendars::gregorian_calendar::standard;
-            std::ranges::sort(holidays);
+            std::ranges::sort(holidays, holiday_t::date_only_less_t{});
 
             for (const auto &[name, date] : holidays) {
                 if (as_gregorian) {

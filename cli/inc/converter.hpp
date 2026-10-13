@@ -2,6 +2,7 @@
 
 #include <string>
 #include <concepts>
+#include <stdexcept>
 #include <utility>
 #include <concepts.hpp>
 
@@ -66,6 +67,9 @@ namespace calendrical::cli {
         }
         [[nodiscard]] fixed_date_t to_rd(const std::string& date) const override {
             const auto parsed_date = m_date_parser(date);
+            if (!m_calendar.is_valid_date(parsed_date)) {
+                throw std::invalid_argument("Invalid date: " + date);
+            }
             return m_calendar.to_fixed(parsed_date);
         }
 
