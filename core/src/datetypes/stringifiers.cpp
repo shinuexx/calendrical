@@ -82,8 +82,8 @@ namespace calendrical::datetypes {
         oss << "chinese_date{cycle:" << cycle << ",year:" << year << ",month:" << month << ",leap_month:" << std::boolalpha << leap_month << ",day:" << day << '}';
         return oss.str();
     }
-}
 
-std::ostream& operator<<(std::ostream& out, const calendrical::datetypes::olympiad& odate) {
-    return out << to_string(odate);
+    std::ostream& operator<<(std::ostream& out, const olympiad& odate) {
+        return out << to_string(odate);
+    }
 }

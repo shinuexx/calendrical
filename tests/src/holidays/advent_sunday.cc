@@ -114,24 +114,14 @@ namespace tests{
 
     class advent_sunday_test : public helpers::input_output_test<int32_t, std::tuple<int32_t,int32_t>> {
     protected:
-        holiday_providers::gregorian_calendar_holiday_provider* m_provider;
-        const calendars::gregorian_calendar* m_gregorian;
-
-        void SetUp() override {
-            m_provider = new holiday_providers::gregorian_calendar_holiday_provider();
-            m_gregorian = std::addressof(calendars::gregorian_calendar::standard);
-        }
-        void TearDown() override {
-            delete m_provider;
-            m_provider = nullptr;
-            m_gregorian = nullptr;
-        }
+        holiday_providers::gregorian_calendar_holiday_provider m_provider{};
+        const calendars::gregorian_calendar* m_gregorian = std::addressof(calendars::gregorian_calendar::standard);
     };
 
     TEST_P(advent_sunday_test, calculate) {
         auto &[year, month_day] = GetParam();
         auto &[month, day] = month_day;
-        const auto actual = m_gregorian->to_date(m_provider->advent(year));
+        const auto actual = m_gregorian->to_date(m_provider.advent(year));
         const auto expected = datetypes::gregorian_date{year, calendrical::month{month}, day};
         EXPECT_EQ(actual, expected) << year << " : " << actual.to_string() << " : " << expected.to_string() << std::endl;
     }

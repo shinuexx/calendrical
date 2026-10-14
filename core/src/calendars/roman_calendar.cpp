@@ -1,4 +1,5 @@
 #include "calendars/roman_calendar.hpp"
+#include <array>
 #include "helpers.hpp"
 
 namespace calendrical::calendars{
@@ -42,7 +43,8 @@ namespace calendrical::calendars{
         return {year, month::march, roman_event::kalends, 31 - day, day == 25};
     }
     fixed_date_t roman_calendar::to_fixed(const roman_date& date) const {
-        int64_t a{}, b{}, c{};
+        fixed_date_t a{};
+        int64_t b{}, c{};
         if (date.event == roman_event::kalends)
             a = m_julian.to_fixed({ date.year, date.month, 1 });
         else if (date.event == roman_event::nones)

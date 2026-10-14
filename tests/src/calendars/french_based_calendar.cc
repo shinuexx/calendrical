@@ -81,28 +81,20 @@ namespace tests {
 
     class french_based_calendar_test : public helpers::input_output_test<fixed_date_t, simple_date> {
     protected:
-        const french_based_calendar* m_calendar = nullptr;
+        std::unique_ptr<const french_based_calendar> m_calendar;
     };
 
     class french_calendar_test : public french_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new french_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<french_calendar>();
         }
     };
 
     class arithmetic_french_calendar_test : public french_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new arithmetic_french_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<arithmetic_french_calendar>();
         }
     };
 
@@ -127,6 +119,6 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : " << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(french_calendar, french_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
-    INSTANTIATE_TEST_CASE_P(arithmetic_french_calendar, arithmetic_french_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
+    INSTANTIATE_TEST_SUITE_P(french_calendar, french_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
+    INSTANTIATE_TEST_SUITE_P(arithmetic_french_calendar, arithmetic_french_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
 }

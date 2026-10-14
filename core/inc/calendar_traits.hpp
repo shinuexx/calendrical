@@ -1,8 +1,8 @@
 #pragma once
 
 #include <array>
-#include <charconv>
 #include <cctype>
+#include <charconv>
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -125,12 +125,25 @@ namespace calendrical::calendar_traits {
             return fields;
         }
 
-        /** @brief Splits a delimited string and trims each part. */
+        /**
+         * @brief Splits a delimited string and trims each part.
+         *
+         * When the delimiter is '-', a '-' that opens a part and is followed by a digit is a sign,
+         * not a separator, so negative values survive (e.g. `-500-03-15` -> `-500`, `03`, `15`).
+         */
         inline std::vector<std::string_view> split_parts(std::string_view input, char delimiter) {
             std::vector<std::string_view> parts;
             std::size_t start = 0;
             while (true) {
-                const auto pos = input.find(delimiter, start);
+                auto search_from = start;
+                if (delimiter == '-') {
+                    const auto first = input.find_first_not_of(" \t", start);
+                    if (first != std::string_view::npos && input[first] == '-' && first + 1 < input.size()
+                        && std::isdigit(static_cast<unsigned char>(input[first + 1]))) {
+                        search_from = first + 1;
+                    }
+                }
+                const auto pos = input.find(delimiter, search_from);
                 if (pos == std::string_view::npos) {
                     parts.emplace_back(trim(input.substr(start)));
                     break;
@@ -244,7 +257,7 @@ namespace calendrical::calendar_traits {
             if (lower == "autumn") return season::autumn;
             if (lower == "winter") return season::winter;
 
-            switch (const auto numeric = detail::parse_int32(value, "season")) {
+            switch (detail::parse_int32(value, "season")) {
                 case static_cast<int32_t>(season::spring): return season::spring;
                 case static_cast<int32_t>(season::summer): return season::summer;
                 case static_cast<int32_t>(season::autumn): return season::autumn;
@@ -264,7 +277,7 @@ namespace calendrical::calendar_traits {
             if (lower == "nones") return roman_event::nones;
             if (lower == "ides") return roman_event::ides;
 
-            switch (const auto numeric = detail::parse_int32(value, "roman_event")) {
+            switch (detail::parse_int32(value, "roman_event")) {
                 case static_cast<int32_t>(roman_event::kalends): return roman_event::kalends;
                 case static_cast<int32_t>(roman_event::nones): return roman_event::nones;
                 case static_cast<int32_t>(roman_event::ides): return roman_event::ides;
@@ -284,7 +297,7 @@ namespace calendrical::calendar_traits {
             if (lower == "full_moon" || lower == "full") return lunar_phase::full_moon;
             if (lower == "last_quarter") return lunar_phase::last_quarter;
 
-            switch (const auto numeric = detail::parse_int32(value, "lunar_phase")) {
+            switch (detail::parse_int32(value, "lunar_phase")) {
                 case static_cast<int32_t>(lunar_phase::new_moon): return lunar_phase::new_moon;
                 case static_cast<int32_t>(lunar_phase::first_quarter): return lunar_phase::first_quarter;
                 case static_cast<int32_t>(lunar_phase::full_moon): return lunar_phase::full_moon;
@@ -305,7 +318,7 @@ namespace calendrical::calendar_traits {
             if (lower == "blind") return chinese_marriage_augury::blind;
             if (lower == "widow") return chinese_marriage_augury::widow;
 
-            switch (const auto numeric = detail::parse_int32(value, "chinese_marriage_augury")) {
+            switch (detail::parse_int32(value, "chinese_marriage_augury")) {
                 case static_cast<int32_t>(chinese_marriage_augury::double_bright): return chinese_marriage_augury::double_bright;
                 case static_cast<int32_t>(chinese_marriage_augury::bright): return chinese_marriage_augury::bright;
                 case static_cast<int32_t>(chinese_marriage_augury::blind): return chinese_marriage_augury::blind;
@@ -326,7 +339,7 @@ namespace calendrical::calendar_traits {
             if (lower == "left_closed") return interval_type::left_closed;
             if (lower == "right_closed") return interval_type::right_closed;
 
-            switch (const auto numeric = detail::parse_int32(value, "interval_type")) {
+            switch (detail::parse_int32(value, "interval_type")) {
                 case static_cast<int32_t>(interval_type::opened): return interval_type::opened;
                 case static_cast<int32_t>(interval_type::closed): return interval_type::closed;
                 case static_cast<int32_t>(interval_type::left_closed): return interval_type::left_closed;
@@ -718,19 +731,27 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `sexagesimal_name{stem:...,branch:...}`. */
         static datetypes::sexagesimal_name from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "sexagesimal_name");
-            return {
+            const datetypes::sexagesimal_name name{
                 detail::parse_int32(detail::get_required_field(fields, "stem", "sexagesimal_name"), "stem"),
                 detail::parse_int32(detail::get_required_field(fields, "branch", "sexagesimal_name"), "branch")
             };
+            if (name.stem < 1 || name.stem > 10 || name.branch < 1 || name.branch > 12 || (name.stem % 2 != name.branch % 2)) {
+                throw std::invalid_argument("Invalid sexagesimal_name: " + std::string(input));
+            }
+            return name;
         }
         /** @brief Parses compact `stem-branch` representation. */
         static datetypes::sexagesimal_name from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 2) throw std::runtime_error("sexagesimal_name compact format: stem-branch");
-            return {
+            const datetypes::sexagesimal_name name{
                 detail::parse_int32(parts[0], "stem"),
                 detail::parse_int32(parts[1], "branch")
             };
+            if (name.stem < 1 || name.stem > 10 || name.branch < 1 || name.branch > 12 || (name.stem % 2 != name.branch % 2)) {
+                throw std::invalid_argument("Invalid sexagesimal_name: " + std::string(input));
+            }
+            return name;
         }
     };
 
@@ -742,19 +763,27 @@ namespace calendrical::calendar_traits {
         /** @brief Parses `olympiad{cycle:...,year:...}`. */
         static datetypes::olympiad from_string(std::string_view input) {
             const auto fields = detail::parse_record(input, "olympiad");
-            return {
+            const datetypes::olympiad o{
                 detail::parse_int32(detail::get_required_field(fields, "cycle", "olympiad"), "cycle"),
                 detail::parse_int32(detail::get_required_field(fields, "year", "olympiad"), "year")
             };
+            if (o.cycle < 1 || o.year < 1 || o.year > 4) {
+                throw std::invalid_argument("Invalid olympiad: " + std::string(input));
+            }
+            return o;
         }
         /** @brief Parses compact `cycle-year` representation. */
         static datetypes::olympiad from_compact_string(std::string_view input) {
             const auto parts = detail::split_parts(input, '-');
             if (parts.size() != 2) throw std::runtime_error("olympiad compact format: cycle-year");
-            return {
+            const datetypes::olympiad o{
                 detail::parse_int32(parts[0], "cycle"),
                 detail::parse_int32(parts[1], "year")
             };
+            if (o.cycle < 1 || o.year < 1 || o.year > 4) {
+                throw std::invalid_argument("Invalid olympiad: " + std::string(input));
+            }
+            return o;
         }
     };
 

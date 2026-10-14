@@ -118,39 +118,27 @@ namespace tests {
 
     class islamic_based_calendar_test : public helpers::input_output_test<fixed_date_t, simple_date> {
     protected:
-        const islamic_based_calendar* m_calendar = nullptr;
+        std::unique_ptr<const islamic_based_calendar> m_calendar;
     };
 
     class islamic_calendar_test : public islamic_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new islamic_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<islamic_calendar>();
         }
     };
 
     class observational_islamic_calendar_test : public islamic_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new observational_islamic_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<observational_islamic_calendar>();
         }
     };
 
     class saudi_islamic_calendar_test : public islamic_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new saudi_islamic_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<saudi_islamic_calendar>();
         }
     };
 
@@ -185,7 +173,7 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : " << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(islamic_calendar, islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
-    INSTANTIATE_TEST_CASE_P(observational_islamic_calendar, observational_islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
-    INSTANTIATE_TEST_CASE_P(saudi_islamic_calendar, saudi_islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, saudi_dates)));
+    INSTANTIATE_TEST_SUITE_P(islamic_calendar, islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
+    INSTANTIATE_TEST_SUITE_P(observational_islamic_calendar, observational_islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
+    INSTANTIATE_TEST_SUITE_P(saudi_islamic_calendar, saudi_islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, saudi_dates)));
 }

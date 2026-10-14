@@ -1,5 +1,6 @@
 #include "calendars/hebrew_calendar.hpp"
 #include <algorithm>
+#include <array>
 
 namespace calendrical::calendars {
 
@@ -83,7 +84,7 @@ namespace calendrical::calendars {
         const auto y = month < hebrew_month::tishri ? year + 1 : year;
         const auto months_elapsed = month - hebrew_month::tishri + floor_div(235 * y - 234, 19);
         const auto r = static_cast<int64_t>(ms_epoch) - molad_part + static_cast<double>(months_elapsed) * molad_month_length;
-        return r;
+        return moment_t{ r };
     }
 
     fixed_date_t hebrew_calendar::fixed_from_molad(const moment_t &moon) {
@@ -105,7 +106,7 @@ namespace calendrical::calendars {
             extra = { weekday::monday, weekday::wednesday, weekday::friday };
         else if (hmonth == hebrew_month::kislev && hday == 30)
             extra = { weekday::monday };
-        else if (in(std::array{ hebrew_month::kislev, hebrew_month::shevat }, hmonth) || hmonth == hebrew_month::adar && hday < 30)
+        else if (in(std::array{ hebrew_month::kislev, hebrew_month::shevat }, hmonth) || (hmonth == hebrew_month::adar && hday < 30))
             extra = { weekday::sunday, weekday::monday };
         else
             extra = { weekday::sunday };
@@ -115,5 +116,13 @@ namespace calendrical::calendars {
         return basic;
     }
 
-
+    bool hebrew_calendar::is_valid_date(const hebrew_date& date) const {
+        if (date.year < 1) {
+            return false;
+        }
+        if (date.month < hebrew_month::nisan || date.month > last_month_of_year(date.year)) {
+            return false;
+        }
+        return date.day >= 1 && date.day <= last_day_of_month(date.year, date.month);
+    }
 }

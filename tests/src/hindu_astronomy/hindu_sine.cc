@@ -11,8 +11,6 @@
 namespace tests {
     using namespace calendrical::time_and_astronomy;
 
-    static constexpr auto bogus = std::numeric_limits<double>::quiet_NaN();
-    static constexpr auto is_bogus(double value) { return value <=> 0 == std::partial_ordering::unordered; }
 
     static constexpr auto inputs = std::array{
         0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24
@@ -99,7 +97,7 @@ namespace tests {
         EXPECT_EQ(actual, output) << output << " : " << actual << " : " << rd << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(hindu_sine_table, hindu_sine_entry_test, testing::ValuesIn(helpers::make_test_params_values(inputs, sines)));
-    INSTANTIATE_TEST_CASE_P(hindu_sine, hindu_sine_test, testing::ValuesIn(helpers::make_test_params_values(angles, sines)));
-    INSTANTIATE_TEST_CASE_P(hindu_arcsine, hindu_arcsine_test, testing::ValuesIn(helpers::make_test_params_values(sines, angles)));
+    INSTANTIATE_TEST_SUITE_P(hindu_sine_table, hindu_sine_entry_test, testing::ValuesIn(helpers::make_test_params_values(inputs, sines)));
+    INSTANTIATE_TEST_SUITE_P(hindu_sine, hindu_sine_test, testing::ValuesIn(helpers::make_test_params_values(angles, sines)));
+    INSTANTIATE_TEST_SUITE_P(hindu_arcsine, hindu_arcsine_test, testing::ValuesIn(helpers::make_test_params_values(sines, angles)));
 }

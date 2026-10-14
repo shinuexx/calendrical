@@ -8,6 +8,7 @@ namespace calendrical::holiday_providers{
      */
     class gregorian_calendar_holiday_provider final :
     public holiday_provider_if {
+        /** @brief Gregorian calendar used to map holidays into Gregorian years. */
         const calendars::gregorian_calendar* m_gregorian;
 
     public:

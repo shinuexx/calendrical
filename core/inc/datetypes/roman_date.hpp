@@ -37,14 +37,16 @@ namespace calendrical::datetypes {
      */
     struct olympiad {
         /** @brief Olympiad cycle number. */
-        int32_t cycle, year;
+        int32_t cycle;
+        /** @brief Year within the olympiad (1-4). */
+        int32_t year;
         /** @brief Equality comparison on both components. */
         bool operator==(const olympiad & output) const = default;
     };
 
     /** @brief Returns a debug-friendly string representation of an olympiad value. */
     std::string to_string(const olympiad& odate);
-}
 
-/** @brief Stream output for @ref calendrical::datetypes::olympiad. */
-std::ostream& operator<<(std::ostream& out, const calendrical::datetypes::olympiad& odate);
+    /** @brief Stream output for @ref olympiad. */
+    std::ostream& operator<<(std::ostream& out, const olympiad& odate);
+}

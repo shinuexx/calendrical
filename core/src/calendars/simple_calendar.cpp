@@ -3,7 +3,7 @@
 
 namespace calendrical::calendars{
     const simple_calendar egyptian_calendar { primitives::fixed_from_jd(1448638) };
-    const simple_calendar armenian_calendar{ 201443 };
+    const simple_calendar armenian_calendar{ 201443_rd };
 
     simple_date simple_calendar::to_date(const fixed_date_t& date) const {
         const auto days = date - m_epoch;

@@ -17,7 +17,7 @@ namespace calendrical::holiday_providers {
         holidays.emplace_back( "astronomical easter", astronomical_easter(gyear) );
         for (const auto x : unlucky_fridays(gyear))
             holidays.emplace_back("unlucky friday", x );
-        std::ranges::sort(holidays);
+        std::ranges::sort(holidays, holiday_t::date_only_less_t{});
         return holidays;
     }
 

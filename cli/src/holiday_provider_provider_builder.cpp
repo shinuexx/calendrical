@@ -2,14 +2,18 @@
 
 #include "calendars/astro_bahai_calendar.hpp"
 #include "calendars/bahai_calendar.hpp"
+#include "calendars/chinese_calendar.hpp"
 #include "calendars/hebrew_calendar.hpp"
 #include "calendars/islamic_calendar.hpp"
+#include "calendars/korean_calendar.hpp"
 #include "calendars/modern_hindu_lunar_calendar.hpp"
 #include "calendars/modern_hindu_solar_calendar.hpp"
 #include "calendars/persian_calendar.hpp"
 #include "calendars/samaritan_calendar.hpp"
 #include "calendars/tibetan_calendar.hpp"
+#include "calendars/vietnamese_calendar.hpp"
 #include "holiday_providers/bahai_based_calendar_holiday_provider.hpp"
+#include "holiday_providers/chinese_calendar_holiday_provider.hpp"
 #include "holiday_providers/gregorian_calendar_holiday_provider.hpp"
 #include "holiday_providers/hebrew_based_calendar_holiday_provider.hpp"
 #include "holiday_providers/islamic_based_calendar_holiday_provider.hpp"
@@ -23,6 +27,7 @@
 
 namespace calendrical::cli {
     namespace {
+        /** @brief Process-wide calendar instance shared by the registered holiday providers. */
         template<typename CalendarT>
         const CalendarT& calendar_instance() {
             static const CalendarT instance{};
@@ -63,6 +68,18 @@ namespace calendrical::cli {
         provider.add<holiday_providers::modern_hindu_solar_calendar_holiday_provider>(
             "modern_hindu_solar",
             std::addressof(calendar_instance<calendars::modern_hindu_solar_calendar>())
+        );
+        provider.add<holiday_providers::chinese_calendar_holiday_provider>(
+            "chinese",
+            std::addressof(calendar_instance<calendars::chinese_calendar>())
+        );
+        provider.add<holiday_providers::chinese_calendar_holiday_provider>(
+            "korean",
+            std::addressof(calendar_instance<calendars::korean_calendar>())
+        );
+        provider.add<holiday_providers::chinese_calendar_holiday_provider>(
+            "vietnamese",
+            std::addressof(calendar_instance<calendars::vietnamese_calendar>())
         );
         provider.add<holiday_providers::tibetan_calendar_holiday_provider>(
             "tibetan",

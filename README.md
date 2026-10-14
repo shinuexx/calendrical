@@ -15,54 +15,37 @@ The project provides:
 
 ## Requirements
 
-- CMake >= 3.10
+- CMake >= 3.20
 - C++20 compiler (`g++`, `clang++`, or MSVC)
-- `vcpkg` (for dependencies)
-- Build generator (for example `Ninja`)
+- Build generator (for example `Ninja` or Make)
 
-Project dependencies (from `vcpkg.json`):
-
-- `gtest`
-
-## Environment Setup
-
-1. Set `VCPKG_ROOT` to your `vcpkg` directory.
-2. Make sure your build generator is available (for example `ninja --version`).
-
-Example (Linux/macOS):
-
-```bash
-export VCPKG_ROOT=/path/to/vcpkg
-```
+The core library is written in pure C++20 and has **no external dependencies**. GoogleTest for the test suite is either found on the system or automatically fetched via CMake `FetchContent`.
 
 ## Configure With CMake
 
-Using a preset (recommended if available in your environment):
+Using a preset:
 
 ```bash
-cmake --preset "Configure preset using toolchain file"
+cmake --preset ninja-debug
 ```
 
-Manual configuration (useful in CI/scripts):
+Manual configuration:
 
 ```bash
-cmake -S . -B cmake-build-debug \
-  -G Ninja \
-  -DCMAKE_BUILD_TYPE=Debug \
-  -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 ```
 
 ## Build
 
 ```bash
-cmake --build cmake-build-debug -j4
+cmake --build build -j4
 ```
 
 Typical outputs:
 
-- `cmake-build-debug/core/liblibcalendrical.a`
-- `cmake-build-debug/cli/calendrical_cli`
-- `cmake-build-debug/tests/tests`
+- `build/core/libcalendrical.a`
+- `build/cli/calendrical_cli`
+- `build/tests/tests`
 
 ## Run Tests
 
@@ -243,12 +226,59 @@ Public headers live in `core/inc`, implementations in `core/src`.
 ## Project Structure
 
 - `core/`
-- `core/inc/` public library API
-- `core/src/` implementations
+  - `core/inc/` public library API
+  - `core/src/` implementations
 - `cli/` CLI application
 - `tests/` GoogleTest-based tests
-- `vcpkg.json`, `vcpkg-configuration.json` dependency management
+- `cmake/` package config and build-info templates
+- `VERSION` library version (single source of truth)
 - `CMakeLists.txt` top-level build configuration
+
+## Installation and CMake Integration
+
+To install the library, headers, CLI binary, and CMake package configuration:
+
+```bash
+cmake --install build --prefix /usr/local
+```
+
+Consuming `calendrical` in an external CMake project:
+
+```cmake
+find_package(calendrical CONFIG REQUIRED)
+target_link_libraries(my_app PRIVATE calendrical::calendrical)
+```
+
+Installed headers live in `<prefix>/include/calendrical/` and are included by bare name
+(`#include "version.hpp"`) through the `calendrical::calendrical` target.
+
+## Version and Build Information
+
+The library version is read from the `VERSION` file; bump it there. `version.hpp` exposes it together
+with information recorded when the library was built:
+
+```cpp
+#include "version.hpp"
+
+calendrical::version();          // "0.1.0" - headers you compiled against (constexpr)
+calendrical::library_version();  // "0.1.0" - the linked binary; differs if headers and library mismatch
+calendrical::commit();           // full git hash, or "unknown" outside a git checkout
+calendrical::branch();           // git branch, "HEAD" when detached
+calendrical::is_dirty();         // uncommitted changes to tracked files at build time
+calendrical::build_datetime();   // "2026-10-14T12:34:56Z" (UTC, honours SOURCE_DATE_EPOCH)
+calendrical::build_time();       // the same as std::optional<std::chrono::sys_seconds>
+calendrical::build_type();       // "Release", "Debug", ... or "unspecified"
+calendrical::compiler();         // "GNU 13.3.0"
+calendrical::platform();         // "Linux x86_64"
+calendrical::cxx_standard();     // 202002
+calendrical::libinfo();          // all of the above as a multi-line summary
+```
+
+The `CALENDRICAL_VERSION_MAJOR`, `_MINOR`, `_PATCH`, `_STRING` and `_NUMBER` macros allow
+preprocessor checks. The CLI prints the summary with `calendrical_cli --version`.
+
+Build information is refreshed on every build. Configure with `-DCALENDRICAL_BUILD_TIMESTAMP=OFF` to
+leave the timestamp out; the build-info source is then recompiled only when the git state changes.
 
 ## Feature Scope (Short Summary)
 
@@ -261,11 +291,11 @@ Public headers live in `core/inc`, implementations in `core/src`.
 1. Modify code.
 2. Build:
    ```bash
-   cmake --build cmake-build-debug -j4
+   cmake --build build -j4
    ```
 3. Test:
    ```bash
-   ctest --test-dir cmake-build-debug --output-on-failure
+   ctest --test-dir build --output-on-failure
    ```
 4. Review diff and commit.
 
@@ -279,8 +309,5 @@ Public headers live in `core/inc`, implementations in `core/src`.
 
 ## Common Issues
 
-- `vcpkg` lock / permission errors during configure:
-  - close processes holding the lock
-  - rerun `cmake -S . -B ...`
 - `ctest` finds no tests:
-  - run `ctest --test-dir cmake-build-debug --output-on-failure` after a successful configure/build
+  - run `ctest --test-dir build --output-on-failure` after a successful configure/build

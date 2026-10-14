@@ -10,43 +10,43 @@
 namespace tests {
     using namespace calendrical::time_and_astronomy;
 
-    static constexpr auto bogus = std::numeric_limits<double>::quiet_NaN();
-    static constexpr auto is_bogus(double value) { return value <=> 0 == std::partial_ordering::unordered; }
+    static constexpr auto bogus = moment_t{ std::numeric_limits<double>::quiet_NaN() };
+    static constexpr auto is_bogus(moment_t value) { return static_cast<double>(value) <=> 0 == std::partial_ordering::unordered; }
 
     static constexpr auto results = std::array<moment_t, 33>{
-        0.084225,
-        0.627607,
-        0.842646,
-        0.030307,
-        0.419886,
-        0.965784,
-        0.252852,
+        0.084225_m,
+        0.627607_m,
+        0.842646_m,
+        0.030307_m,
+        0.419886_m,
+        0.965784_m,
+        0.252852_m,
         bogus,
-        0.528119,
-        0.052493,
-        0.037996,
-        0.493177,
-        0.060322,
-        0.856017,
+        0.528119_m,
+        0.052493_m,
+        0.037996_m,
+        0.493177_m,
+        0.060322_m,
+        0.856017_m,
         bogus,
-        0.908706,
-        0.818009,
-        0.714185,
-        0.416862,
-        0.932503,
-        0.956378,
-        0.952629,
-        0.070965,
-        0.200419,
-        0.489200,
-        0.429962,
-        0.031414,
-        0.224521,
+        0.908706_m,
+        0.818009_m,
+        0.714185_m,
+        0.416862_m,
+        0.932503_m,
+        0.956378_m,
+        0.952629_m,
+        0.070965_m,
+        0.200419_m,
+        0.489200_m,
+        0.429962_m,
+        0.031414_m,
+        0.224521_m,
         bogus,
-        0.214825,
+        0.214825_m,
         bogus,
-        0.211858,
-        0.963174
+        0.211858_m,
+        0.963174_m
     };
 
     class moonset_in_mecca_test : public helpers::input_output_test<fixed_date_t, moment_t>{};
@@ -59,10 +59,10 @@ namespace tests {
         if (is_bogus(output)){
             EXPECT_TRUE(is_bogus(actual)) << output << " : " << actual << " : " << rd << std::endl;
         } else {
-            EXPECT_NEAR(actual.time(), output, 1e-6) << output << " : " << actual.time() << " : " << rd << std::endl;
+            EXPECT_NEAR(actual.time(), output.time(), 1e-6) << output << " : " << actual.time() << " : " << rd << std::endl;
         }
     }
 
 
-    INSTANTIATE_TEST_CASE_P(moonset_in_mecca, moonset_in_mecca_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
+    INSTANTIATE_TEST_SUITE_P(moonset_in_mecca, moonset_in_mecca_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
 }

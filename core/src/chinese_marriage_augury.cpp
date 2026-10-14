@@ -15,8 +15,8 @@ namespace calendrical {
         }
         return oss.str();
     }
-}
 
-std::ostream& operator<<(std::ostream& out, const calendrical::chinese_marriage_augury& augury) {
-    return out << to_string(augury);
+    std::ostream& operator<<(std::ostream& out, const chinese_marriage_augury& augury) {
+        return out << to_string(augury);
+    }
 }

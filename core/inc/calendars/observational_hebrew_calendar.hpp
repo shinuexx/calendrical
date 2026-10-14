@@ -24,7 +24,7 @@ namespace calendrical::calendars{
 
     public:
         /** @brief Reference location used for observational Hebrew calculations. */
-        static constexpr location hebrew_location{ 32.82, 35, 0, moment_t::hms(2) };
+        static constexpr location hebrew_location{ 32.82_deg, 35_deg, 0, moment_t::hms(2) };
 
         /** @brief Constructs an observational Hebrew calendar instance. */
         observational_hebrew_calendar();
@@ -48,6 +48,13 @@ namespace calendrical::calendars{
 
         /** @brief Returns whether observational Hebrew year @p year is leap. */
         [[nodiscard]] bool is_leap_year(int32_t year) const override;
+        /**
+         * @brief Validates a date against observed month starts.
+         *
+         * Month lengths depend on crescent visibility, so after basic range checks the date
+         * must survive a round-trip through fixed-date representation.
+         */
+        [[nodiscard]] bool is_valid_date(const hebrew_date& date) const override;
 
         /** @brief Classical Passover eve date corresponding to Gregorian year @p gyear. */
         [[nodiscard]] fixed_date_t classical_passover_eve(int32_t gyear) const;

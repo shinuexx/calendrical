@@ -19,7 +19,7 @@ namespace calendrical::calendars{
     fixed_date_t astro_bahai_calendar::new_year_on_or_before(const fixed_date_t& date) const
     {
         const auto approx = estimate_prior_solar_longitude(season::spring, bahai_sunset(date));
-        return least_passing([&](const int64_t& day) { return solar_longitude(bahai_sunset(day)) <= angle_t{ season::spring } + 2_deg; }, static_cast<int64_t>(std::floor(approx)) - 1);
+        return fixed_date_t{ least_passing([&](const int64_t& day) { return solar_longitude(bahai_sunset(fixed_date_t{ day })) <= angle_t{ season::spring } + 2_deg; }, static_cast<int64_t>(std::floor(approx)) - 1) };
     }
     bahai_date astro_bahai_calendar::to_date(const fixed_date_t& date) const
     {
@@ -36,7 +36,7 @@ namespace calendrical::calendars{
     {
         auto [major, cycle, year, month, day] = date;
         const auto years = 361 * (major - 1) + 19 * (cycle - 1) + year;
-        int64_t a;
+        fixed_date_t a;
         int32_t b;
         if (month == 19) {
             const auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years + 0.5)));

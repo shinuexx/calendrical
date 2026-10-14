@@ -8,7 +8,7 @@ namespace calendrical::holiday_providers {
         result.emplace_back("sowramana ugadi", sowramana_ugadi(gyear));
         for (const auto& x : ayyappa_jyothi_darshanam(gyear))
             result.emplace_back("ayyappa jyothi darshanam", x);
-        std::ranges::sort(result);
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
 

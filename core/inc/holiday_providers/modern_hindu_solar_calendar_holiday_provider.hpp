@@ -8,7 +8,9 @@ namespace calendrical::holiday_providers {
      * @brief Holiday provider for selected modern Hindu solar observances.
      */
     class modern_hindu_solar_calendar_holiday_provider final : public holiday_provider_if {
+        /** @brief Calendar the holidays are defined in (not owned). */
         const calendars::modern_hindu_solar_calendar* m_solar;
+        /** @brief Gregorian calendar used to map holidays into Gregorian years. */
         const calendars::gregorian_calendar* m_gregorian;
 
     public:
@@ -27,7 +29,7 @@ namespace calendrical::holiday_providers {
         /** @brief Maps a Hindu solar month/day occurrence into Gregorian year @p gyear. */
         [[nodiscard]] std::vector<fixed_date_t> in_gregorian(int32_t smonth, int32_t sday, int32_t gyear) const;
 
-        /** @brief Solar New Year (Sowramana Ugadi), i.e. Mesha 1 in Gregorian year @p gyear. */
+        /** @brief Solar New Year (Sowramana Ugadi): Mesha 1 in Gregorian year @p gyear. */
         [[nodiscard]] fixed_date_t sowramana_ugadi(int32_t gyear) const;
 
         /**

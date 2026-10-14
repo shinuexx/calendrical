@@ -20,7 +20,7 @@ namespace calendrical::calendars{
         [[nodiscard]] fixed_date_t new_year_on_or_before(const fixed_date_t& date) const;
 
         /** @brief Reference location used by the astronomical Baha'i calendar. */
-        static constexpr location bahai_location{35.696111, 51.423056, 0, moment_t::hms(3.5)};
+        static constexpr location bahai_location{35.696111_deg, 51.423056_deg, 0, moment_t::hms(3.5)};
 
         /** @brief Constructs an astronomical Baha'i calendar instance. */
         astro_bahai_calendar() = default;

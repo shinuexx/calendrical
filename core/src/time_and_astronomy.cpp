@@ -4,15 +4,18 @@
 #include "location.hpp"
 #include "season.hpp"
 #include "lunar_phase.hpp"
+#include "lazy.hpp"
+#include <array>
 
 namespace calendrical::time_and_astronomy {
-    static constexpr bool is_bogus(double x) {
-        return x <=> 0 == std::partial_ordering::unordered;
+    /** @brief Returns whether @p x is the NaN "bogus" marker returned for events that do not occur. */
+    static constexpr bool is_bogus(moment_t x) {
+        return static_cast<double>(x) <=> 0 == std::partial_ordering::unordered;
     }
 
-    static constexpr auto bogus = std::numeric_limits<double>::quiet_NaN();
+    static constexpr auto bogus = moment_t{ std::numeric_limits<double>::quiet_NaN() };
 
-    static const lazy<calendars::gregorian_calendar> gregorian = make_deferred_default_lazy<calendars::gregorian_calendar>();
+    static constexpr const auto& gregorian = calendars::gregorian_calendar::standard;
 
     static constexpr auto r2051 = interval_closed_between<int32_t>(2051, 2150);
     static constexpr auto r2006 = interval_closed_between<int32_t>(2006, 2050);
@@ -34,59 +37,56 @@ namespace calendrical::time_and_astronomy {
     static constexpr auto p0 = make_polynomial(10583.6, -1014.41, 33.78311, -5.952053, -0.1798452, 0.022174192, 0.0090316521);
 
     moment_t ephemeris_correction(const moment_t &t) {
-        static const fixed_date_t ephemeris_correction_start = gregorian->to_fixed({ 1900, month::january, 1 });
-        auto year = gregorian->get_year(t.to_fixed_date());
-        const auto c = static_cast<double>(gregorian->to_fixed({year, month::july, 1}) -
+        static const fixed_date_t ephemeris_correction_start = gregorian.to_fixed({ 1900, month::january, 1 });
+        auto year = gregorian.get_year(t.to_fixed_date());
+        const auto c = static_cast<double>(gregorian.to_fixed({year, month::july, 1}) -
                         ephemeris_correction_start) /
                        36525.0;
         const auto y2000 = year - 2000;
         if (in(r2051, year)) {
             const auto c2051 = -20 + 32 * std::pow((year - 1820.0) / 1e2, 2) + 0.5628 * (2150.0 - year);
-            return c2051 / 86400;
+            return moment_t{ c2051 / 86400 };
         }
         if (in(r2006, year)) {
             const auto c2006 = p2006(y2000) / 86400;
-            return c2006;
+            return moment_t{ c2006 };
         }
         if (in(r1987, year)) {
             const auto c1987 = p1987(y2000) / 86400;
-            return c1987;
+            return moment_t{ c1987 };
         }
         if (in(r1900, year)) {
             const auto c1900 = p1900(c);
-            return c1900;
+            return moment_t{ c1900 };
         }
         if (in(r1800, year)) {
             const auto c1800 = p1800(c);
-            return c1800;
+            return moment_t{ c1800 };
         }
         if (in(r1700, year)) {
             const auto y1700 = year - 1700;
             const auto c1700 = p1700(y1700) / 86400;
-            return c1700;
+            return moment_t{ c1700 };
         }
         if (in(r1600, year)) {
             const auto y1600 = year - 1600;
             const auto c1800 = p1600(y1600) / 86400;
-            return c1800;
+            return moment_t{ c1800 };
         }
         if (in(r500, year)) {
             const auto y1000 = (year - 1000.0) / 1e2;
             const auto c500 = p500(y1000) / 86400;
-            return c500;
+            return moment_t{ c500 };
         }
         if (in(r0, year)) {
             const auto y0 = year / 1e2;
             const auto c0 = p0(y0) / 86400;
-            return c0;
+            return moment_t{ c0 };
         }
         const auto y1820 = (year - 1820.0) / 1e2;
         const auto other = -20 + 32 * y1820 * y1820;
-        return other / 86400;
+        return moment_t{ other / 86400 };
     }
-
-    const lazy<moment_t> J2000 { []() -> moment_t { return static_cast<double>(gregorian->get_new_year(2000)) + 0.5; }};
-    //const moment_t J2000 = 730120.5;
 
     moment_t dynamic_from_universal(const moment_t& t)
     {
@@ -97,7 +97,7 @@ namespace calendrical::time_and_astronomy {
     }
     double julian_centuries(const moment_t& t)
     {
-        return (dynamic_from_universal(t) - *J2000) / 36525;
+        return (dynamic_from_universal(t) - J2000) / 36525;
     }
 
     static constexpr auto eot_lambda_p = make_polynomial(280.46645, 36000.76983, 0.0003032);
@@ -107,17 +107,17 @@ namespace calendrical::time_and_astronomy {
     moment_t equation_of_time(const moment_t& t)
     {
         const auto c = julian_centuries(t);
-        const angle_t l = eot_lambda_p(c);
-        const angle_t anomaly = eot_anomaly_p(c);
+        const angle_t l{ eot_lambda_p(c) };
+        const angle_t anomaly{ eot_anomaly_p(c) };
         const auto eccentricity = eot_eccentricity_p(c);
         const auto E = obliquity(t);
-        const auto y = std::pow(tan(static_cast<double>(E) / 2), 2);
+        const auto y = std::pow(tan(E / 2), 2);
         auto equation = y * sin(2 * l) - 2 * eccentricity * sin(anomaly)
             + 4 * eccentricity * y * sin(anomaly) * cos(2 * l)
             - 0.5 * y * y * sin(4 * l)
             - 1.25 * eccentricity * eccentricity * sin(2 * anomaly);
         equation /= 2 * std::numbers::pi;
-        return sign(equation) * std::min(std::abs(equation), 0.5);
+        return moment_t{ sign(equation) * std::min(std::abs(equation), 0.5) };
     }
 
     moment_t apparent_from_local(const moment_t& t, const location& location)
@@ -142,20 +142,20 @@ namespace calendrical::time_and_astronomy {
 
     moment_t midnight(const fixed_date_t& date, const location& location)
     {
-        return universal_from_apparent(date, location);
+        return universal_from_apparent(moment_t{ date }, location);
     }
 
     moment_t midday(const fixed_date_t& date, const location& location)
     {
-        return universal_from_apparent(static_cast<double>(date) + 0.5, location);
+        return universal_from_apparent(moment_t{ date } + 0.5, location);
     }
 
     static constexpr auto sidereal_p = make_polynomial(280.46061837, 36525 * 360.98564736629, 0.000387933, -1 / 3871e4);
 
     angle_t sidereal_from_moment(const moment_t& t)
     {
-        const auto c = (t - *J2000) / 36525;
-        return mod(sidereal_p(c), 360);
+        const auto c = (t - J2000) / 36525;
+        return angle_t{ mod(sidereal_p(c), 360) };
     }
 
     static constexpr auto obliquity_begin = angle_t::dms(23, 26, 21.448);
@@ -164,7 +164,7 @@ namespace calendrical::time_and_astronomy {
     angle_t obliquity(const moment_t& t)
     {
         const auto c = julian_centuries(t);
-        const angle_t a = obliquity_p(c) / 3600;
+        const angle_t a{ obliquity_p(c) / 3600 };
         return obliquity_begin + a;
     }
 
@@ -237,9 +237,9 @@ namespace calendrical::time_and_astronomy {
         const auto c = julian_centuries(t);
         double a{0};
         for (auto &[x, y, z]: solar_longitude_xyz)
-            a += x * sin(y + z * c);
+            a += x * sin(angle_t{ y + z * c });
         const auto l = 282.7771834 + 36000.76953744 * c + 0.000005729577951308232 * a;
-        return mod(l + aberration(t) + nutation(t), 360);
+        return angle_t{ mod(l + aberration(t) + nutation(t), 360) };
     }
 
     static constexpr auto A_p = make_polynomial(124.9, -1934.134, 0.002063);
@@ -250,12 +250,12 @@ namespace calendrical::time_and_astronomy {
         const auto c = julian_centuries(t);
         const auto A = A_p(c);
         const auto B = B_p(c);
-        return -0.004778 * sin(A) - 0.0003667 * sin(B);
+        return angle_t{ -0.004778 * sin(angle_t{ A }) - 0.0003667 * sin(angle_t{ B }) };
     }
 
     angle_t aberration(const moment_t& t) {
         const auto c = julian_centuries(t);
-        return 0.0000974 * cos(177.63 + 35999.01848 * c) - 0.005575;
+        return angle_t{ 0.0000974 * cos(angle_t{ 177.63 + 35999.01848 * c }) - 0.005575 };
     }
     moment_t solar_longitude_after(const angle_t& l, const moment_t& t)
     {
@@ -263,12 +263,12 @@ namespace calendrical::time_and_astronomy {
         const auto T = t + rate * mod(l - solar_longitude(t), 360);
         const auto a = std::max<double>(t, T - 5);
         const auto b = T + 5;
-        return inverse_angular(make_value_function(solar_longitude), l, a, b);
+        return moment_t{ inverse_angular(make_value_function(solar_longitude), l, a, b) };
     }
     moment_t season_in_gregorian(const angle_t& season, int32_t year)
     {
-        const auto jan1 = gregorian->get_new_year(year);
-        return solar_longitude_after(season, jan1);
+        const auto jan1 = gregorian.get_new_year(year);
+        return solar_longitude_after(season, moment_t{ jan1 });
     }
 
     moment_t urbana_winter(int32_t gyear)
@@ -283,18 +283,18 @@ namespace calendrical::time_and_astronomy {
     angle_t precession(const moment_t& t)
     {
         const auto c = julian_centuries(t);
-        const auto n = mod(precession_n_p(c) / 3600, 360);
-        const auto P = mod(precession_P_p(c), 360);
-        const auto p = mod(precession_p_p(c) / 3600, 360);
+        const auto n = angle_t{ mod(precession_n_p(c) / 3600, 360) };
+        const auto P = angle_t{ mod(precession_P_p(c), 360) };
+        const auto p = angle_t{ mod(precession_p_p(c) / 3600, 360) };
         const auto A = cos(n) * sin(P);
         const auto B = cos(P);
         const auto arg = arctan(A, B);
-        return mod(p + P - arg, 360);
+        return angle_t{ mod(p + P - arg, 360) };
     }
 
     angle_t sidereal_solar_longitude(const moment_t& t)
     {
-        return mod(solar_longitude(t) - precession(t) + sidereal_start, 360);
+        return angle_t{ mod(solar_longitude(t) - precession(t) + sidereal_start, 360) };
     }
 
     angle_t solar_altitude(const moment_t& t, const location& location)
@@ -302,19 +302,19 @@ namespace calendrical::time_and_astronomy {
         const auto psi = location.latitude;
         const auto phi = location.longitude;
         const auto l = solar_longitude(t);
-        const auto a = right_ascension(t, 0, l);
-        const auto d = declination(t, 0, l);
+        const auto a = right_ascension(t, 0_deg, l);
+        const auto d = declination(t, 0_deg, l);
         const auto O0 = sidereal_from_moment(t);
-        const auto H = mod(O0 + phi - a, 360);
+        const auto H = angle_t{ mod(O0 + phi - a, 360) };
         const auto altitude = asin(sin(psi) * sin(d) + cos(psi) * cos(d) * cos(H));
-        return interval_modulus(altitude, -180, 180);
+        return angle_t{ interval_modulus(altitude, -180, 180) };
     }
     moment_t estimate_prior_solar_longitude(const angle_t& l, const moment_t& t)
     {
         constexpr auto rate = mean_tropical_year / 360;
         const auto T = t - rate * mod(solar_longitude(t) - l, 360);
         const auto D = interval_modulus(solar_longitude(T) - l, -180, 180);
-        return std::min<double>(t, T - rate * D);
+        return std::min(t, T - rate * D);
     }
 
     static constexpr auto nth_new_moon_table_a = std::array{
@@ -372,16 +372,16 @@ namespace calendrical::time_and_astronomy {
         constexpr int64_t n0 = 24724;
         const auto k = n - n0;
         const auto c = static_cast<double>(k) / 1236.85;
-        const auto approx = *J2000 + nth_new_moon_approx_p(c);
+        const auto approx = J2000 + nth_new_moon_approx_p(c);
         const auto E = nth_new_moon_E_p(c);
-        const auto solar_anomaly = nth_new_moon_solar_anomaly_p(c);
-        const auto lunar_anomaly = nth_new_moon_lunar_anomaly_p(c);
-        const auto moon_argument = nth_new_moon_moon_argument_p(c);
-        const auto O = nth_new_moon_omega_p(c);
-        const auto extra = 0.000325 * sin(nth_new_moon_extra_p(c));
+        const angle_t solar_anomaly{ nth_new_moon_solar_anomaly_p(c) };
+        const angle_t lunar_anomaly{ nth_new_moon_lunar_anomaly_p(c) };
+        const angle_t moon_argument{ nth_new_moon_moon_argument_p(c) };
+        const angle_t O{ nth_new_moon_omega_p(c) };
+        const auto extra = 0.000325 * sin(angle_t{ nth_new_moon_extra_p(c) });
         double additional{0.0};
         for (auto& [i, j, l] : nth_new_moon_table_b)
-            additional += l * sin(std::fma(k, j, i));
+            additional += l * sin(angle_t{ std::fma(k, j, i) });
         double correction = -0.00017 * sin(O);
         for (auto& [v, w, x, y, z] : nth_new_moon_table_a)
             correction += v * std::pow(E, w) * sin(x * solar_anomaly + y * lunar_anomaly + z * moon_argument);
@@ -482,10 +482,10 @@ namespace calendrical::time_and_astronomy {
         for (auto &[v, w, x, y, z]: lunar_longitude_table) {
             correction += v * std::pow(E, std::abs(x)) * sin(w * D + x * M + y * M1 + z * F);
         }
-        const auto venus = 3958 * sin(119.75 + c * 131.849);
-        const auto jupiter = 318 * sin(53.09 + c * 479264.29);
+        const auto venus = 3958 * sin(angle_t{ 119.75 + c * 131.849 });
+        const auto jupiter = 318 * sin(angle_t{ 53.09 + c * 479264.29 });
         const auto flat_earth = 1962 * sin(L1 - F);
-        return mod(static_cast<double>(L1) + (correction + venus + jupiter + flat_earth) * 1e-6 + nutation(t), 360);
+        return angle_t{ mod(static_cast<double>(L1) + (correction + venus + jupiter + flat_earth) * 1e-6 + nutation(t), 360) };
     }
 
     static constexpr auto moon_node_p = make_polynomial(93.2720950, 483202.0175233, -0.0036539, -1 / 3526000.0, 1 / 863310000.0);
@@ -495,27 +495,27 @@ namespace calendrical::time_and_astronomy {
     static constexpr auto mean_lunar_longitude_p = make_polynomial(218.3164477, 481267.88123421, -0.0015786, 1 / 538841.0, -1 / 65194000.0);
 
     angle_t moon_node(double c) {
-        return mod(moon_node_p(c), 360);
+        return angle_t{ mod(moon_node_p(c), 360) };
     }
     angle_t lunar_anomaly(double c) {
-        return mod(lunar_anomaly_p(c), 360);
+        return angle_t{ mod(lunar_anomaly_p(c), 360) };
     }
     angle_t solar_anomaly(double c) {
-        return mod(solar_anomaly_p(c), 360);
+        return angle_t{ mod(solar_anomaly_p(c), 360) };
     }
     angle_t lunar_elongation(double c) {
-        return mod(lunar_elongation_p(c), 360);
+        return angle_t{ mod(lunar_elongation_p(c), 360) };
     }
     angle_t mean_lunar_longitude(double c) {
-        return mod(mean_lunar_longitude_p(c), 360);
+        return angle_t{ mod(mean_lunar_longitude_p(c), 360) };
     }
 
     angle_t lunar_node(const fixed_date_t& date) {
-        return interval_modulus(moon_node(julian_centuries(date)), -90, 90);
+        return angle_t{ interval_modulus(moon_node(julian_centuries(moment_t{ date })), -90, 90) };
     }
 
     angle_t sidereal_lunar_longitude(const moment_t& t) {
-        return mod(lunar_longitude(t) - precession(t) + sidereal_start, 360);
+        return angle_t{ mod(lunar_longitude(t) - precession(t) + sidereal_start, 360) };
     }
 
     angle_t lunar_phase(const moment_t& t) {
@@ -523,21 +523,21 @@ namespace calendrical::time_and_astronomy {
         const auto t0 = *zero_new_moon;
         const auto n = static_cast<int64_t>(std::round((t - t0) / mean_synodic_month));
         if (const auto psi1 = 360 * mod((t - nth_new_moon(n)) / mean_synodic_month, 1); std::abs(psi - psi1) > 180)
-            return psi1;
-        return psi;
+            return angle_t{ psi1 };
+        return angle_t{ psi };
     }
 
     moment_t lunar_phase_at_or_before(const angle_t& psi, const moment_t& t) {
         const auto T = t - mean_synodic_month * mod(lunar_phase(t) - psi, 360) / 360;
         const auto a = T - 2;
         const auto b = std::min<double>(t, T + 2);
-        return inverse_angular(make_value_function(lunar_phase), psi, a, b);
+        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi, a, b) };
     }
     moment_t lunar_phase_at_or_after(const angle_t& psi, const moment_t& t) {
         const auto T = t + mean_synodic_month * mod(psi - lunar_phase(t), 360) / 360;
         const auto a = std::max<double>(t, T - 2);
         const auto b = T + 2;
-        return inverse_angular(make_value_function(lunar_phase), psi, a, b);
+        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi, a, b) };
     }
 
     static constexpr auto lunar_latitude_table = std::array{
@@ -614,11 +614,11 @@ namespace calendrical::time_and_astronomy {
         double b{};
         for (auto &[v, w, x, y, z]: lunar_latitude_table)
             b += v * std::pow(E, std::abs(x)) * sin(w * D + x * M + y * M1 + z * F);
-        const auto p = 119.75 + c * 131.849;
+        const auto p = angle_t{ 119.75 + c * 131.849 };
         const auto venus = 175 * (sin(p + F) + sin(p - F));
         const auto flat_earth = -2235 * sin(L1) + 127 * sin(L1 - M1) - 115 * sin(L1 + M1);
-        const auto extra = 382 * sin(313.45 + c * 481266.484);
-        return (b + venus + flat_earth + extra) * 1e-6;
+        const auto extra = 382 * sin(angle_t{ 313.45 + c * 481266.484 });
+        return angle_t{ (b + venus + flat_earth + extra) * 1e-6 };
     }
 
     angle_t lunar_altitude(const moment_t& t, const location& location) {
@@ -629,10 +629,10 @@ namespace calendrical::time_and_astronomy {
         const auto a = right_ascension(t, b, l);
         const auto d = declination(t, b, l);
         const auto O0 = sidereal_from_moment(t);
-        const auto H = mod(O0 + phi - a, 360);
+        const auto H = angle_t{ mod(O0 + phi - a, 360) };
         const auto tmp = sin(psi) * sin(d) + cos(psi) * cos(d) * cos(H);
         const auto altitude = asin(tmp);
-        return interval_modulus(altitude, -180, 180);
+        return angle_t{ interval_modulus(altitude, -180, 180) };
     }
 
     static constexpr auto lunar_distance_table = std::array{
@@ -726,7 +726,7 @@ namespace calendrical::time_and_astronomy {
     moment_t approx_moment_of_depression(const moment_t& t, const location& location, const angle_t& a, bool early) {
         const auto m = sine_offset(t, location, a);
         const auto date = t.to_fixed_date();
-        const auto alt = a >= 0_deg ? static_cast<double>(early ? date : date.add(1)) : static_cast<double>(date) + 0.5;
+        const auto alt = a >= 0_deg ? moment_t{ early ? date : date.add(1) } : moment_t{ date } + 0.5;
         double value;
         if (std::abs(m) > 1)
             value = sine_offset(alt, location, a);
@@ -735,7 +735,7 @@ namespace calendrical::time_and_astronomy {
         const auto offset = interval_modulus(asin(value) / angle_t::full_circle, -0.5, 0.5);
         if (std::abs(value) > 1)
             return bogus;
-        return local_from_apparent(static_cast<double>(date) + (early ? 0.25 - offset : 0.75 + offset), location);
+        return local_from_apparent(moment_t{ date } + (early ? 0.25 - offset : 0.75 + offset), location);
     }
 
     static constexpr auto s30 = moment_t::hms(0, 0, 30);
@@ -743,7 +743,7 @@ namespace calendrical::time_and_astronomy {
     double sine_offset(const moment_t& t, const location& location, const angle_t& a) {
         auto &psi = location.latitude;
         const auto t1 = universal_from_local(t, location);
-        const auto d = declination(t1, 0, solar_longitude(t1));
+        const auto d = declination(t1, 0_deg, solar_longitude(t1));
         return tan(psi) * tan(d) + sin(a) / (cos(d) * cos(psi));
     }
 
@@ -758,13 +758,13 @@ namespace calendrical::time_and_astronomy {
     }
 
     moment_t dawn(const fixed_date_t& date, const location& location, const angle_t& a) {
-        const auto result = moment_of_depression(static_cast<double>(date) + 0.25, location, a, morning);
+        const auto result = moment_of_depression(moment_t{ date } + 0.25, location, a, morning);
         if (is_bogus(result))
             return result;
         return standard_from_local(result, location);
     }
     moment_t dusk(const fixed_date_t& date, const location& location, const angle_t& a) {
-        const auto result = moment_of_depression(static_cast<double>(date) + 0.75, location, a, evening);
+        const auto result = moment_of_depression(moment_t{ date } + 0.75, location, a, evening);
         if (is_bogus(result))
             return result;
         return standard_from_local(result, location);
@@ -773,14 +773,14 @@ namespace calendrical::time_and_astronomy {
         constexpr auto R{6.372e6};
         const auto h = std::max(0.0, location.elevation);
         const auto dip = acos(R / (R + h));
-        return 34 / 6e1 + dip + 19 * std::sqrt(h) / 3600;
+        return angle_t{ 34 / 6e1 + dip + 19 * std::sqrt(h) / 3600 };
     }
     moment_t sunrise(const fixed_date_t& date, const location& location) {
-        const auto a = refraction(static_cast<double>(date) + 0.25, location) + angle_t::dms(0, 16);
+        const auto a = refraction(moment_t{ date } + 0.25, location) + angle_t::dms(0, 16);
         return dawn(date, location, a);
     }
     moment_t sunset(const fixed_date_t& date, const location& location) {
-        const auto a = refraction(static_cast<double>(date) + 0.75, location) + angle_t::dms(0, 16);
+        const auto a = refraction(moment_t{ date } + 0.75, location) + angle_t::dms(0, 16);
         return dusk(date, location, a);
     }
     moment_t jewish_sabbath_ends(const fixed_date_t& date, const location& location) {
@@ -796,39 +796,39 @@ namespace calendrical::time_and_astronomy {
     static constexpr auto min1 = moment_t::hms(0, 1);
 
     moment_t moonrise(const fixed_date_t& date, const location& location) {
-        const auto t = universal_from_standard(date, location);
+        const auto t = universal_from_standard(moment_t{ date }, location);
         const auto waning = lunar_phase(t) > angle_t::half_circle;
         const auto alt = observed_lunar_altitude(t, location);
         const auto lat = location.latitude;
         const auto offset = alt / angle_t{4 * (90 - std::abs(lat))};
         const auto approx = waning ? (offset > 0 ? t.add(1 - offset) : t.subtract(offset)) : t.add(0.5 + offset);
-        const moment_t rise = binary_search(
-            [&location](const double& x) { return observed_lunar_altitude(x, location) > 0_deg; },
+        const moment_t rise = moment_t{ binary_search(
+            [&location](const double& x) { return observed_lunar_altitude(moment_t{ x }, location) > 0_deg; },
             [](const double& l, const double& u) { return u - l < static_cast<double>(min1); },
             approx.subtract(0.25),
             approx.add(0.25)
-        );
+        ) };
         if (rise >= t.add(1))
             return bogus;
-        return std::max<double>(standard_from_universal(rise, location), static_cast<double>(date));
+        return std::max<moment_t>(standard_from_universal(rise, location), moment_t{ date });
     }
     moment_t moonset(const fixed_date_t& date, const location& location)
     {
-        const auto t = universal_from_standard(date, location);
+        const auto t = universal_from_standard(moment_t{ date }, location);
         const auto waxing = lunar_phase(t) < angle_t::half_circle;
         const auto alt = observed_lunar_altitude(t, location);
         const auto lat = location.latitude;
         const auto offset = alt / angle_t{4 * (90 - std::abs(lat))};
         const auto approx = waxing ? (offset > 0 ? t.add(offset) : t.add(1 + offset)) : t.add(0.5 - offset);
-        const moment_t rise = binary_search(
-            [&location](const double& x) { return observed_lunar_altitude(x, location) < 0_deg; },
+        const moment_t rise = moment_t{ binary_search(
+            [&location](const double& x) { return observed_lunar_altitude(moment_t{ x }, location) < 0_deg; },
             [](const double& l, const double& u) { return u - l < static_cast<double>(min1); },
             approx.subtract(0.25),
             approx.add(0.25)
-        );
+        ) };
         if (rise >= t.add(1) )
             return bogus;
-        return std::max<double>(standard_from_universal(rise, location), static_cast<double>(date));
+        return std::max<moment_t>(standard_from_universal(rise, location), moment_t{ date });
     }
     moment_t local_zero_hour(const moment_t& t) {
         const auto date = t.to_fixed_date();
@@ -856,7 +856,8 @@ namespace calendrical::time_and_astronomy {
     moment_t standard_from_sundial(const moment_t& t, const location& location) {
         const auto date = t.to_fixed_date();
         const auto hour = 24 * t.time();
-        double a, b, h;
+        moment_t a, h;
+        double b;
         if (interval_closed_between<double>(6, 18)(hour))
         {
             h = daytime_temporal_hour(date, location);
@@ -877,14 +878,14 @@ namespace calendrical::time_and_astronomy {
         return a + b * h;
     }
     moment_t jewish_morning_end(const fixed_date_t& date, const location& location) {
-        return standard_from_sundial(static_cast<double>(date) + 1e1 / 24, location);
+        return standard_from_sundial(moment_t{ date } + 1e1 / 24, location);
     }
     moment_t asr(const fixed_date_t& date, const location& location) {
         const auto noon = midday(date, location);
         const auto psi = location.latitude;
-        const auto d = declination(noon, 0, solar_longitude(noon));
+        const auto d = declination(noon, 0_deg, solar_longitude(noon));
         const auto altitude = asin(cos(d) * cos(psi) + sin(d) * sin(psi));
-        const auto h = interval_modulus(arctan(tan(altitude), 2 * tan(altitude) + 1), -90, 90);
+        const auto h = angle_t{ interval_modulus(arctan(tan(altitude), 2 * tan(altitude) + 1), -90, 90) };
         if (altitude <= 0_deg)
             return bogus;
         return dusk(date, location, -h);
@@ -894,7 +895,7 @@ namespace calendrical::time_and_astronomy {
         const auto psi = location.latitude;
         const auto d = declination(noon, 0_deg, solar_longitude(noon));
         const auto altitude = asin(cos(d) * cos(psi) + sin(d) * sin(psi));
-        const auto h = interval_modulus(arctan(tan(altitude), tan(altitude) + 1), -90, 90);
+        const auto h = angle_t{ interval_modulus(arctan(tan(altitude), tan(altitude) + 1), -90, 90) };
         if (altitude <= 0_deg)
             return bogus;
         return dusk(date, location, -h);
@@ -905,7 +906,7 @@ namespace calendrical::time_and_astronomy {
     moment_t simple_best_view(const fixed_date_t& date, const location& location) {
         auto best = dusk(date, location, 4.5_deg);
         if (is_bogus(best))
-            best = date.add(1);
+            best = moment_t{ date.add(1) };
         return universal_from_standard(best, location);
     }
     bool shaukat_criterion(const fixed_date_t& date, const location& location) {
@@ -923,9 +924,9 @@ namespace calendrical::time_and_astronomy {
     moment_t bruin_best_view(const fixed_date_t& date, const location& location) {
         const auto sun = sunset(date, location);
         const auto moon = moonset(date, location);
-        double best;
+        moment_t best;
         if (is_bogus(sun) || is_bogus(moon))
-            best = static_cast<double>(date.add(1));
+            best = moment_t{ date.add(1) };
         else
             best = (5 * sun + 4 * moon) / 9;
         return universal_from_standard(best, location);
@@ -952,22 +953,22 @@ namespace calendrical::time_and_astronomy {
         return 0.27245 * p * (sin(h) * sin(p) + 1);
     }
     angle_t lunar_diameter(const moment_t& t) {
-        return 1792367000 / (9 * lunar_distance(t));
+        return angle_t{ 1792367000 / (9 * lunar_distance(t)) };
     }
 
     fixed_date_t phasis_on_or_before(const fixed_date_t& date, const location& location) {
-        const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, date).to_fixed_date();
+        const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, moment_t{ date }).to_fixed_date();
         const auto age = date - moon;
         const auto T = age <= 3 && !visible_crescent(date, location) ? moon.subtract(30) : moon;
-        const auto f = [&](const int64_t& x) { return visible_crescent(x, location); };
-        return least_passing(f, T);
+        const auto f = [&](const int64_t& x) { return visible_crescent(fixed_date_t{ x }, location); };
+        return fixed_date_t{ least_passing(f, T) };
     }
     fixed_date_t phasis_on_or_after(const fixed_date_t& date, const location& location) {
-        const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, date).to_fixed_date();
+        const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, moment_t{ date }).to_fixed_date();
         const auto age = date - moon;
         const auto T = 4 <= age || visible_crescent(date.subtract(1), location) ? moon.add(29) : date;
-        const auto f = [&](const int64_t& x) { return visible_crescent(x, location); };
-        return least_passing(f, T);
+        const auto f = [&](const int64_t& x) { return visible_crescent(fixed_date_t{ x }, location); };
+        return fixed_date_t{ least_passing(f, T) };
     }
     moment_t moonlag(const fixed_date_t& date, const location& location) {
         const moment_t sun = sunset(date, location);

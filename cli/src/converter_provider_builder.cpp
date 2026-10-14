@@ -37,9 +37,11 @@
 
 namespace calendrical::cli {
     namespace {
+        /** @brief Date type handled by @p CalendarT. */
         template<typename CalendarT>
         using calendar_date_t = typename CalendarT::date_type;
 
+        /** @brief Returns a parser for the compact (`-`-separated) notation of @p CalendarT's date type. */
         template<typename CalendarT>
         auto compact_date_parser() {
             return [](const std::string& input) {
@@ -47,6 +49,7 @@ namespace calendrical::cli {
             };
         }
 
+        /** @brief Registers a compact-notation converter over a default-constructed @p CalendarT. */
         template<std::derived_from<calendar_if> CalendarT>
         void add_calendar_converter(
             converter_provider& provider,
@@ -59,6 +62,7 @@ namespace calendrical::cli {
             );
         }
 
+        /** @brief Registers a compact-notation converter over a copy of @p calendar. */
         template<std::derived_from<calendar_if> CalendarT>
         void add_calendar_converter(
             converter_provider& provider,
@@ -89,7 +93,7 @@ namespace calendrical::cli {
             "NNNNNN(.fraction)",
             [](const std::string& x) { return std::stod(x); },
             [](double x) { return primitives::fixed_from_jd(x); },
-            [](fixed_date_t x) { return primitives::jd_from_moment(x); }
+            [](fixed_date_t x) { return primitives::jd_from_moment(moment_t{ x }); }
         );
         provider.add<int64_t>(
             "mjd",
@@ -103,14 +107,14 @@ namespace calendrical::cli {
             "seconds_since_epoch",
             [](const std::string& x) { return std::stod(x); },
             [](double x) { return primitives::moment_from_unix(x).to_fixed_date(); },
-            [](fixed_date_t x) { return primitives::unix_from_moment(x); }
+            [](fixed_date_t x) { return primitives::unix_from_moment(moment_t{ x }); }
         );
         provider.add<double>(
             "unix_timestamp",
             "seconds_since_epoch",
             [](const std::string& x) { return std::stod(x); },
             [](double x) { return primitives::moment_from_unix(x).to_fixed_date(); },
-            [](fixed_date_t x) { return primitives::unix_from_moment(x); }
+            [](fixed_date_t x) { return primitives::unix_from_moment(moment_t{ x }); }
         );
 
         add_calendar_converter<calendars::arithmetic_french_calendar>(provider, "arithmetic_french", "YYYY-MM-DD");

@@ -13,6 +13,7 @@ namespace calendrical{
     */
    template<std::size_t N>
    class polynomial{
+      /** @brief Coefficients in ascending order of power. */
       std::array<double, N> m_coefficients;
 
    public:
@@ -38,7 +39,7 @@ namespace calendrical{
 
    template<typename ... Args>
    /** @brief Helper factory that builds a polynomial from numeric coefficients. */
-   static constexpr polynomial<sizeof...(Args)> make_polynomial(Args&&... coefficients){
+   inline constexpr polynomial<sizeof...(Args)> make_polynomial(Args&&... coefficients){
       return std::array<double, sizeof...(Args)>{{static_cast<double>(std::forward<Args>(coefficients))...}};
    }
 }

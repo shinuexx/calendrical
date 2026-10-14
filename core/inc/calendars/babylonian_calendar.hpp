@@ -15,7 +15,7 @@ namespace calendrical::calendars {
         /** @brief Babylonian epoch in fixed-date coordinates. */
         static constexpr fixed_date_t ms_epoch { -113502 };
         /** @brief Babylon reference location for visibility calculations. */
-        static constexpr location babylon{ 32.4794, 44.4328, 26, moment_t::hms(3.5) };
+        static constexpr location babylon{ 32.4794_deg, 44.4328_deg, 26, moment_t::hms(3.5) };
 
         /** @brief Crescent-visibility criterion used by the Babylonian model. */
         static bool babylonian_criterion(const fixed_date_t& date);

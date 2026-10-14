@@ -20,7 +20,8 @@ namespace calendrical::datetypes {
         oss << "sexagesimal_name{stem:" << stem << ",branch:" << branch << '}';
         return oss.str();
     }
-}
-std::ostream& operator<<(std::ostream& out, const calendrical::datetypes::sexagesimal_name& odate) {
-    return out << odate.to_string();
+
+    std::ostream& operator<<(std::ostream& out, const sexagesimal_name& odate) {
+        return out << odate.to_string();
+    }
 }

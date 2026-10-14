@@ -12,10 +12,14 @@ namespace calendrical::calendars{
     class iso_calendar final :
         public typed_calendar_if<iso_date>
     {
+        /** @brief Gregorian calendar used to locate ISO year boundaries. */
         const gregorian_calendar* m_gregorian;
+
+        /** @brief Fixed date of the calendar epoch. */
 
         fixed_date_t m_epoch;
 
+        /** @brief Internal week extractor using an already resolved ISO @p year. */
         [[nodiscard]] int32_t get_week(const fixed_date_t& date, int32_t year) const;
 
     public:

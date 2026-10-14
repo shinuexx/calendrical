@@ -34,6 +34,8 @@ namespace calendrical::calendars {
 
         /** @brief Returns whether Hebrew year @p year is leap. */
         [[nodiscard]] bool is_leap_year(int32_t year) const override;
+        /** @brief Validates a date against the arithmetic month lengths of year @p date.year. */
+        [[nodiscard]] bool is_valid_date(const hebrew_date& date) const override;
         /** @brief Returns whether Hebrew year @p year is a sabbatical year. */
         [[nodiscard]] bool is_sabbatical_year(int32_t year) const;
 

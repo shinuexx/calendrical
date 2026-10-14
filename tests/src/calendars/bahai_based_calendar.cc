@@ -82,28 +82,20 @@ namespace tests {
 
     class bahai_based_calendar_test : public helpers::input_output_test<fixed_date_t, bahai_date> {
     protected:
-        const bahai_based_calendar* m_calendar = nullptr;
+        std::unique_ptr<const bahai_based_calendar> m_calendar;
     };
 
     class bahai_calendar_test : public bahai_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new bahai_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<bahai_calendar>();
         }
     };
 
     class astro_bahai_calendar_test : public bahai_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new astro_bahai_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<astro_bahai_calendar>();
         }
     };
 
@@ -128,6 +120,6 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : " << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(bahai_calendar, bahai_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
-    INSTANTIATE_TEST_CASE_P(astro_bahai_calendar, astro_bahai_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, astro_dates)));
+    INSTANTIATE_TEST_SUITE_P(bahai_calendar, bahai_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
+    INSTANTIATE_TEST_SUITE_P(astro_bahai_calendar, astro_bahai_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, astro_dates)));
 }

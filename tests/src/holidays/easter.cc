@@ -123,46 +123,22 @@ namespace tests{
 
     class orthodox_easter_test : public easter_abstract_test {
     protected:
-        holiday_providers::julian_calendar_holiday_provider *m_provider = nullptr;
-
-        void SetUp() override {
-            m_provider = new holiday_providers::julian_calendar_holiday_provider();
-        }
-        void TearDown() override {
-            delete m_provider;
-            m_provider = nullptr;
-        }
+        holiday_providers::julian_calendar_holiday_provider m_provider{};
     };
 
     class classic_easter_test : public easter_abstract_test {
     protected:
-        holiday_providers::gregorian_calendar_holiday_provider *m_provider = nullptr;
-
-        void SetUp() override {
-            m_provider = new holiday_providers::gregorian_calendar_holiday_provider();
-        }
-        void TearDown() override {
-            delete m_provider;
-            m_provider = nullptr;
-        }
+        holiday_providers::gregorian_calendar_holiday_provider m_provider{};
     };
 
     class astronomical_easter_test : public easter_abstract_test {
     protected:
-        holiday_providers::gregorian_calendar_holiday_provider *m_provider = nullptr;
-
-        void SetUp() override {
-            m_provider = new holiday_providers::gregorian_calendar_holiday_provider();
-        }
-        void TearDown() override {
-            delete m_provider;
-            m_provider = nullptr;
-        }
+        holiday_providers::gregorian_calendar_holiday_provider m_provider{};
     };
     TEST_P(orthodox_easter_test, calculate) {
         auto &[input, output] = GetParam();
         const auto year = m_gregorian.get_year(input);
-        const auto easter = m_provider->orthodox_easter(year);
+        const auto easter = m_provider.orthodox_easter(year);
         const auto actual = m_gregorian.to_date(easter);
         const auto diff = m_gregorian.to_fixed(output) - easter;
         EXPECT_EQ(actual, output) << year << " : " << actual.to_string() << " : " << output.to_string() << " : " << diff << std::endl;
@@ -171,7 +147,7 @@ namespace tests{
     TEST_P(classic_easter_test, calculate) {
         auto &[input, output] = GetParam();
         const auto year = m_gregorian.get_year(input);
-        const auto easter = m_provider->easter(year);
+        const auto easter = m_provider.easter(year);
         const auto actual = m_gregorian.to_date(easter);
         const auto diff = m_gregorian.to_fixed(output) - easter;
         EXPECT_EQ(actual, output) << year << " : " << actual.to_string() << " : " << output.to_string() << " : " << diff << std::endl;
@@ -180,7 +156,7 @@ namespace tests{
     TEST_P(astronomical_easter_test, calculate) {
         auto &[input, output] = GetParam();
         const auto year = m_gregorian.get_year(input);
-        const auto easter = m_provider->astronomical_easter(year);
+        const auto easter = m_provider.astronomical_easter(year);
         const auto actual = m_gregorian.to_date(easter);
         const auto diff = m_gregorian.to_fixed(output) - easter;
         EXPECT_EQ(actual, output) << year << " : " << actual.to_string() << " : " << output.to_string() << " : " << diff << std::endl;

@@ -1,8 +1,7 @@
 #include "calendars/gregorian_calendar.hpp"
+#include <array>
 
 namespace calendrical::calendars{
-    const gregorian_calendar gregorian_calendar::standard{};
-
     month gregorian_calendar::get_month(const fixed_date_t& date, int32_t year) const {
         const auto prior_days = date - get_new_year(year);
         const auto correction = date < to_fixed({year, month::march, 1}) ? 0 : is_leap_year(year) ? 1 : 2;
@@ -49,6 +48,31 @@ namespace calendrical::calendars{
             + floor_div(367 * m - 362, 12)
             + (month <= month::february ? 0 : is_leap_year(year) ? -1 : -2)
             + day;
+    }
+
+    bool gregorian_calendar::is_valid_date(const gregorian_date& date) const {
+        if (date.month < month::january || date.month > month::december) {
+            return false;
+        }
+        if (date.day < 1) {
+            return false;
+        }
+        int32_t max_days = 31;
+        switch (date.month) {
+            case month::february:
+                max_days = is_leap_year(date.year) ? 29 : 28;
+                break;
+            case month::april:
+            case month::june:
+            case month::september:
+            case month::november:
+                max_days = 30;
+                break;
+            default:
+                max_days = 31;
+                break;
+        }
+        return date.day <= max_days;
     }
 
     month gregorian_calendar::get_month(const fixed_date_t &date) const {

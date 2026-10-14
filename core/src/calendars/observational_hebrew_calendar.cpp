@@ -13,9 +13,9 @@ namespace calendrical::calendars{
 
     fixed_date_t observational_hebrew_calendar::first_of_nisan(int32_t gyear) {
         const auto equinox = season_in_gregorian(season::spring, gyear);
-        const auto set = universal_from_standard(sunset(static_cast<int64_t>(std::floor(equinox)), hebrew_location),
+        const auto set = universal_from_standard(sunset(fixed_date_t{ static_cast<int64_t>(std::floor(equinox)) }, hebrew_location),
                                            hebrew_location);
-        return phasis_on_or_after(static_cast<int64_t>(std::floor(equinox) - (equinox < set ? 14 : 13)),
+        return phasis_on_or_after(fixed_date_t{ static_cast<int64_t>(std::floor(equinox) - (equinox < set ? 14 : 13)) },
                                   hebrew_location);
     }
     // ReSharper disable once CppMemberFunctionMayBeStatic
@@ -65,5 +65,12 @@ namespace calendrical::calendars{
     fixed_date_t observational_hebrew_calendar::classical_passover_eve(int32_t gyear) const // NOLINT(*-convert-member-functions-to-static)
     {
         return first_of_nisan(gyear).add(13);
+    }
+
+    bool observational_hebrew_calendar::is_valid_date(const hebrew_date& date) const {
+        if (date.month < hebrew_month::nisan || date.month > hebrew_month::adarii || date.day < 1 || date.day > 30) {
+            return false;
+        }
+        return to_date(to_fixed(date)) == date;
     }
 }

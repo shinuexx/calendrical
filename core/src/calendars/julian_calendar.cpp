@@ -45,4 +45,32 @@ namespace calendrical::calendars{
         const auto year = get_year(date);
         return get_month(date, year);
     }
+
+    bool julian_calendar::is_valid_date(const julian_date& date) const {
+        if (date.year == 0) {
+            return false;
+        }
+        if (date.month < month::january || date.month > month::december) {
+            return false;
+        }
+        if (date.day < 1) {
+            return false;
+        }
+        int32_t max_days = 31;
+        switch (date.month) {
+            case month::february:
+                max_days = is_leap_year(date.year) ? 29 : 28;
+                break;
+            case month::april:
+            case month::june:
+            case month::september:
+            case month::november:
+                max_days = 30;
+                break;
+            default:
+                max_days = 31;
+                break;
+        }
+        return date.day <= max_days;
+    }
 }

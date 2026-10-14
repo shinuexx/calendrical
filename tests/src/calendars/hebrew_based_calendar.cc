@@ -83,28 +83,20 @@ namespace tests {
 
     class hebrew_based_calendar_test : public helpers::input_output_test<fixed_date_t, hebrew_date> {
     protected:
-        const hebrew_based_calendar* m_calendar = nullptr;
+        std::unique_ptr<const hebrew_based_calendar> m_calendar;
     };
 
     class hebrew_calendar_test : public hebrew_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new hebrew_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<hebrew_calendar>();
         }
     };
 
     class observational_hebrew_calendar_test : public hebrew_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new observational_hebrew_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<observational_hebrew_calendar>();
         }
     };
 
@@ -129,6 +121,6 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : " << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(hebrew_calendar, hebrew_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
-    INSTANTIATE_TEST_CASE_P(observational_hebrew_calendar, observational_hebrew_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
+    INSTANTIATE_TEST_SUITE_P(hebrew_calendar, hebrew_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
+    INSTANTIATE_TEST_SUITE_P(observational_hebrew_calendar, observational_hebrew_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
 }

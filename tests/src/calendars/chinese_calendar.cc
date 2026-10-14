@@ -79,45 +79,44 @@ namespace tests{
     };
 
     static constexpr std::array<moment_t, 33> next_zhonggi = {
-        -214191.633133,
-    -61370.729673,
-    25498.215092,
-    49239.004860,
-    171318.588098,
-    210156.745715,
-    253439.318423,
-    369767.423610,
-    400113.941895,
-    434384.035740,
-    452615.458234,
-    470177.759817,
-    473861.324287,
-    507860.235360,
-    524172.836499,
-    544687.134951,
-    567122.835546,
-    569492.996631,
-    601727.342101,
-    613446.520844,
-    626626.467423,
-    645556.325334,
-    664246.376294,
-    671426.124336,
-    694801.614262,
-    704453.869487,
-    708867.143728,
-    709411.313394,
-    709597.630490,
-    727277.699910,
-    728738.668683,
-    744325.563213,
-    764656.564371,
-
+        -214191.633133_m,
+    -61370.729673_m,
+    25498.215092_m,
+    49239.004860_m,
+    171318.588098_m,
+    210156.745715_m,
+    253439.318423_m,
+    369767.423610_m,
+    400113.941895_m,
+    434384.035740_m,
+    452615.458234_m,
+    470177.759817_m,
+    473861.324287_m,
+    507860.235360_m,
+    524172.836499_m,
+    544687.134951_m,
+    567122.835546_m,
+    569492.996631_m,
+    601727.342101_m,
+    613446.520844_m,
+    626626.467423_m,
+    645556.325334_m,
+    664246.376294_m,
+    671426.124336_m,
+    694801.614262_m,
+    704453.869487_m,
+    708867.143728_m,
+    709411.313394_m,
+    709597.630490_m,
+    727277.699910_m,
+    728738.668683_m,
+    744325.563213_m,
+    764656.564371_m,
     };
 
     class chinese_based_test : public helpers::input_output_test<fixed_date_t, chinese_date> {
     protected:
-        const chinese_calendar* m_calendar = nullptr;
+        std::unique_ptr<const chinese_calendar> m_calendar;
     };
 
     class sexagesimal_name_test : public helpers::input_output_test<fixed_date_t, sexagesimal_name> {
@@ -126,26 +125,13 @@ namespace tests{
     class chinese_calendar_test : public chinese_based_test {
     protected:
         void SetUp() override {
-            m_calendar = new chinese_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<chinese_calendar>();
         }
     };
 
     class major_solar_term_test : public helpers::input_output_test<fixed_date_t, moment_t> {
     protected:
-        const chinese_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new chinese_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const chinese_calendar> m_calendar = std::make_unique<chinese_calendar>();
     };
 
     TEST_P(chinese_calendar_test, to) {

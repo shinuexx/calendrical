@@ -80,16 +80,7 @@ namespace tests {
 
     class roman_calendar_test : public helpers::input_output_test<fixed_date_t, roman_date> {
     protected:
-        const roman_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new roman_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const roman_calendar> m_calendar = std::make_unique<roman_calendar>();
     };
 
     TEST_P(roman_calendar_test, to) {
@@ -103,16 +94,7 @@ namespace tests {
 
     class olympiad_test : public helpers::input_output_test<fixed_date_t, olympiad> {
     protected:
-        const roman_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new roman_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const roman_calendar> m_calendar = std::make_unique<roman_calendar>();
     };
 
     TEST_P(olympiad_test, to) {
@@ -128,6 +110,6 @@ namespace tests {
         EXPECT_EQ(m_calendar->julian_year_from_olympiad(output), y) << to_string(output) << " : " << m_calendar->julian_year_from_olympiad(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(roman_calendar, roman_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, gdates)));
-    INSTANTIATE_TEST_CASE_P(olympiad, olympiad_test, testing::ValuesIn(helpers::make_test_params_values(dates, olympiads)));
+    INSTANTIATE_TEST_SUITE_P(roman_calendar, roman_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, gdates)));
+    INSTANTIATE_TEST_SUITE_P(olympiad, olympiad_test, testing::ValuesIn(helpers::make_test_params_values(dates, olympiads)));
 }

@@ -81,28 +81,20 @@ namespace tests {
 
     class persian_based_calendar_test : public helpers::input_output_test<fixed_date_t, simple_date> {
     protected:
-        const persian_based_calendar* m_calendar = nullptr;
+        std::unique_ptr<const persian_based_calendar> m_calendar;
     };
 
     class persian_calendar_test : public persian_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new persian_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<persian_calendar>();
         }
     };
 
     class arithmetic_persian_calendar_test : public persian_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new arithmetic_persian_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<arithmetic_persian_calendar>();
         }
     };
 
@@ -127,6 +119,6 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : " << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(persian_calendar, persian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
-    INSTANTIATE_TEST_CASE_P(arithmetic_persian_calendar, arithmetic_persian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
+    INSTANTIATE_TEST_SUITE_P(persian_calendar, persian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
+    INSTANTIATE_TEST_SUITE_P(arithmetic_persian_calendar, arithmetic_persian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
 }

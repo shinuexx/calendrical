@@ -12,8 +12,8 @@ namespace calendrical::calendars {
         auto month = sidereal_zodiac(critical);
         auto year = astro_hindu_calendar_year(critical) - hindu_solar_era;
         const auto approx = date - 3 - mod(static_cast<int64_t>(std::floor(sidereal_solar_longitude(critical))), 30);
-        const auto start = least_passing(
-                [&](const int64_t &i) { return sidereal_zodiac(astro_hindu_sunset(i)) == month; }, approx);
+        const auto start = fixed_date_t{ least_passing(
+                [&](const int64_t &i) { return sidereal_zodiac(astro_hindu_sunset(fixed_date_t{ i })) == month; }, approx) };
         const auto day = date - start + 1;
         return {
             year,
@@ -27,7 +27,7 @@ namespace calendrical::calendars {
         const auto approx =
                 ms_epoch - 3 +
                 static_cast<int64_t>(std::floor(mean_sidereal_year * (year + hindu_solar_era + (month - 1) / 12.0)));
-        const auto start = least_passing([&](const int64_t& i) { return sidereal_zodiac(astro_hindu_sunset(i)) == month; }, approx);
+        const auto start = fixed_date_t{ least_passing([&](const int64_t& i) { return sidereal_zodiac(astro_hindu_sunset(fixed_date_t{ i })) == month; }, approx) };
         return start + day - 1;
     }
     int32_t astro_hindu_solar_calendar::get_year(const fixed_date_t& date) const

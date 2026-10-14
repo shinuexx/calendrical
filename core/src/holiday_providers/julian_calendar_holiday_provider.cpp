@@ -19,7 +19,7 @@ namespace calendrical::holiday_providers{
             result.emplace_back("orthodox christmas", x);
         result.emplace_back("orthodox easter", orthodox_easter(gyear));
         result.emplace_back("orthodox pentecost", orthodox_pentecost(gyear));
-        std::ranges::sort(result);
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
     std::vector<fixed_date_t> julian_calendar_holiday_provider::in_gregorian(month cmonth, int32_t cday, int32_t gyear) const {

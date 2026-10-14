@@ -11,18 +11,22 @@ namespace calendrical::cli {
           m_converter_provider(converter_provider),
           m_holiday_provider_provider(holiday_provider_provider) {}
 
+    void list_command::print_help() const {
+        std::cout << "Usage:\n";
+        std::cout << "  calendrical_cli list [topic]\n\n";
+        std::cout << "Options:\n";
+        std::cout << "  -h, --help  Show help\n\n";
+        std::cout << "Arguments:\n";
+        std::cout << "  topic  commands|calendars|holiday-calendars|convert|holidays (default: commands)\n";
+    }
+
     int list_command::execute(const std::vector<std::string_view>& args) const {
         if (!m_converter_provider || !m_holiday_provider_provider) {
             throw std::runtime_error("Providers for list command are not initialized");
         }
 
-        if (args.size() == 1 && (args[0] == "--help" || args[0] == "-h")) {
-            std::cout << "Usage:\n";
-            std::cout << "  calendrical_cli list [topic]\n\n";
-            std::cout << "Options:\n";
-            std::cout << "  -h, --help  Show help\n\n";
-            std::cout << "Arguments:\n";
-            std::cout << "  topic  commands|calendars|holiday-calendars|convert|holidays (default: commands)\n";
+        if (has_help_flag(args)) {
+            print_help();
             return 0;
         }
 

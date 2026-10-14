@@ -1,5 +1,6 @@
 #include "calendars/icelandic_calendar.hpp"
 #include "calendars/gregorian_calendar.hpp"
+#include <numeric>
 
 namespace calendrical::calendars {
     icelandic_calendar::icelandic_calendar() {
@@ -13,7 +14,7 @@ namespace calendrical::calendars {
             mod(floor_div(iyear, 4), 25)
         };
 
-        const auto apr19 = m_epoch + 365 * (iyear - 1LL) + cross_product(a, y);
+        const auto apr19 = m_epoch + 365 * (iyear - 1LL) + std::inner_product(a.begin(), a.end(), y.begin(), int64_t{0});
         return weekday::thursday.on_or_after(apr19);
     }
 
@@ -40,7 +41,7 @@ namespace calendrical::calendars {
     }
 
     fixed_date_t icelandic_calendar::to_fixed(const icelandic_date &date) const {
-        int64_t start;
+        fixed_date_t start;
         weekday shift;
         if (date.season == season::summer) {
             start = summer(date.year);

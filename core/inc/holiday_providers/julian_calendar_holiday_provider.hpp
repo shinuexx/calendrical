@@ -10,9 +10,12 @@ namespace calendrical::holiday_providers{
     class julian_calendar_holiday_provider :
     public holiday_provider_if
     {
+        /** @brief Calendar the holidays are defined in (not owned). */
         const calendars::julian_calendar* m_julian;
+        /** @brief Gregorian calendar used to map holidays into Gregorian years. */
         const calendars::gregorian_calendar* m_gregorian;
 
+        /** @brief Julian 23 March, 1 BCE: anchor for the Julian seasonal cycle. */
         fixed_date_t m_season_start;
 
     public:

@@ -10,8 +10,11 @@ namespace calendrical::holiday_providers {
     class persian_based_calendar_holiday_provider :
         public holiday_provider_if {
 
+        /** @brief Calendar the holidays are defined in (not owned). */
+
         const calendars::persian_based_calendar* m_persian;
 
+        /** @brief Gregorian year containing the Persian epoch; maps Gregorian to Persian years. */
         int32_t m_gregorian_year_persian_epoch;
 
     public:

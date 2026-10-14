@@ -33,7 +33,7 @@ namespace calendrical::holiday_providers {
             {"day of the covenant", day_of_the_covenant(gyear)},
             {"ascension of abdul baha", ascension_of_abdul_baha(gyear)}
         };
-        std::ranges::sort(result);
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
 

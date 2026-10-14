@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fixed_date.hpp"
+#include <compare>
 #include <string>
 #include <vector>
 
@@ -14,11 +15,42 @@ namespace calendrical{
         /** @brief Holiday date in internal fixed-date representation. */
         fixed_date_t date;
 
-        /** @brief Equality comparison by date. */
-        constexpr bool operator==(const holiday_t& other) const { return date == other.date; }
-        /** @brief Ordering comparison by date. */
-        constexpr auto operator<=>(const holiday_t& other) const { return date <=> other.date; }
+        /** @brief Equality comparison. */
+        constexpr bool operator==(const holiday_t& other) const = default;
+        /** @brief Chronological ordering; holidays on the same date are ordered by name. */
+        constexpr std::strong_ordering operator<=>(const holiday_t& other) const {
+            if (const auto cmp = date <=> other.date; cmp != 0)
+                return cmp;
+            return name <=> other.name;
+        }
+
+        /** @brief Comparator comparing holidays strictly by date. */
+        struct date_only_less_t {
+            /** @brief Enables heterogeneous lookup against a bare @ref fixed_date_t. */
+            using is_transparent = void;
+
+            /** @brief Returns whether @p lhs falls on an earlier date than @p rhs. */
+            constexpr bool operator()(const holiday_t& lhs, const holiday_t& rhs) const noexcept {
+                return lhs.date < rhs.date;
+            }
+            /** @brief Returns whether holiday @p lhs falls before date @p rhs. */
+            constexpr bool operator()(const holiday_t& lhs, const fixed_date_t& rhs) const noexcept {
+                return lhs.date < rhs;
+            }
+            /** @brief Returns whether date @p lhs falls before holiday @p rhs. */
+            constexpr bool operator()(const fixed_date_t& lhs, const holiday_t& rhs) const noexcept {
+                return lhs < rhs.date;
+            }
+        };
+
+        /** @brief Ready-to-use instance of @ref date_only_less_t. */
+        static constexpr date_only_less_t date_only_less{};
     };
+
+    /** @brief Namespace-level alias of @ref holiday_t::date_only_less_t. */
+    using date_only_less_t = holiday_t::date_only_less_t;
+    /** @brief Namespace-level alias of @ref holiday_t::date_only_less. */
+    inline constexpr date_only_less_t date_only_less = holiday_t::date_only_less;
 
     /**
      * @brief Runtime-polymorphic base interface for calendar systems.
@@ -27,7 +59,7 @@ namespace calendrical{
         constexpr calendar_if() = default;
         /** @brief Returns the calendar epoch as a fixed date. */
         [[nodiscard]] virtual fixed_date_t epoch() const = 0;
-        virtual ~calendar_if() = default;
+        constexpr virtual ~calendar_if() = default;
     };
 
     template<typename T>
@@ -43,7 +75,11 @@ namespace calendrical{
         [[nodiscard]] virtual T to_date(const fixed_date_t& date) const = 0;
         /** @brief Converts a calendar-specific date to fixed-date representation. */
         [[nodiscard]] virtual fixed_date_t to_fixed(const T& date) const = 0;
-        ~typed_calendar_if() override = default;
+        /** @brief Validates if the given date is valid for this calendar. */
+        [[nodiscard]] virtual bool is_valid_date(const T& date) const {
+            return to_date(to_fixed(date)) == date;
+        }
+        constexpr ~typed_calendar_if() override = default;
     };
 
     /**

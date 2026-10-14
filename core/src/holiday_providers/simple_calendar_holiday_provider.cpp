@@ -7,7 +7,7 @@ namespace calendrical::holiday_providers {
         std::vector<holiday_t> result;
         for (const auto& x : navasard(gyear))
             result.emplace_back("navasard", x);
-        std::ranges::sort(result);
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
 

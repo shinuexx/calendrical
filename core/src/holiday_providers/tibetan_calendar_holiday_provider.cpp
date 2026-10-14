@@ -19,7 +19,7 @@ namespace calendrical::holiday_providers {
             result.emplace_back("lhabab duchen", x);
         for (const auto& x : ganden_ngamcho(gyear))
             result.emplace_back("ganden ngamcho", x);
-        std::ranges::sort(result);
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
 

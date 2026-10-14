@@ -47,9 +47,9 @@ namespace tests {
 
     TEST_P(ephemeris_correction_test, calculate) {
         auto &[input, output] = GetParam();
-        EXPECT_NEAR(ephemeris_correction(input), output, 1e-6) << output << " : " << ephemeris_correction(input) << " : " << input << std::endl;
+        EXPECT_NEAR(ephemeris_correction(moment_t{ input }), output, 1e-6) << output << " : " << ephemeris_correction(moment_t{ input }) << " : " << input << std::endl;
     }
 
 
-    INSTANTIATE_TEST_CASE_P(ephemeris_correction, ephemeris_correction_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
+    INSTANTIATE_TEST_SUITE_P(ephemeris_correction, ephemeris_correction_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
 }

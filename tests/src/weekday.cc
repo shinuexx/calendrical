@@ -48,6 +48,6 @@ namespace tests {
         EXPECT_EQ(input.get_weekday(), expected) << input << " : " << input.get_weekday() << " : " << expected << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(weekdays, weekday_test, testing::ValuesIn(helpers::make_test_params_values(dates, expected_weekdays)));
+    INSTANTIATE_TEST_SUITE_P(weekdays, weekday_test, testing::ValuesIn(helpers::make_test_params_values(dates, expected_weekdays)));
 }
 

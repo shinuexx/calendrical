@@ -49,7 +49,7 @@ namespace calendrical::holiday_providers {
             result.emplace_back("the eighth day", x);
         result.emplace_back("simmut of passover", simmut_of_passover(gyear));
         result.emplace_back("simmut of tabernacles", simmut_of_tabernacles(gyear));
-        std::ranges::sort(result);
+        std::ranges::sort(result, holiday_t::date_only_less_t{});
         return result;
     }
 

@@ -1,0 +1,14 @@
+// Generated at build time by cmake/build_info.cmake from cmake/build_info.cpp.in. Do not edit.
+
+#include "version.hpp"
+
+namespace calendrical {
+    std::string_view library_version() noexcept { return "@CALENDRICAL_VERSION@"; }
+    std::string_view build_datetime() noexcept { return "@CALENDRICAL_BUILD_DATETIME@"; }
+    std::optional<std::chrono::sys_seconds> build_time() noexcept { return @CALENDRICAL_BUILD_TIME@; }
+    std::string_view commit() noexcept { return "@CALENDRICAL_GIT_COMMIT@"; }
+    std::string_view branch() noexcept { return "@CALENDRICAL_GIT_BRANCH@"; }
+    bool is_dirty() noexcept { return @CALENDRICAL_GIT_DIRTY@; }
+    std::string_view compiler() noexcept { return "@CALENDRICAL_COMPILER@"; }
+    std::string_view platform() noexcept { return "@CALENDRICAL_PLATFORM@"; }
+}

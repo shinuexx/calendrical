@@ -44,16 +44,7 @@ namespace tests {
 
     class samaritan_calendar_test : public helpers::input_output_test<fixed_date_t, simple_date> {
     protected:
-        const samaritan_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new samaritan_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const samaritan_calendar> m_calendar = std::make_unique<samaritan_calendar>();
     };
 
     TEST_P(samaritan_calendar_test, to) {
@@ -65,5 +56,5 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : " << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(samaritan_calendar, samaritan_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, gdates)));
+    INSTANTIATE_TEST_SUITE_P(samaritan_calendar, samaritan_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, gdates)));
 }

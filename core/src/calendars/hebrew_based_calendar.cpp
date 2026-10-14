@@ -1,4 +1,5 @@
 #include "calendars/hebrew_based_calendar.hpp"
+#include <array>
 
 namespace calendrical::calendars {
     int32_t hebrew_based_calendar::last_day_of_month(int32_t year, hebrew_month hm) const {

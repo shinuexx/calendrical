@@ -17,6 +17,7 @@ namespace calendrical::calendars {
     class chinese_based_calendar :
         public typed_calendar_if<chinese_date>,
         public chinese_base{
+        /** @brief Fixed date of the calendar epoch. */
         fixed_date_t m_epoch;
     public:
         /** @brief Constructs a Chinese-family calendar with a custom epoch. */

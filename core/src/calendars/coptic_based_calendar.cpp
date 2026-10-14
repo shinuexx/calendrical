@@ -1,8 +1,8 @@
 #include "calendars/coptic_based_calendar.hpp"
 
 namespace calendrical::calendars{
-    const coptic_based_calendar coptic_calendar{ 103605 };
-    const coptic_based_calendar ethiopic_calendar{ 2796 };
+    const coptic_based_calendar coptic_calendar{ 103605_rd };
+    const coptic_based_calendar ethiopic_calendar{ 2796_rd };
 
     int32_t coptic_based_calendar::get_month(const fixed_date_t& date, int32_t year) const{
         return static_cast<int32_t>(floor_div(date - get_new_year(year), 30) + 1);
@@ -41,5 +41,19 @@ namespace calendrical::calendars{
     // ReSharper disable once CppMemberFunctionMayBeStatic
     bool coptic_based_calendar::is_leap_year(int32_t year) const { // NOLINT(*-convert-member-functions-to-static)
         return mod(year, 4) == 3;
+    }
+
+    bool coptic_based_calendar::is_valid_date(const simple_date& date) const {
+        if (date.month < 1 || date.month > 13) {
+            return false;
+        }
+        if (date.day < 1) {
+            return false;
+        }
+        if (date.month <= 12) {
+            return date.day <= 30;
+        }
+        const int32_t max_epagomene = is_leap_year(date.year) ? 6 : 5;
+        return date.day <= max_epagomene;
     }
 }
