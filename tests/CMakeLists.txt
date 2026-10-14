@@ -27,6 +27,16 @@ target_link_libraries(tests
         calendrical_warning_flags
 )
 
+target_compile_definitions(tests PRIVATE
+    CALENDRICAL_DATA_DIR="${CMAKE_CURRENT_SOURCE_DIR}/.."
+)
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/../all-holidays.csv"
+    "${CMAKE_CURRENT_BINARY_DIR}/all-holidays.csv"
+    COPYONLY
+)
+
 enable_testing()
 
 find_package(GTest CONFIG QUIET)

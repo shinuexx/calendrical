@@ -39,7 +39,7 @@ namespace calendrical::holiday_providers {
     }
 
     fixed_date_t persian_based_calendar_holiday_provider::nawruz(int32_t year) const {
-        const auto persian_year = year - m_gregorian_year_persian_epoch;
+        const auto persian_year = year - m_gregorian_year_persian_epoch + 1;
         const auto y = persian_year <= 0 ? persian_year - 1 : persian_year;
         return m_persian->get_new_year(y);
     }
