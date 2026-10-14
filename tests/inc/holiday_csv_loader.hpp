@@ -51,6 +51,10 @@ class holiday_csv {
             {"losar", "Losar"},
             {"mawlid", "Mawlid"},
             {"diwali", "Diwali"},
+            {"shiva", "Great Night of Shiva"},
+            {"rama", "Birthday of Rama"},
+            {"hindu_lunar_new_year", "Hindu Lunar New Year"},
+            {"mesha_samkranti", "Mesha Sa\xe1\xb9\x83kra\xcc\x84nti (date)"},
             {"sacred_wednesday", "Sacred Wednesday (first)"},
             {"icelandic_summer", "Icelandic Summer"},
             {"icelandic_winter", "Icelandic Winter"},
@@ -72,8 +76,7 @@ class holiday_csv {
             "../all-holidays.csv",
             "../../all-holidays.csv",
             "tests/all-holidays.csv",
-            "tests/data/all-holidays.csv",
-            "/workspace/calendrical/all-holidays.csv"
+            "tests/data/all-holidays.csv"
         };
 
         std::ifstream file;

@@ -27,6 +27,24 @@ TEST_F(hindu_holidays_test, sacred_wednesdays) {
     m_csv.verify_holiday("sacred_wednesday", [this](int32_t y) { return m_lunar_provider.sacred_wednesdays(y); });
 }
 
+TEST_F(hindu_holidays_test, great_night_of_shiva) {
+    m_csv.verify_holiday("shiva", [this](int32_t y) { return m_lunar_provider.shiva(y); });
+}
+
+TEST_F(hindu_holidays_test, birthday_of_rama) {
+    m_csv.verify_holiday("rama", [this](int32_t y) { return m_lunar_provider.rama(y); });
+}
+
+TEST_F(hindu_holidays_test, hindu_lunar_new_year) {
+    m_csv.verify_holiday("hindu_lunar_new_year", [this](int32_t y) { return m_lunar.hindu_lunar_new_year(y); });
+}
+
+TEST_F(hindu_holidays_test, mesha_samkranti) {
+    m_csv.verify_holiday("mesha_samkranti", [](int32_t y) {
+        return calendars::modern_hindu_base::mesha_samkranti(y).to_fixed_date();
+    });
+}
+
 TEST_F(hindu_holidays_test, lunar_in_year) {
     for (int32_t y = 2000; y <= 2010; ++y) {
         const auto holidays = m_lunar_provider.in_year(y);

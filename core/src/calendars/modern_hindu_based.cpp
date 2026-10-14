@@ -127,7 +127,7 @@ namespace calendrical::calendars {
     double modern_hindu_base::hindu_equation_of_time(const fixed_date_t& date)
     {
         const auto offset = hindu_sine(hindu_mean_position(moment_t{ date }, hindu_anomalistic_year));
-        const double equation_sun = offset * static_cast<double>(angle_t::dms(57, 18)) * ( 14/360.0 - std::abs(offset) / 180);
+        const double equation_sun = offset * static_cast<double>(angle_t::dms(57, 18)) * ( 14/360.0 - std::abs(offset) / 1080);
         return hindu_daily_motion(date) / 360 * (equation_sun / 360) * hindu_sidereal_year;
     }
 
@@ -226,7 +226,7 @@ namespace calendrical::calendars {
     moment_t modern_hindu_base::hindu_lunar_day_at_or_after(const double& k, const moment_t& t)
     {
         const angle_t phase = (k - 1) * 12_deg;
-        const double T = static_cast<double>(t) + mod(phase - hindu_lunar_phase(t), 360);
+        const double T = static_cast<double>(t) + mod(phase - hindu_lunar_phase(t), 360) * hindu_synodic_month / 360;
         const auto a = std::max(static_cast<double>(t), T - 2);
         const double b = T + 2;
         return moment_t{ inverse_angular(make_value_function(hindu_lunar_phase), phase, a, b) };
