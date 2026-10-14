@@ -245,6 +245,8 @@ namespace tests {
         // Providers and alias names
         EXPECT_EQ(cmd.execute({"julian", "2026"}), 0);
         EXPECT_EQ(cmd.execute({"julian_calendar", "2026"}), 0);
+        EXPECT_EQ(cmd.execute({"chinese", "2026"}), 0);
+        EXPECT_EQ(cmd.execute({"chinese_calendar", "2026"}), 0);
         EXPECT_EQ(cmd.execute({"hebrew", "5786"}), 0);
         EXPECT_EQ(cmd.execute({"hebrew_based_calendar", "5786"}), 0);
         EXPECT_EQ(cmd.execute({"islamic", "1447"}), 0);

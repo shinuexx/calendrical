@@ -54,6 +54,7 @@ add_library(calendrical
     src/datetypes/sexagesimal_name.cpp
     src/datetypes/stringifiers.cpp
     src/holiday_providers/bahai_based_calendar_holiday_provider.cpp
+    src/holiday_providers/chinese_calendar_holiday_provider.cpp
     src/holiday_providers/coptic_based_calendar_holiday_provider.cpp
     src/holiday_providers/gregorian_calendar_holiday_provider.cpp
     src/holiday_providers/hebrew_based_calendar_holiday_provider.cpp
