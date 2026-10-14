@@ -99,6 +99,28 @@ namespace tests {
         EXPECT_NO_THROW((datetype_from_compact_string<iso_date>("2024-10-8")));
     }
 
+    TEST(parser_validation, compact_format_accepts_negative_values) {
+        const auto g = datetype_from_compact_string<gregorian_date>("-500-03-15");
+        EXPECT_EQ(g.year, -500);
+        EXPECT_EQ(g.month, month::march);
+        EXPECT_EQ(g.day, 15);
+
+        const auto j = datetype_from_compact_string<julian_date>(" -44 - 3 - 15 ");
+        EXPECT_EQ(j.year, -44);
+        EXPECT_EQ(j.month, month::march);
+        EXPECT_EQ(j.day, 15);
+
+        // Negative values in non-leading fields are signs too.
+        const auto s = datetype_from_compact_string<simple_date>("1-2--3");
+        EXPECT_EQ(s.year, 1);
+        EXPECT_EQ(s.month, 2);
+        EXPECT_EQ(s.day, -3);
+
+        // A '-' not followed by a digit is still a separator, so empty fields keep failing.
+        EXPECT_THROW((datetype_from_compact_string<gregorian_date>("2024--")), std::runtime_error);
+        EXPECT_THROW((datetype_from_compact_string<gregorian_date>("-2024-03")), std::runtime_error);
+    }
+
     TEST(parser_validation, sexagesimal_name_parser) {
         EXPECT_NO_THROW((datetype_from_compact_string<datetypes::sexagesimal_name>("1-1")));
         EXPECT_NO_THROW((datetype_from_compact_string<datetypes::sexagesimal_name>("2-2")));

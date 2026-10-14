@@ -159,6 +159,21 @@ namespace tests {
         EXPECT_THROW((void)to_rd("bahai", "1-10-2-20-1"), std::invalid_argument);
     }
 
+    TEST_F(cli_test_fixture, converters_accept_negative_years) {
+        const auto& gregorian = *m_converters["gregorian"];
+        const auto& julian = *m_converters["julian"];
+
+        const auto rd = gregorian.to_rd("-500-03-15");
+        EXPECT_LT(static_cast<int64_t>(rd), 0);
+        EXPECT_NE(gregorian.from_rd(rd).find("year:-500"), std::string::npos);
+
+        // Julian has no year 0: 1 BCE is year -1, immediately before 1 CE.
+        EXPECT_EQ(static_cast<int64_t>(julian.to_rd("1-01-01")) - static_cast<int64_t>(julian.to_rd("-1-12-31")), 1);
+
+        convert_command cmd(std::addressof(m_converters));
+        EXPECT_EQ(cmd.execute({"julian", "gregorian", "-44-03-15"}), 0);
+    }
+
     TEST_F(cli_test_fixture, convert_successful_conversions) {
         convert_command cmd(std::addressof(m_converters));
 

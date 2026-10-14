@@ -1,8 +1,8 @@
 #pragma once
 
 #include <array>
-#include <charconv>
 #include <cctype>
+#include <charconv>
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -125,12 +125,25 @@ namespace calendrical::calendar_traits {
             return fields;
         }
 
-        /** @brief Splits a delimited string and trims each part. */
+        /**
+         * @brief Splits a delimited string and trims each part.
+         *
+         * When the delimiter is '-', a '-' that opens a part and is followed by a digit is a sign,
+         * not a separator, so negative values survive (e.g. `-500-03-15` -> `-500`, `03`, `15`).
+         */
         inline std::vector<std::string_view> split_parts(std::string_view input, char delimiter) {
             std::vector<std::string_view> parts;
             std::size_t start = 0;
             while (true) {
-                const auto pos = input.find(delimiter, start);
+                auto search_from = start;
+                if (delimiter == '-') {
+                    const auto first = input.find_first_not_of(" \t", start);
+                    if (first != std::string_view::npos && input[first] == '-' && first + 1 < input.size()
+                        && std::isdigit(static_cast<unsigned char>(input[first + 1]))) {
+                        search_from = first + 1;
+                    }
+                }
+                const auto pos = input.find(delimiter, search_from);
                 if (pos == std::string_view::npos) {
                     parts.emplace_back(trim(input.substr(start)));
                     break;
