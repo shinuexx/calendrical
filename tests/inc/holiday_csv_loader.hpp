@@ -68,7 +68,6 @@ class holiday_csv {
             {"pentecost", "Pentecost"},
             {"birkath_ha_hama", "Birkath ha-Hama"},
             {"observ_hebrew_1_nisan", "Observ. Hebrew 1 Nisan"},
-            {"observational_hebrew_first_of_nisan", "Observ. Hebrew 1 Nisan"},
             {"us_independence_day", "U.S. Independence Day"},
             {"us_labor_day", "U.S. Labor Day"},
             {"us_memorial_day", "U.S. Memorial Day"},

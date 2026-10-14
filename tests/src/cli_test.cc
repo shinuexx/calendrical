@@ -309,12 +309,26 @@ namespace tests {
         const auto output = testing::internal::GetCapturedStdout();
 
         EXPECT_NE(output.find("provider=us year=2026"), std::string::npos);
-        EXPECT_NE(output.find("independence day"), std::string::npos);
-        EXPECT_NE(output.find("labor day"), std::string::npos);
-        EXPECT_NE(output.find("memorial day"), std::string::npos);
-        EXPECT_NE(output.find("election day"), std::string::npos);
-        EXPECT_NE(output.find("daylight saving start"), std::string::npos);
-        EXPECT_NE(output.find("daylight saving end"), std::string::npos);
+
+        const auto pos_start = output.find("gregorian_date{year:2026,month:march,day:8} | daylight saving start");
+        const auto pos_memorial = output.find("gregorian_date{year:2026,month:may,day:25} | memorial day");
+        const auto pos_indep = output.find("gregorian_date{year:2026,month:july,day:4} | independence day");
+        const auto pos_labor = output.find("gregorian_date{year:2026,month:september,day:7} | labor day");
+        const auto pos_dst_end = output.find("gregorian_date{year:2026,month:november,day:1} | daylight saving end");
+        const auto pos_election = output.find("gregorian_date{year:2026,month:november,day:3} | election day");
+
+        ASSERT_NE(pos_start, std::string::npos);
+        ASSERT_NE(pos_memorial, std::string::npos);
+        ASSERT_NE(pos_indep, std::string::npos);
+        ASSERT_NE(pos_labor, std::string::npos);
+        ASSERT_NE(pos_dst_end, std::string::npos);
+        ASSERT_NE(pos_election, std::string::npos);
+
+        EXPECT_LT(pos_start, pos_memorial);
+        EXPECT_LT(pos_memorial, pos_indep);
+        EXPECT_LT(pos_indep, pos_labor);
+        EXPECT_LT(pos_labor, pos_dst_end);
+        EXPECT_LT(pos_dst_end, pos_election);
     }
 
     // ==========================================

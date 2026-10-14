@@ -26,7 +26,8 @@ namespace calendrical::calendars{
         /**
          * @brief First day of Nisan in Gregorian year @p gyear according to the observational Hebrew calendar (CC 18.22).
          *
-         * Determined by the visible crescent on or after 14 days before the vernal equinox.
+         * First day (visible new crescent) on or after 13 or 14 days before the vernal equinox,
+         * counting 14 days if the equinox occurs before sunset at the reference location, otherwise 13.
          *
          * @param gyear Gregorian year.
          * @return Fixed date of 1 Nisan.

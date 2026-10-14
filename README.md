@@ -185,6 +185,7 @@ Depending on converter:
 ## Registered Holidays Providers
 
 - `gregorian`
+- `us`
 - `julian`
 - `islamic_based`
 - `hebrew_based`
@@ -199,6 +200,7 @@ Depending on converter:
 Provider aliases supported by the `holidays` parser:
 
 - `gregorian_calendar` -> `gregorian`
+- `us_calendar` / `usa` -> `us`
 - `julian_calendar` -> `julian`
 - `islamic` / `islamic_based_calendar` -> `islamic_based`
 - `hebrew` / `hebrew_based_calendar` -> `hebrew_based`
