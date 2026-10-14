@@ -44,16 +44,7 @@ namespace tests {
 
     class babylonian_calendar_test : public helpers::input_output_test<fixed_date_t, simple_lunar_date> {
     protected:
-        const babylonian_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new babylonian_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const babylonian_calendar> m_calendar = std::make_unique<babylonian_calendar>();
     };
 
     TEST_P(babylonian_calendar_test, to) {

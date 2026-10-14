@@ -118,39 +118,27 @@ namespace tests {
 
     class islamic_based_calendar_test : public helpers::input_output_test<fixed_date_t, simple_date> {
     protected:
-        const islamic_based_calendar* m_calendar = nullptr;
+        std::unique_ptr<const islamic_based_calendar> m_calendar;
     };
 
     class islamic_calendar_test : public islamic_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new islamic_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<islamic_calendar>();
         }
     };
 
     class observational_islamic_calendar_test : public islamic_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new observational_islamic_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<observational_islamic_calendar>();
         }
     };
 
     class saudi_islamic_calendar_test : public islamic_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new saudi_islamic_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<saudi_islamic_calendar>();
         }
     };
 

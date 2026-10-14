@@ -44,16 +44,7 @@ namespace tests {
 
     class iso_calendar_test : public helpers::input_output_test<fixed_date_t, iso_date> {
     protected:
-        const iso_calendar *m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new iso_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const iso_calendar> m_calendar = std::make_unique<iso_calendar>();
     };
 
     TEST_P(iso_calendar_test, to) {

@@ -116,19 +116,9 @@ namespace tests{
 
     class birkath_ha_hama_test : public helpers::input_output_test<int32_t, std::optional<std::tuple<int32_t, int32_t>>> {
     protected:
-        const calendars::gregorian_calendar* m_gregorian;
+        const calendars::gregorian_calendar* m_gregorian = std::addressof(calendars::gregorian_calendar::standard);
         const calendars::hebrew_calendar m_hebrew{};
-        holiday_providers::hebrew_based_calendar_holiday_provider* m_provider;
-
-        void SetUp() override {
-            m_provider = new holiday_providers::hebrew_based_calendar_holiday_provider(std::addressof(m_hebrew));
-            m_gregorian = std::addressof(calendars::gregorian_calendar::standard);
-        }
-        void TearDown() override {
-            delete m_provider;
-            m_provider = nullptr;
-            m_gregorian = nullptr;
-        }
+        holiday_providers::hebrew_based_calendar_holiday_provider m_provider{std::addressof(m_hebrew)};
     };
 
     static std::optional<datetypes::gregorian_date> opt(const std::vector<fixed_date_t>& dates, const calendars::gregorian_calendar* gregorian) {
@@ -147,7 +137,7 @@ namespace tests{
 
     TEST_P(birkath_ha_hama_test, calculate) {
         auto &[year, month_day] = GetParam();
-        const auto dates = m_provider->birhath_ha_hama(year);
+        const auto dates = m_provider.birhath_ha_hama(year);
         const auto actual = opt(dates, m_gregorian);
         std::optional<datetypes::gregorian_date> expected{std::nullopt};
         if(month_day)

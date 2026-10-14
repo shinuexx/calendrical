@@ -82,28 +82,20 @@ namespace tests {
 
     class bahai_based_calendar_test : public helpers::input_output_test<fixed_date_t, bahai_date> {
     protected:
-        const bahai_based_calendar* m_calendar = nullptr;
+        std::unique_ptr<const bahai_based_calendar> m_calendar;
     };
 
     class bahai_calendar_test : public bahai_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new bahai_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<bahai_calendar>();
         }
     };
 
     class astro_bahai_calendar_test : public bahai_based_calendar_test {
     protected:
         void SetUp() override {
-            m_calendar = new astro_bahai_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<astro_bahai_calendar>();
         }
     };
 

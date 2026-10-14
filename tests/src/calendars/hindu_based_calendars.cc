@@ -230,86 +230,32 @@ namespace tests {
 
     class old_hindu_solar_calendar_test : public helpers::input_output_test<fixed_date_t, simple_date> {
     protected:
-        const old_hindu_solar_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new old_hindu_solar_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const old_hindu_solar_calendar> m_calendar = std::make_unique<old_hindu_solar_calendar>();
     };
 
     class modern_hindu_solar_calendar_test : public helpers::input_output_test<fixed_date_t, simple_date> {
     protected:
-        const modern_hindu_solar_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new modern_hindu_solar_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const modern_hindu_solar_calendar> m_calendar = std::make_unique<modern_hindu_solar_calendar>();
     };
 
     class astro_hindu_solar_calendar_test : public helpers::input_output_test<fixed_date_t, simple_date> {
     protected:
-        const astro_hindu_solar_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new astro_hindu_solar_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const astro_hindu_solar_calendar> m_calendar = std::make_unique<astro_hindu_solar_calendar>();
     };
 
     class old_hindu_lunar_calendar_test : public helpers::input_output_test<fixed_date_t, simple_lunar_date> {
     protected:
-        const old_hindu_lunar_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new old_hindu_lunar_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const old_hindu_lunar_calendar> m_calendar = std::make_unique<old_hindu_lunar_calendar>();
     };
 
     class modern_hindu_lunar_calendar_test : public helpers::input_output_test<fixed_date_t, lunar_date> {
     protected:
-        const modern_hindu_lunar_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new modern_hindu_lunar_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const modern_hindu_lunar_calendar> m_calendar = std::make_unique<modern_hindu_lunar_calendar>();
     };
 
     class astro_hindu_lunar_calendar_test : public helpers::input_output_test<fixed_date_t, lunar_date> {
     protected:
-        const astro_hindu_lunar_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new astro_hindu_lunar_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const astro_hindu_lunar_calendar> m_calendar = std::make_unique<astro_hindu_lunar_calendar>();
     };
 
     TEST_P(old_hindu_solar_calendar_test, to) {

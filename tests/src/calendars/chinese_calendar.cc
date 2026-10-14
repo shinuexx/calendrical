@@ -116,7 +116,7 @@ namespace tests{
 
     class chinese_based_test : public helpers::input_output_test<fixed_date_t, chinese_date> {
     protected:
-        const chinese_calendar* m_calendar = nullptr;
+        std::unique_ptr<const chinese_calendar> m_calendar;
     };
 
     class sexagesimal_name_test : public helpers::input_output_test<fixed_date_t, sexagesimal_name> {
@@ -125,26 +125,13 @@ namespace tests{
     class chinese_calendar_test : public chinese_based_test {
     protected:
         void SetUp() override {
-            m_calendar = new chinese_calendar();
-        }
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
+            m_calendar = std::make_unique<chinese_calendar>();
         }
     };
 
     class major_solar_term_test : public helpers::input_output_test<fixed_date_t, moment_t> {
     protected:
-        const chinese_calendar* m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new chinese_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const chinese_calendar> m_calendar = std::make_unique<chinese_calendar>();
     };
 
     TEST_P(chinese_calendar_test, to) {

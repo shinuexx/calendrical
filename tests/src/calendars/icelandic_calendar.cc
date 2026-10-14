@@ -44,16 +44,7 @@ namespace tests {
 
     class icelandic_calendar_test : public helpers::input_output_test<fixed_date_t, icelandic_date> {
     protected:
-        const icelandic_calendar *m_calendar = nullptr;
-
-        void SetUp() override {
-            m_calendar = new icelandic_calendar();
-        }
-
-        void TearDown() override {
-            delete m_calendar;
-            m_calendar = nullptr;
-        }
+        std::unique_ptr<const icelandic_calendar> m_calendar = std::make_unique<icelandic_calendar>();
     };
 
     TEST_P(icelandic_calendar_test, to) {
