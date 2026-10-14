@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 #include <stdexcept>
 #include <cstdint>
 #include <optional>
@@ -118,8 +119,28 @@ class holiday_csv {
             if (holiday_name.empty()) continue;
 
             std::vector<std::string> vals;
+            size_t year_idx = 0;
             while (std::getline(ss, val, ';')) {
-                vals.push_back(trim(val));
+                auto v = trim(val);
+                if (v.empty() || v == "none") {
+                    vals.push_back("none");
+                } else {
+                    const auto slash_pos = v.find('/');
+                    if (slash_pos != std::string::npos && year_idx < m_years.size()) {
+                        const int32_t y = m_years[year_idx];
+                        const int32_t m = std::stoi(v.substr(0, slash_pos));
+                        const int32_t d = std::stoi(v.substr(slash_pos + 1));
+                        std::ostringstream oss;
+                        oss << std::setfill('0')
+                            << std::setw(4) << y << '-'
+                            << std::setw(2) << m << '-'
+                            << std::setw(2) << d;
+                        vals.push_back(oss.str());
+                    } else {
+                        vals.push_back(v);
+                    }
+                }
+                ++year_idx;
             }
             m_data[holiday_name] = std::move(vals);
         }
@@ -152,7 +173,12 @@ public:
 
     static std::string format_date(calendrical::fixed_date_t fd) {
         const auto d = calendrical::calendars::gregorian_calendar::standard.to_date(fd);
-        return std::to_string(static_cast<int32_t>(d.month)) + "/" + std::to_string(d.day);
+        std::ostringstream oss;
+        oss << std::setfill('0')
+            << std::setw(4) << d.year << '-'
+            << std::setw(2) << static_cast<int32_t>(d.month) << '-'
+            << std::setw(2) << d.day;
+        return oss.str();
     }
 
     static std::string format_date(const std::vector<calendrical::fixed_date_t>& fds) {
