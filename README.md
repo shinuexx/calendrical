@@ -260,8 +260,8 @@ with information recorded when the library was built:
 ```cpp
 #include "version.hpp"
 
-calendrical::version();          // "1.0.0" - headers you compiled against (constexpr)
-calendrical::library_version();  // "1.0.0" - the linked binary; differs if headers and library mismatch
+calendrical::version();          // "0.1.0" - headers you compiled against (constexpr)
+calendrical::library_version();  // "0.1.0" - the linked binary; differs if headers and library mismatch
 calendrical::commit();           // full git hash, or "unknown" outside a git checkout
 calendrical::branch();           // git branch, "HEAD" when detached
 calendrical::is_dirty();         // uncommitted changes to tracked files at build time

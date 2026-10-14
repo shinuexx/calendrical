@@ -54,7 +54,7 @@ namespace calendrical {
      *
      * Example:
      * @code
-     * calendrical 1.0.0
+     * calendrical 0.1.0
      *   commit:   0efb89fd0d31 (refactor/code-review-recommendations, dirty)
      *   built:    2026-10-14T12:34:56Z, Release
      *   compiler: GNU 13.2.0, C++ 202002

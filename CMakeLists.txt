@@ -59,10 +59,17 @@ install(EXPORT calendricalTargets
 )
 
 include(CMakePackageConfigHelpers)
+# Semantic versioning: before 1.0 a minor bump may break the API, so 0.x releases are only
+# compatible within the same minor version.
+if (PROJECT_VERSION_MAJOR EQUAL 0)
+  set(CALENDRICAL_VERSION_COMPATIBILITY SameMinorVersion)
+else()
+  set(CALENDRICAL_VERSION_COMPATIBILITY SameMajorVersion)
+endif()
 write_basic_package_version_file(
   "${CMAKE_CURRENT_BINARY_DIR}/calendricalConfigVersion.cmake"
   VERSION ${PROJECT_VERSION}
-  COMPATIBILITY SameMajorVersion
+  COMPATIBILITY ${CALENDRICAL_VERSION_COMPATIBILITY}
 )
 
 configure_package_config_file(
