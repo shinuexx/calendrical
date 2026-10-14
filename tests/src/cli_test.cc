@@ -11,6 +11,7 @@
 #include "commands/list_command.hpp"
 #include "converter_provider_builder.hpp"
 #include "holiday_provider_provider_builder.hpp"
+#include "version.hpp"
 
 namespace tests {
     using namespace calendrical::cli;
@@ -29,6 +30,16 @@ namespace tests {
     TEST_F(cli_test_fixture, dispatcher_null_command_throws) {
         command_dispatcher dispatcher;
         EXPECT_THROW(dispatcher.add(nullptr), std::invalid_argument);
+    }
+
+    TEST_F(cli_test_fixture, dispatcher_version_flag_prints_libinfo) {
+        command_dispatcher dispatcher;
+        const char* argv[] = {"calendrical_cli", "--version"};
+
+        testing::internal::CaptureStdout();
+        EXPECT_EQ(dispatcher.dispatch(2, argv), 0);
+        const auto output = testing::internal::GetCapturedStdout();
+        EXPECT_EQ(output, calendrical::libinfo());
     }
 
     TEST_F(cli_test_fixture, dispatcher_empty_args_shows_help) {

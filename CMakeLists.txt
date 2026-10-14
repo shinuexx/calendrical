@@ -6,7 +6,18 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-project(calendrical VERSION 1.0.0 LANGUAGES CXX)
+# The VERSION file is the single source of the library version.
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" CALENDRICAL_VERSION LIMIT_COUNT 1)
+string(STRIP "${CALENDRICAL_VERSION}" CALENDRICAL_VERSION)
+if (NOT CALENDRICAL_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
+  message(FATAL_ERROR "VERSION must contain major.minor.patch, got '${CALENDRICAL_VERSION}'")
+endif()
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/VERSION")
+
+project(calendrical VERSION ${CALENDRICAL_VERSION} LANGUAGES CXX)
+
+option(CALENDRICAL_BUILD_TIMESTAMP
+  "Record the build time in the library (OFF avoids recompiling build info on every build)" ON)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -81,6 +92,7 @@ if (CALENDRICAL_BUILD_DOCS)
     set(DOXYGEN_PROJECT_BRIEF "Calendrical calculations library and CLI")
     set(DOXYGEN_INPUT
       "${CMAKE_SOURCE_DIR}/core/inc"
+      "${CMAKE_BINARY_DIR}/core/generated/inc"
       "${CMAKE_SOURCE_DIR}/docs/namespaces.dox"
       "${CMAKE_SOURCE_DIR}/README.md"
     )

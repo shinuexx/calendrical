@@ -70,6 +70,40 @@ add_library(calendrical
 
 add_library(calendrical::calendrical ALIAS calendrical)
 
+# Version and build information (see version.hpp).
+# version_config.hpp is generated once per configure; build_info.cpp is refreshed on every build
+# by cmake/build_info.cmake, which rewrites it only when its content changes.
+set(CALENDRICAL_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}/generated")
+configure_file("${PROJECT_SOURCE_DIR}/cmake/version_config.hpp.in"
+    "${CALENDRICAL_GENERATED_DIR}/inc/version_config.hpp" @ONLY)
+
+find_package(Git QUIET)
+set(CALENDRICAL_BUILD_INFO_CPP "${CALENDRICAL_GENERATED_DIR}/src/build_info.cpp")
+set(CALENDRICAL_BUILD_INFO_ARGS
+    "-DSOURCE_DIR=${PROJECT_SOURCE_DIR}"
+    "-DINPUT=${PROJECT_SOURCE_DIR}/cmake/build_info.cpp.in"
+    "-DOUTPUT=${CALENDRICAL_BUILD_INFO_CPP}"
+    "-DVERSION=${PROJECT_VERSION}"
+    "-DCOMPILER=${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}"
+    "-DPLATFORM=${CMAKE_SYSTEM_NAME} ${CMAKE_SYSTEM_PROCESSOR}"
+    "-DWITH_TIMESTAMP=${CALENDRICAL_BUILD_TIMESTAMP}"
+    "-DGIT_EXECUTABLE=${GIT_EXECUTABLE}"
+)
+# Generate once now so the source exists for every generator, then refresh on each build.
+execute_process(COMMAND "${CMAKE_COMMAND}" ${CALENDRICAL_BUILD_INFO_ARGS}
+    -P "${PROJECT_SOURCE_DIR}/cmake/build_info.cmake")
+add_custom_target(calendrical_build_info
+    COMMAND "${CMAKE_COMMAND}" ${CALENDRICAL_BUILD_INFO_ARGS}
+        -P "${PROJECT_SOURCE_DIR}/cmake/build_info.cmake"
+    BYPRODUCTS "${CALENDRICAL_BUILD_INFO_CPP}"
+    COMMENT "Collecting calendrical build information"
+    VERBATIM
+)
+add_dependencies(calendrical calendrical_build_info)
+target_sources(calendrical PRIVATE src/version.cpp "${CALENDRICAL_BUILD_INFO_CPP}")
+set_source_files_properties(src/version.cpp
+    PROPERTIES COMPILE_DEFINITIONS "CALENDRICAL_BUILD_TYPE=\"$<CONFIG>\"")
+
 target_compile_features(calendrical PUBLIC cxx_std_20)
 
 target_link_libraries(calendrical PRIVATE $<BUILD_INTERFACE:calendrical_warning_flags>)
@@ -77,6 +111,7 @@ target_link_libraries(calendrical PRIVATE $<BUILD_INTERFACE:calendrical_warning_
 target_include_directories(calendrical
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
+        $<BUILD_INTERFACE:${CALENDRICAL_GENERATED_DIR}/inc>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/calendrical>
 )
 
@@ -91,5 +126,8 @@ install(TARGETS calendrical
 # Headers include each other by bare name ("types.hpp"), so they get their own directory
 # instead of landing directly in <prefix>/include.
 install(DIRECTORY inc/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/calendrical
+)
+install(FILES "${CALENDRICAL_GENERATED_DIR}/inc/version_config.hpp"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/calendrical
 )

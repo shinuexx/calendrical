@@ -3,6 +3,8 @@
 #include <iostream>
 #include <stdexcept>
 
+#include "version.hpp"
+
 namespace calendrical::cli::commands {
     std::vector<std::string_view> command_dispatcher::pack_args(int argc, const char* const argv[], int from) {
         if (argc <= from) {
@@ -19,7 +21,8 @@ namespace calendrical::cli::commands {
 
     void command_dispatcher::print_main_help() const {
         std::cout << "Usage:\n";
-        std::cout << "  calendrical_cli <command> [args]\n\n";
+        std::cout << "  calendrical_cli <command> [args]\n";
+        std::cout << "  calendrical_cli --version\n\n";
         std::cout << "Commands:\n";
         for (const auto& [name, cmd] : m_commands) {
             std::cout << "  " << name << "   " << cmd->description() << '\n';
@@ -55,6 +58,10 @@ namespace calendrical::cli::commands {
         }
 
         const std::string_view subcommand = argv[1];
+        if (subcommand == "--version") {
+            std::cout << libinfo();
+            return 0;
+        }
         if (subcommand == "help" || subcommand == "--help" || subcommand == "-h") {
             if (subcommand == "help" && argc > 2) {
                 const std::string_view target_cmd = argv[2];

@@ -230,6 +230,8 @@ Public headers live in `core/inc`, implementations in `core/src`.
   - `core/src/` implementations
 - `cli/` CLI application
 - `tests/` GoogleTest-based tests
+- `cmake/` package config and build-info templates
+- `VERSION` library version (single source of truth)
 - `CMakeLists.txt` top-level build configuration
 
 ## Installation and CMake Integration
@@ -246,6 +248,36 @@ Consuming `calendrical` in an external CMake project:
 find_package(calendrical CONFIG REQUIRED)
 target_link_libraries(my_app PRIVATE calendrical::calendrical)
 ```
+
+Installed headers live in `<prefix>/include/calendrical/` and are included by bare name
+(`#include "version.hpp"`) through the `calendrical::calendrical` target.
+
+## Version and Build Information
+
+The library version is read from the `VERSION` file; bump it there. `version.hpp` exposes it together
+with information recorded when the library was built:
+
+```cpp
+#include "version.hpp"
+
+calendrical::version();          // "1.0.0" - headers you compiled against (constexpr)
+calendrical::library_version();  // "1.0.0" - the linked binary; differs if headers and library mismatch
+calendrical::commit();           // full git hash, or "unknown" outside a git checkout
+calendrical::branch();           // git branch, "HEAD" when detached
+calendrical::is_dirty();         // uncommitted changes to tracked files at build time
+calendrical::build_datetime();   // "2026-10-14T12:34:56Z" (UTC, honours SOURCE_DATE_EPOCH)
+calendrical::build_type();       // "Release", "Debug", ... or "unspecified"
+calendrical::compiler();         // "GNU 13.3.0"
+calendrical::platform();         // "Linux x86_64"
+calendrical::cxx_standard();     // 202002
+calendrical::libinfo();          // all of the above as a multi-line summary
+```
+
+The `CALENDRICAL_VERSION_MAJOR`, `_MINOR`, `_PATCH`, `_STRING` and `_NUMBER` macros allow
+preprocessor checks. The CLI prints the summary with `calendrical_cli --version`.
+
+Build information is refreshed on every build. Configure with `-DCALENDRICAL_BUILD_TIMESTAMP=OFF` to
+leave the timestamp out; the build-info source is then recompiled only when the git state changes.
 
 ## Feature Scope (Short Summary)
 
