@@ -1,6 +1,7 @@
 #include "commands/holidays_command.hpp"
 
 #include <algorithm>
+#include <cctype>
 #include <charconv>
 #include <iostream>
 #include <stdexcept>
@@ -46,7 +47,8 @@ namespace calendrical::cli {
                     as_gregorian = true;
                     continue;
                 }
-                if (arg.starts_with("-")) {
+                // A leading '-' followed by a digit is a negative year, not an option.
+                if (arg.starts_with("-") && !(arg.size() > 1 && std::isdigit(static_cast<unsigned char>(arg[1])))) {
                     throw std::runtime_error("Unknown option: " + std::string(arg));
                 }
                 positional.push_back(arg);

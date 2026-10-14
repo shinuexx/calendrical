@@ -176,6 +176,12 @@ namespace tests {
         EXPECT_THROW((void)cmd.execute({"-x", "gregorian", "2026"}), std::runtime_error);
     }
 
+    TEST_F(cli_test_fixture, holidays_negative_year_is_not_an_option) {
+        holidays_command cmd(std::addressof(m_holiday_providers));
+        EXPECT_EQ(cmd.execute({"gregorian", "-500"}), 0);
+        EXPECT_EQ(cmd.execute({"-g", "gregorian", "-1"}), 0);
+    }
+
     TEST_F(cli_test_fixture, holidays_unsupported_provider_throws) {
         holidays_command cmd(std::addressof(m_holiday_providers));
         EXPECT_THROW((void)cmd.execute({"unsupported_provider", "2026"}), std::runtime_error);
