@@ -28,17 +28,4 @@ namespace calendrical::calendars {
         return is_leap_year(year) ? hebrew_month::adarii : hebrew_month::adar;
     }
 
-    bool hebrew_based_calendar::is_valid_date(const hebrew_date& date) const {
-        if (date.year < 1) {
-            return false;
-        }
-        if (date.month < hebrew_month::nisan || date.month > last_month_of_year(date.year)) {
-            return false;
-        }
-        if (date.day < 1 || date.day > last_day_of_month(date.year, date.month)) {
-            return false;
-        }
-        return true;
-    }
-
 }

@@ -66,4 +66,11 @@ namespace calendrical::calendars{
     {
         return first_of_nisan(gyear).add(13);
     }
+
+    bool observational_hebrew_calendar::is_valid_date(const hebrew_date& date) const {
+        if (date.month < hebrew_month::nisan || date.month > hebrew_month::adarii || date.day < 1 || date.day > 30) {
+            return false;
+        }
+        return to_date(to_fixed(date)) == date;
+    }
 }

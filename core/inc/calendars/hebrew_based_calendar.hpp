@@ -52,7 +52,5 @@ namespace calendrical::calendars {
 
         /** @brief Returns the final month of Hebrew year @p year (Adar / Adar II). */
         [[nodiscard]] virtual hebrew_month last_month_of_year(int32_t year) const;
-        /** @brief Validates if the given date is valid for this calendar. */
-        [[nodiscard]] bool is_valid_date(const hebrew_date& date) const override;
     };
 }

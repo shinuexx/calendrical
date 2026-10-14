@@ -48,6 +48,13 @@ namespace calendrical::calendars{
 
         /** @brief Returns whether observational Hebrew year @p year is leap. */
         [[nodiscard]] bool is_leap_year(int32_t year) const override;
+        /**
+         * @brief Validates a date against observed month starts.
+         *
+         * Month lengths depend on crescent visibility, so after basic range checks the date
+         * must survive a round-trip through fixed-date representation.
+         */
+        [[nodiscard]] bool is_valid_date(const hebrew_date& date) const override;
 
         /** @brief Classical Passover eve date corresponding to Gregorian year @p gyear. */
         [[nodiscard]] fixed_date_t classical_passover_eve(int32_t gyear) const;
