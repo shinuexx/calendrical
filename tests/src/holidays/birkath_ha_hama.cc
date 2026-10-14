@@ -121,9 +121,9 @@ namespace tests{
         holiday_providers::hebrew_based_calendar_holiday_provider m_provider{std::addressof(m_hebrew)};
     };
 
-    static std::optional<datetypes::gregorian_date> opt(const std::vector<fixed_date_t>& dates, const calendars::gregorian_calendar* gregorian) {
-        if(dates.size() > 0) {
-            return gregorian->to_date(dates.front());
+    static std::optional<datetypes::gregorian_date> opt(const std::vector<fixed_date_t>& occurrences, const calendars::gregorian_calendar* gregorian) {
+        if(occurrences.size() > 0) {
+            return gregorian->to_date(occurrences.front());
         }
         else{
             return std::nullopt;
@@ -137,8 +137,8 @@ namespace tests{
 
     TEST_P(birkath_ha_hama_test, calculate) {
         auto &[year, month_day] = GetParam();
-        const auto dates = m_provider.birhath_ha_hama(year);
-        const auto actual = opt(dates, m_gregorian);
+        const auto occurrences = m_provider.birhath_ha_hama(year);
+        const auto actual = opt(occurrences, m_gregorian);
         std::optional<datetypes::gregorian_date> expected{std::nullopt};
         if(month_day)
         {

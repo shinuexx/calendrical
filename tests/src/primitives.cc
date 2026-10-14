@@ -129,7 +129,7 @@ namespace tests {
 
     TEST_P(julian_days_test, from) {
         auto& [input, output] = GetParam();
-        EXPECT_DOUBLE_EQ(moment_from_jd(output), input) << output << " : " << moment_from_jd(output) << " : " << input << std::endl;
+        EXPECT_DOUBLE_EQ(moment_from_jd(output), moment_t{ input }) << output << " : " << moment_from_jd(output) << " : " << input << std::endl;
     }
     TEST_P(modified_julian_days_test, from) {
         auto& [input, output] = GetParam();
@@ -137,7 +137,7 @@ namespace tests {
     }
     TEST_P(unix_time_test, from) {
         auto& [input, output] = GetParam();
-        EXPECT_DOUBLE_EQ(moment_from_unix(output), input) << output << " : " << moment_from_unix(output) << " : " << input << std::endl;
+        EXPECT_DOUBLE_EQ(moment_from_unix(output), moment_t{ input }) << output << " : " << moment_from_unix(output) << " : " << input << std::endl;
     }
 
     TEST_P(julian_days_test, to) {
