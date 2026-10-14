@@ -1,28 +1,28 @@
-# Święta klasycznego kalendarza ormiańskiego
+# Holidays of the Classical Armenian Calendar
 
-Zakres: `calendars::armenian_calendar`, czyli instancja `simple_calendar` z cyklem
-365 dni (12 miesięcy po 30 dni i 5 dni dodatkowych). Nie jest to współczesny
-ormiański kalendarz liturgiczny. [Legenda stanów i zasady źródeł](README.md).
+Scope: `calendars::armenian_calendar`, an instance of `simple_calendar` with a
+365-day cycle (12 months of 30 days plus 5 additional days). This is not the modern
+Armenian liturgical calendar. [Status legend and source policy](README.md).
 
-## Stan reguł
+## Rule status
 
-| Święto lub reguła | Stan | Implementacja / zakres |
+| Holiday or rule | Status | Implementation / scope |
 | --- | --- | --- |
-| Navasard, miesiąc 1 / dzień 1 | **zaimplementowane** | `simple_calendar_holiday_provider::navasard(gyear)` → `in_gregorian(1, 1, gyear)` |
-| Mapowanie dat do roku gregoriańskiego | **zaimplementowane** | `in_gregorian(cmonth, cday, gyear)` przelicza lata `y-1`, `y`, `y+1` i filtruje zakresem roku |
-| Lista świąt | **zaimplementowane** | `in_year(gyear)` dodaje nazwę `navasard` i sortuje po dacie |
-| Ograniczenie Navasard wyłącznie do instancji ormiańskiej | **wymaga ustalenia** | W pierwotnych notatkach proponowano test tożsamości instancji; obecny kod go nie wykonuje |
-| Oddzielny provider ormiańskich świąt liturgicznych | **proponowane** | Poza modelem stałego roku cywilnego; wymaga osobnego źródła reguł |
-| Wielkanoc, Wniebowstąpienie i reguły najbliższej niedzieli w takim providerze | **wymaga ustalenia** | Brak uzgodnionego zestawu świąt i konwencji w tych notatkach |
+| Navasard, month 1 / day 1 | **implemented** | `simple_calendar_holiday_provider::navasard(gyear)` → `in_gregorian(1, 1, gyear)` |
+| Mapping dates into a Gregorian year | **implemented** | `in_gregorian(cmonth, cday, gyear)` converts years `y-1`, `y`, `y+1` and filters by the year range |
+| Holiday list | **implemented** | `in_year(gyear)` adds the label `navasard` and sorts by date |
+| Restricting Navasard to the Armenian instance | **needs decision** | The original notes proposed an instance-identity check; the current code does not perform it |
+| Separate provider for Armenian liturgical holidays | **proposed** | Outside the fixed civil-year model; requires a separate source of rules |
+| Easter, Ascension and nearest-Sunday rules in that provider | **needs decision** | These notes do not establish a holiday set or conventions |
 
-## Zachowanie obecnego kodu
+## Current behavior
 
-Provider jest ogólny: `navasard()` działa na dowolnym przekazanym `simple_calendar`.
-CLI rejestruje go zarówno jako `armenian`, jak i `egyptian`; oba wpisy otrzymują
-nazwę `navasard`. To opis implementacji, a nie potwierdzenie historycznej nazwy
-obchodów w każdym kalendarzu. Wprowadzenie ograniczenia wymaga osobnej decyzji.
+The provider is generic: `navasard()` works with any supplied `simple_calendar`.
+The CLI registers it as both `armenian` and `egyptian`; both entries receive the
+label `navasard`. This describes the implementation, not historical confirmation
+of the holiday name in every calendar. Introducing a restriction requires a separate decision.
 
-Pseudokod **zaimplementowanej** reguły:
+Pseudocode for the **implemented** rule:
 
 ```text
 in_year(gyear):
@@ -31,13 +31,13 @@ in_year(gyear):
   return result
 ```
 
-## Weryfikowalne odniesienia
+## Verifiable references
 
-- [API providera](../core/inc/holiday_providers/simple_calendar_holiday_provider.hpp)
-  i [implementacja](../core/src/holiday_providers/simple_calendar_holiday_provider.cpp).
-- [API kalendarza](../core/inc/calendars/simple_calendar.hpp)
-  i [implementacja / epoki](../core/src/calendars/simple_calendar.cpp).
-- [Rejestracja w CLI](../cli/src/holiday_provider_provider_builder.cpp).
-- [Testy](../tests/src/holidays/samaritan_simple_holidays.cc): `simple_holidays_test`
-  sprawdza niepuste wyniki i sortowanie dla instancji ormiańskiej w latach 2000–2010.
-  Nie jest to niezależna walidacja dat święta ani zachowania instancji egipskiej.
+- [Provider API](../core/inc/holiday_providers/simple_calendar_holiday_provider.hpp)
+  and [implementation](../core/src/holiday_providers/simple_calendar_holiday_provider.cpp).
+- [Calendar API](../core/inc/calendars/simple_calendar.hpp)
+  and [implementation / epochs](../core/src/calendars/simple_calendar.cpp).
+- [CLI registration](../cli/src/holiday_provider_provider_builder.cpp).
+- [Tests](../tests/src/holidays/samaritan_simple_holidays.cc): `simple_holidays_test`
+  checks nonempty results and sorting for the Armenian instance in 2000–2010.
+  This is not independent validation of holiday dates or the Egyptian instance's behavior.

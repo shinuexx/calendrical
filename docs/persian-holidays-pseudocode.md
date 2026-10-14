@@ -1,20 +1,20 @@
-# Święta kalendarza perskiego
+# Persian Calendar Holidays
 
 Provider: `holiday_providers::persian_based_calendar_holiday_provider`.
-Backend: `calendars::persian_based_calendar`, z wariantami astronomicznym
-`persian_calendar` i arytmetycznym `arithmetic_persian_calendar`.
-[Legenda stanów i zasady źródeł](README.md).
+Backend: `calendars::persian_based_calendar`, with the astronomical
+`persian_calendar` and arithmetic `arithmetic_persian_calendar` variants.
+[Status legend and source policy](README.md).
 
-## Miesiące
+## Months
 
-**Zaimplementowane:** miesiące 1–6 mają po 31 dni, 7–11 po 30, miesiąc 12 ma
-29 lub 30 dni. Reguła nowego roku i przestępności zależy od backendu.
-Miesiące w `simple_date` i parserze są liczbowe.
+**implemented**: months 1–6 have 31 days each, 7–11 have 30, and month 12 has
+29 or 30 days. New Year and leap-year rules depend on the backend.
+Months in `simple_date` and its parser are numeric.
 
-**Wymaga ustalenia:** pisownia i aliasy poniższego roboczego słownika z pierwotnych
-notatek. **Proponowane:** parser nazw, po uzgodnieniu tego słownika.
+**needs decision**: spelling and aliases for the working vocabulary below from
+the original notes. **proposed**: a name parser after that vocabulary has been agreed.
 
-| Numer | Robocza nazwa | Dni |
+| Number | Working name | Days |
 | --- | --- | --- |
 | 1 | Farvardin | 31 |
 | 2 | Ordibehesht | 31 |
@@ -27,54 +27,54 @@ notatek. **Proponowane:** parser nazw, po uzgodnieniu tego słownika.
 | 9 | Azar | 30 |
 | 10 | Dey | 30 |
 | 11 | Bahman | 30 |
-| 12 | Esfand | 29 lub 30 |
+| 12 | Esfand | 29 or 30 |
 
-## Stan świąt i reguł
+## Holiday and rule status
 
-Wszystkie poniższe funkcje już istnieją i są używane przez `in_year(gyear)`.
+All functions below already exist and are used by `in_year(gyear)`.
 
-| Święto / reguła | Stan | Funkcja | Zachowanie kodu |
+| Holiday / rule | Status | Function | Current behavior |
 | --- | --- | --- | --- |
-| Nowruz | **zaimplementowane** | `nawruz` | `get_new_year(pyear)`; wynik pojedynczy |
-| Sizdah Bedar | **zaimplementowane** | `sizdah_bedar` | Lista dla 1 / 13 |
-| Chaharshanbe Suri | **zaimplementowane** | `chaharshanbe_suri` | `weekday::wednesday.before(nawruz(gyear))`; ściśle przed |
-| Tirgan | **zaimplementowane** | `tirgan` | Lista dla 4 / 13 |
-| Mehregan | **zaimplementowane** | `mehregan` | Lista dla 7 / 16 |
-| Yalda Night | **zaimplementowane** | `yalda_night` | Lista cywilnych dat 9 / 30 |
-| Sepandarmazgan | **zaimplementowane** | `sepandarmazgan` | Lista dla 12 / 5 |
-| Mapowanie miesiąc/dzień | **zaimplementowane** | `in_gregorian` | Konwersja lat `y-1`, `y`, `y+1` i filtr roku gregoriańskiego |
+| Nowruz | **implemented** | `nawruz` | `get_new_year(pyear)`; single result |
+| Sizdah Bedar | **implemented** | `sizdah_bedar` | List for 1 / 13 |
+| Chaharshanbe Suri | **implemented** | `chaharshanbe_suri` | `weekday::wednesday.before(nawruz(gyear))`; strictly before |
+| Tirgan | **implemented** | `tirgan` | List for 4 / 13 |
+| Mehregan | **implemented** | `mehregan` | List for 7 / 16 |
+| Yalda Night | **implemented** | `yalda_night` | List of civil dates 9 / 30 |
+| Sepandarmazgan | **implemented** | `sepandarmazgan` | List for 12 / 5 |
+| Month/day mapping | **implemented** | `in_gregorian` | Conversion of years `y-1`, `y`, `y+1` and filtering by Gregorian year |
 
-Pisownia API to `nawruz`, mimo nazwy „Nowruz” w CSV. Nowy rok wyznacza:
+The API spelling is `nawruz`, despite the name “Nowruz” in the CSV. New Year is calculated as:
 
 ```text
-# zaimplementowane w nawruz(gyear)
+# implemented in nawruz(gyear)
 pyear = gyear - GregorianYear(PersianEpoch) + 1
 if pyear <= 0: pyear = pyear - 1
 return persian.get_new_year(pyear)
 ```
 
-Jest to poprawiony w PR #3 offset roku; nie używać starego wzoru bez `+1`.
-Nie zastępować wyników przybliżonymi stałymi datami gregoriańskimi.
+This is the year offset corrected in PR #3; do not use the old formula without `+1`.
+Do not replace the results with approximate fixed Gregorian dates.
 
-## Konwencje wymagające ustalenia
+## Conventions requiring decisions
 
-- **Wymaga ustalenia:** zewnętrzne potwierdzenie konwencji wieczoru dla Yalda Night
-  oraz Chaharshanbe Suri i ewentualny model czasu rozpoczęcia.
-  Nagłówek opisuje Yalda jako cywilny dzień Azar 30 z początkiem poprzedniego
-  wieczoru, a Chaharshanbe Suri jako środę przed Nowruz; provider zwraca tylko RD.
-- **Wymaga ustalenia:** warianty tradycji i wybór astronomicznego / arytmetycznego
-  backendu dla nowych zestawów danych. CLI i obecny fixture używają `persian_calendar`.
-- **Proponowane:** niezależne referencje dla pozostałych świąt i osobne testy wariantów.
+- **needs decision**: external confirmation of the evening convention for Yalda Night
+  and Chaharshanbe Suri, and any model of their start times.
+  The header describes Yalda as the civil date Azar 30 beginning the preceding
+  evening, and Chaharshanbe Suri as the Wednesday before Nowruz; the provider returns only RD.
+- **needs decision**: tradition variants and the choice of astronomical / arithmetic
+  backend for new datasets. The CLI and current fixture use `persian_calendar`.
+- **proposed**: independent references for the other holidays and separate tests of variants.
 
-## Weryfikowalne odniesienia
+## Verifiable references
 
-- [API providera](../core/inc/holiday_providers/persian_based_calendar_holiday_provider.hpp)
-  i [implementacja](../core/src/holiday_providers/persian_based_calendar_holiday_provider.cpp).
-- [API backendu](../core/inc/calendars/persian_based_calendar.hpp),
-  [wspólne reguły](../core/src/calendars/persian_based_calendar.cpp),
-  [astronomia](../core/src/calendars/persian_calendar.cpp),
-  [wariant arytmetyczny](../core/src/calendars/arithmetic_persian_calendar.cpp).
-- [Testy](../tests/src/holidays/persian_holidays.cc): CSV dla `nawruz()`, niepuste
-  listy pozostałych stałych świąt i sortowanie w latach 2000–2010.
-  Test sortowania nie potwierdza niezależnie reguły Chaharshanbe Suri.
-- [CSV](../all-holidays.csv): `Nowruz` ma metadaną CC `(15.11), 265`.
+- [Provider API](../core/inc/holiday_providers/persian_based_calendar_holiday_provider.hpp)
+  and [implementation](../core/src/holiday_providers/persian_based_calendar_holiday_provider.cpp).
+- [Backend API](../core/inc/calendars/persian_based_calendar.hpp),
+  [shared rules](../core/src/calendars/persian_based_calendar.cpp),
+  [astronomy](../core/src/calendars/persian_calendar.cpp),
+  [arithmetic variant](../core/src/calendars/arithmetic_persian_calendar.cpp).
+- [Tests](../tests/src/holidays/persian_holidays.cc): CSV comparison for `nawruz()`,
+  nonempty lists for the other fixed holidays and sorting in 2000–2010.
+  The sorting test does not independently confirm the Chaharshanbe Suri rule.
+- [CSV](../all-holidays.csv): `Nowruz` has CC metadata `(15.11), 265`.

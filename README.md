@@ -288,7 +288,7 @@ leave the timestamp out; the build-info source is then recompiled only when the 
 
 ## Holiday Rules and Design Notes
 
-See [the holiday documentation index](docs/README.md) for implemented rules, proposed extensions,
+See [the holiday documentation index](https://github.com/shinuexx/calendrical/blob/master/docs/README.md) for implemented rules, proposed extensions,
 open convention questions, and links to the matching providers and tests.
 
 ## Developer Workflow

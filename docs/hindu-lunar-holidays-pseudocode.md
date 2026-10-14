@@ -1,85 +1,85 @@
-# Święta współczesnego hinduskiego kalendarza księżycowego
+# Holidays of the Modern Hindu Lunar Calendar
 
 Provider: `holiday_providers::modern_hindu_lunar_calendar_holiday_provider`.
-Backend: `calendars::modern_hindu_lunar_calendar`, data to
+Backend: `calendars::modern_hindu_lunar_calendar`; the date type is
 `lunar_date{year, month, leap_month, day, leap_day}`.
-[Legenda stanów i zasady źródeł](README.md).
+[Status legend and source policy](README.md).
 
-## Stan świąt i reguł
+## Holiday and rule status
 
-Wszystkie wymienione metody już istnieją. Argument `gyear` jest gregoriański,
-a wyniki świąt są listami RD. `in_year()` dodaje każde święto z tabeli, z wyjątkiem
-osobnego wpisu `diwali()` — etykieta `diwali` korzysta z `diwali_days()`.
+All listed methods already exist. The `gyear` argument is Gregorian, and holiday
+results are lists of RD dates. `in_year()` adds every holiday in the table except
+a separate `diwali()` entry: the `diwali` label uses `diwali_days()`.
 
-| Święto | Stan | Funkcja | Reguła obecnego kodu |
+| Holiday | Status | Function | Current rule |
 | --- | --- | --- | --- |
-| Rama Navami | **zaimplementowane** | `rama` | `lunar_event(1, 9, moment_t{0.5}, gyear)` |
-| Maha Shivaratri | **zaimplementowane** | `shiva` | `lunar_event(11, 29, moment_t{1}, gyear)` |
-| Sacred Wednesdays | **zaimplementowane** | `sacred_wednesdays` | Środy, których dzień księżycowy wynosi 8 |
-| Diwali, główny dzień | **zaimplementowane** | `diwali` | `lunar_holiday(8, 1, gyear)` |
-| Diwali, zestaw dni | **zaimplementowane** | `diwali_days` | Złączenie `lunar_holiday(7, 29)`, `lunar_holiday(7, 30)` i `diwali`; sortowanie i deduplikacja |
-| Janmashtami | **zaimplementowane** | `janmashtami` | `lunar_holiday(5, 23, gyear)` |
-| Ganesha Chaturthi | **zaimplementowane** | `ganesha_chaturthi` | 6 / 4 |
-| Durga Ashtami | **zaimplementowane** | `durga_ashtami` | 7 / 8 |
-| Sarasvati Puja | **zaimplementowane** | `sarasvati_puja` | 7 / 9 |
-| Dasra | **zaimplementowane** | `dasra` | 7 / 10 |
-| Karthikai Deepam | **zaimplementowane** | `karthikai_deepam` | 8 / 15 |
-| Vaikunta Ekadashi | **zaimplementowane** | `vaikunta_ekadashi` | 9 / 11 |
-| Buddha’s Birthday | **zaimplementowane** | `buddha_birthday` | Uproszczona konwencja `lunar_holiday(2, 15, gyear)` |
-| Varalakshmi Vratam | **zaimplementowane** | `varalakshmi_vratam` | Piątek ściśle przed datą z `lunar_holiday(5, 15, gyear)` |
-| Holi | **zaimplementowane** | `holi` | `lunar_event(12, 15, moment_t{0.75}, gyear)`; przybliżenie wieczoru |
+| Rama Navami | **implemented** | `rama` | `lunar_event(1, 9, moment_t{0.5}, gyear)` |
+| Maha Shivaratri | **implemented** | `shiva` | `lunar_event(11, 29, moment_t{1}, gyear)` |
+| Sacred Wednesdays | **implemented** | `sacred_wednesdays` | Wednesdays whose lunar day is 8 |
+| Diwali, main day | **implemented** | `diwali` | `lunar_holiday(8, 1, gyear)` |
+| Diwali, set of days | **implemented** | `diwali_days` | Union of `lunar_holiday(7, 29)`, `lunar_holiday(7, 30)` and `diwali`; sorting and deduplication |
+| Janmashtami | **implemented** | `janmashtami` | `lunar_holiday(5, 23, gyear)` |
+| Ganesha Chaturthi | **implemented** | `ganesha_chaturthi` | 6 / 4 |
+| Durga Ashtami | **implemented** | `durga_ashtami` | 7 / 8 |
+| Sarasvati Puja | **implemented** | `sarasvati_puja` | 7 / 9 |
+| Dasra | **implemented** | `dasra` | 7 / 10 |
+| Karthikai Deepam | **implemented** | `karthikai_deepam` | 8 / 15 |
+| Vaikunta Ekadashi | **implemented** | `vaikunta_ekadashi` | 9 / 11 |
+| Buddha’s Birthday | **implemented** | `buddha_birthday` | Simplified convention `lunar_holiday(2, 15, gyear)` |
+| Varalakshmi Vratam | **implemented** | `varalakshmi_vratam` | Friday strictly before the date from `lunar_holiday(5, 15, gyear)` |
+| Holi | **implemented** | `holi` | `lunar_event(12, 15, moment_t{0.75}, gyear)`; evening approximation |
 
-## Miesiące i dostępność dni
+## Months and day availability
 
-**Zaimplementowane:** funkcje oraz komentarze kodu używają następującego mapowania:
+**implemented**: functions and code comments use the following mapping:
 1 Caitra, 2 Vaishakha, 5 Shravana, 6 Bhadrapada, 7 Ashvina, 8 Kartika,
-9 Margashirsha, 11 Magha, 12 Phalguna. Są to liczby w API, nie enum miesięcy.
-**Wymaga ustalenia:** kanoniczne transliteracje i aliasy parsera; lista nie zatwierdza
-pełnego słownika wszystkich tradycji.
+9 Margashirsha, 11 Magha, 12 Phalguna. These are numbers in the API, not a month enum.
+**needs decision**: canonical transliterations and parser aliases; this list does
+not approve a complete vocabulary for all traditions.
 
-**Zaimplementowane:** `date_occur(lyear, lmonth, lday)` tworzy początkowo datę
-z `leap_month=false` i `leap_day=false`. Sprawdza zgodność miesiąca i dnia po
-konwersji, obsługuje miesiąc usunięty oraz nieobecny dzień. Dlatego
-`lunar_holiday()` nie jest wyłącznie odczytem literalnej, istniejącej daty.
-`in_gregorian()` deleguje do `lunar_holiday()`: dwa sąsiednie lata księżycowe,
-wyznaczenie `date_occur()` i filtr zakresu gregoriańskiego.
+**implemented**: `date_occur(lyear, lmonth, lday)` initially constructs a date with
+`leap_month=false` and `leap_day=false`. It checks month and day consistency after
+conversion and handles an expunged month or absent day. Thus `lunar_holiday()` is
+not simply a lookup of a literal existing date.
+`in_gregorian()` delegates to `lunar_holiday()`: two adjacent lunar years,
+calculation via `date_occur()` and filtering by the Gregorian range.
 
-**Zaimplementowane:** `tithi_occur(lmonth, tithi, t, lyear)` wyszukuje początek tithi
-i porównuje fazę z czasem otrzymanym przez `standard_from_sundial()` dla Ujjain.
-`lunar_event()` filtruje wyniki dwóch lat. Parametry `0.5`, `0.75`, `1` opisują
-obecny algorytm, nie dowolną regionalną godzinę rozpoczęcia święta.
+**implemented**: `tithi_occur(lmonth, tithi, t, lyear)` finds the start of a tithi
+and compares the phase against the time produced by `standard_from_sundial()` for
+Ujjain. `lunar_event()` filters the results of two years. Parameters `0.5`, `0.75`,
+`1` describe the current algorithm, not an arbitrary regional start time for a holiday.
 
-**Zaimplementowane:** `sacred_wednesdays_in_range(range)` enumeruje środy w
-zakresie i wybiera dzień księżycowy 8; `karana(n)` jest osobnym helperem indeksu,
-a nie świętem dodawanym do `in_year()`.
+**implemented**: `sacred_wednesdays_in_range(range)` enumerates Wednesdays in the
+range and selects lunar day 8; `karana(n)` is a separate index helper, not a holiday
+added to `in_year()`.
 
-## Otwarte decyzje z pierwotnych notatek
+## Open decisions from the original notes
 
-| Temat | Stan | Obecny kod i pytanie na przyszłość |
+| Topic | Status | Current code and future question |
 | --- | --- | --- |
-| „Friday prior to Shravana 15” | **wymaga ustalenia** | Kod używa `weekday::friday.before(d)` (ściśle przed); potwierdzenie źródłowej interpretacji nadal otwarte |
-| Wielodniowe Diwali | **wymaga ustalenia** | Kod łączy trzy żądane daty przez `date_occur`; nie wykonuje osobnego testu „Ashvina 30 istnieje” |
-| Diwali: wspólna etykieta czy nazwy poddni | **wymaga ustalenia** | Obecne `in_year()` nadaje wszystkim datom nazwę `diwali` |
-| Buddha’s Birthday | **wymaga ustalenia** | Vaiśākha 15 jest uproszczeniem; brak konfiguracji tradycji |
-| Holi: precyzyjna pora / lokalizacja | **wymaga ustalenia** | Obecna metoda używa przybliżenia `0.75` i helpera Ujjain |
-| Fasting day poprzedzający Maha Shivaratri | **proponowane** | Brak osobnej metody / wpisu providera; dokładna konwencja wymaga źródła |
-| Polityka miesięcy/dni przestępnych i usuniętych dla poszczególnych świąt | **wymaga ustalenia** | Nie rozstrzygać wyłącznie na podstawie ogólnego helpera |
-| Testy pełnych serii oraz wariantów regionalnych | **proponowane** | Oddzielne referencje, zwłaszcza dla rozszerzonego zestawu |
+| “Friday prior to Shravana 15” | **needs decision** | The code uses `weekday::friday.before(d)` (strictly before); confirmation of the source interpretation remains open |
+| Multi-day Diwali | **needs decision** | The code combines three requested dates through `date_occur`; it does not separately test whether “Ashvina 30 exists” |
+| Diwali: shared label or named sub-days | **needs decision** | Current `in_year()` labels all dates `diwali` |
+| Buddha’s Birthday | **needs decision** | Vaiśākha 15 is a simplification; no tradition configuration |
+| Holi: precise time / location | **needs decision** | The current method uses the `0.75` approximation and the Ujjain helper |
+| Fasting day preceding Maha Shivaratri | **proposed** | No separate provider method / entry; the exact convention requires a source |
+| Leap and expunged month/day policies for individual holidays | **needs decision** | Do not decide them solely from the generic helper |
+| Tests of full series and regional variants | **proposed** | Separate references, especially for the extended set |
 
-Istniejące funkcje nie są już zadaniami „H-L1..H-L4”. Otwarte decyzje nie zmieniają
-ich obecnego statusu implementacyjnego i nie są tu rozstrzygane.
+Existing functions are no longer “H-L1..H-L4” tasks. Open decisions do not change
+their current implementation status and are not resolved here.
 
-## Weryfikowalne odniesienia
+## Verifiable references
 
-- [API providera](../core/inc/holiday_providers/modern_hindu_lunar_calendar_holiday_provider.hpp)
-  i [implementacja](../core/src/holiday_providers/modern_hindu_lunar_calendar_holiday_provider.cpp).
-- [API backendu](../core/inc/calendars/modern_hindu_lunar_calendar.hpp),
-  [konwersja](../core/src/calendars/modern_hindu_lunar_calendar.cpp),
-  [reguły bazowe / Hindu Lunar New Year](../core/src/calendars/modern_hindu_based.cpp).
-- [Testy](../tests/src/holidays/hindu_holidays.cc): CSV dla `diwali`, Sacred Wednesday,
-  `shiva`, `rama` i kalendarzowego `hindu_lunar_new_year`; `lunar_in_year` sprawdza
-  jedynie niepustą, posortowaną listę 2000–2010.
-- [CSV](../all-holidays.csv): metadane CC Diwali `(20.57), 368`, Shiva `(20.60), 369`,
+- [Provider API](../core/inc/holiday_providers/modern_hindu_lunar_calendar_holiday_provider.hpp)
+  and [implementation](../core/src/holiday_providers/modern_hindu_lunar_calendar_holiday_provider.cpp).
+- [Backend API](../core/inc/calendars/modern_hindu_lunar_calendar.hpp),
+  [conversion](../core/src/calendars/modern_hindu_lunar_calendar.cpp),
+  [base rules / Hindu Lunar New Year](../core/src/calendars/modern_hindu_based.cpp).
+- [Tests](../tests/src/holidays/hindu_holidays.cc): CSV comparisons for `diwali`,
+  Sacred Wednesday, `shiva`, `rama` and the calendar's `hindu_lunar_new_year`;
+  `lunar_in_year` checks only a nonempty, sorted list in 2000–2010.
+- [CSV](../all-holidays.csv): CC metadata Diwali `(20.57), 368`, Shiva `(20.60), 369`,
   Rama `(20.61), 369`, Sacred Wednesday `(20.65), 370`, Hindu Lunar New Year
-  `(20.53), 365`. [Loader](../tests/inc/holiday_csv_loader.hpp) porównuje pierwszy
-  element wyniku wektorowego; test `diwali()` nie weryfikuje całego `diwali_days()`.
+  `(20.53), 365`. The [loader](../tests/inc/holiday_csv_loader.hpp) compares the first
+  element of a vector result; the `diwali()` test does not validate all of `diwali_days()`.

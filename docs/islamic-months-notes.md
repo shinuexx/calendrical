@@ -1,21 +1,21 @@
-# Miesiące i święta islamskie
+# Islamic Months and Holidays
 
 Provider: `holiday_providers::islamic_based_calendar_holiday_provider`.
-Przyjmuje dowolny `calendars::islamic_based_calendar`; CLI wiąże `islamic_based`
-z tablicowym `calendars::islamic_calendar`.
-[Legenda stanów i zasady źródeł](README.md).
+It accepts any `calendars::islamic_based_calendar`; the CLI binds `islamic_based`
+to the tabular `calendars::islamic_calendar`.
+[Status legend and source policy](README.md).
 
-## Miesiące i warianty kalendarza
+## Months and calendar variants
 
-**Zaimplementowane:** w tablicowym `islamic_calendar` miesiące nieparzyste mają
-30 dni, parzyste 29, a miesiąc 12 ma 30 dni w roku przestępnym.
-`is_leap_year(year)` sprawdza `mod(14 + 11 * year, 30) < 11`.
-Nie przenosić tej tabeli długości na backendy obserwacyjne.
+**implemented**: in the tabular `islamic_calendar`, odd-numbered months have
+30 days, even-numbered months have 29, and month 12 has 30 days in a leap year.
+`is_leap_year(year)` checks `mod(14 + 11 * year, 30) < 11`.
+Do not apply this month-length table to observational backends.
 
-**Wymaga ustalenia:** poniższe nazwy są roboczym słownikiem z pierwotnych notatek;
-nie stanowią implementacji aliasów ani zweryfikowanej specyfikacji transliteracji.
+**needs decision**: the names below are a working vocabulary from the original notes;
+they do not implement aliases or establish a verified transliteration specification.
 
-| Numer | Robocza nazwa | Dni w backendzie tablicowym |
+| Number | Working name | Days in the tabular backend |
 | --- | --- | --- |
 | 1 | Muḥarram | 30 |
 | 2 | Ṣafar | 29 |
@@ -28,48 +28,48 @@ nie stanowią implementacji aliasów ani zweryfikowanej specyfikacji translitera
 | 9 | Ramaḍān | 30 |
 | 10 | Shawwāl | 29 |
 | 11 | Dhu al-Qa‘da | 30 |
-| 12 | Dhu al-Ḥijja | 29 lub 30 |
+| 12 | Dhu al-Ḥijja | 29 or 30 |
 
-**Proponowane:** parser nazw miesięcy. **Wymaga ustalenia:** pisownia wyjściowa,
-aliasy ASCII, diakrytyki i warianty apostrofów. Obecny parser `simple_date` używa liczb.
+**proposed**: a month-name parser. **needs decision**: output spelling,
+ASCII aliases, diacritics and apostrophe variants. The current `simple_date` parser uses numbers.
 
-## Święta w obecnym providerze
+## Holidays in the current provider
 
-Wszystkie funkcje przyjmują gregoriański `gyear`, zwracają
-`std::vector<fixed_date_t>` i są uwzględnione w `in_year()`.
+All functions take Gregorian `gyear`, return `std::vector<fixed_date_t>`
+and are included in `in_year()`.
 
-| Święto | Stan | Funkcja | Reguła liczbowa |
+| Holiday | Status | Function | Numeric rule |
 | --- | --- | --- | --- |
-| Islamski Nowy Rok | **zaimplementowane** | `islamic_new_year` | `in_gregorian(1, 1, gyear)` |
-| ‘Ashūrā’ | **zaimplementowane** | `ashura` | 1 / 10 |
-| Mawlid | **zaimplementowane** | `mawlid` | 3 / 12 |
-| Lailat al-Mi‘rāj | **zaimplementowane** | `lailat_al_miraj` | 7 / 27 |
-| Lailat al-Barā’a | **zaimplementowane** | `lailat_al_baraa` | 8 / 15 |
-| Początek Ramadanu | **zaimplementowane** | `ramadan` | 9 / 1 |
-| Lailat al-Qadr | **zaimplementowane** | `lailat_al_qadr` | 9 / 27 |
-| Eid ul-Fitr | **zaimplementowane** | `eid_ul_fitr` | 10 / 1 |
-| Eid ul-Adha | **zaimplementowane** | `eid_ul_adha` | 12 / 10 |
+| Islamic New Year | **implemented** | `islamic_new_year` | `in_gregorian(1, 1, gyear)` |
+| ‘Ashūrā’ | **implemented** | `ashura` | 1 / 10 |
+| Mawlid | **implemented** | `mawlid` | 3 / 12 |
+| Lailat al-Mi‘rāj | **implemented** | `lailat_al_miraj` | 7 / 27 |
+| Lailat al-Barā’a | **implemented** | `lailat_al_baraa` | 8 / 15 |
+| Ramadan start | **implemented** | `ramadan` | 9 / 1 |
+| Lailat al-Qadr | **implemented** | `lailat_al_qadr` | 9 / 27 |
+| Eid ul-Fitr | **implemented** | `eid_ul_fitr` | 10 / 1 |
+| Eid ul-Adha | **implemented** | `eid_ul_adha` | 12 / 10 |
 
-**Zaimplementowane:** `in_gregorian(imonth, iday, gyear)` wyznacza rok islamski
-na początku zakresu gregoriańskiego, przelicza `y-1`, `y`, `y+1` i filtruje wyniki.
-Wynik jest listą wystąpień, nie obietnicą jednej daty na rok gregoriański.
+**implemented**: `in_gregorian(imonth, iday, gyear)` determines the Islamic year
+at the start of the Gregorian range, converts `y-1`, `y`, `y+1` and filters the results.
+The result is a list of occurrences, not a promise of one date per Gregorian year.
 
-## Otwarte decyzje
+## Open decisions
 
-- **Wymaga ustalenia:** warianty obchodów zależne od tradycji, kraju lub lokalnej
-  obserwacji / proklamacji. Obecne stałe miesiąc/dzień opisują kod, nie wszystkie praktyki.
-- **Wymaga ustalenia:** modelowanie początku obchodów poprzedniego wieczoru.
-  Provider zwraca cywilne etykiety RD; nie wyznacza godziny rozpoczęcia święta.
-- **Proponowane:** opcjonalna konfiguracja wariantów świąt, dopiero po wskazaniu źródeł.
+- **needs decision**: observance variants depending on tradition, country or local
+  observation / proclamation. The current month/day constants describe the code, not all practices.
+- **needs decision**: modeling the start of an observance on the preceding evening.
+  The provider returns civil RD labels; it does not determine the holiday's start time.
+- **proposed**: optional holiday-variant configuration, once sources have been identified.
 
-## Weryfikowalne odniesienia
+## Verifiable references
 
-- [API providera](../core/inc/holiday_providers/islamic_based_calendar_holiday_provider.hpp)
-  i [implementacja](../core/src/holiday_providers/islamic_based_calendar_holiday_provider.cpp).
-- [Interfejs backendów](../core/inc/calendars/islamic_based_calendar.hpp),
-  [backend tablicowy](../core/src/calendars/islamic_calendar.cpp),
-  [backend obserwacyjny](../core/inc/calendars/observational_islamic_calendar.hpp),
+- [Provider API](../core/inc/holiday_providers/islamic_based_calendar_holiday_provider.hpp)
+  and [implementation](../core/src/holiday_providers/islamic_based_calendar_holiday_provider.cpp).
+- [Backend interface](../core/inc/calendars/islamic_based_calendar.hpp),
+  [tabular backend](../core/src/calendars/islamic_calendar.cpp),
+  [observational backend](../core/inc/calendars/observational_islamic_calendar.hpp),
   [parser](../core/inc/calendar_traits.hpp).
-- [Testy](../tests/src/holidays/islamic_holidays.cc): CSV dla `mawlid()`, niepuste
-  wyniki pozostałych świąt i sortowanie w latach 2000–2010; używają backendu tablicowego.
-- [CSV](../all-holidays.csv): `Mawlid` ma metadaną CC `(7.6), 109`.
+- [Tests](../tests/src/holidays/islamic_holidays.cc): CSV comparison for `mawlid()`,
+  nonempty results for the other holidays and sorting in 2000–2010; they use the tabular backend.
+- [CSV](../all-holidays.csv): `Mawlid` has CC metadata `(7.6), 109`.
