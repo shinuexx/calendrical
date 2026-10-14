@@ -7,6 +7,7 @@ if (MSVC)
 endif()
 
 include_directories ("../core/inc")
+include_directories ("../cli/inc")
 include_directories ("./inc")
 
 set(MAIN_SRC ../core/src/)
@@ -26,7 +27,7 @@ add_executable (tests
 	${BASICS_TESTS}
 )
 
-target_link_libraries(tests PRIVATE libcalendrical)
+target_link_libraries(tests PRIVATE libcalendrical calendrical_cli_lib)
 
 enable_testing()
 

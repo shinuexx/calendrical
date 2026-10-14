@@ -9,8 +9,7 @@ endif()
 include_directories ("../core/inc")
 include_directories ("./inc")
 
-add_executable (calendrical_cli
-	"main.cpp"
+add_library(calendrical_cli_lib STATIC
 	"src/commands/command_dispatcher.cpp"
 	"src/commands/convert_command.cpp"
 	"src/commands/holidays_command.cpp"
@@ -21,4 +20,11 @@ add_executable (calendrical_cli
 	"src/holiday_provider_provider_builder.cpp"
 )
 
-target_link_libraries(calendrical_cli PRIVATE libcalendrical)
+target_include_directories(calendrical_cli_lib PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}/inc
+)
+
+target_link_libraries(calendrical_cli_lib PUBLIC libcalendrical)
+
+add_executable(calendrical_cli "main.cpp")
+target_link_libraries(calendrical_cli PRIVATE calendrical_cli_lib)
