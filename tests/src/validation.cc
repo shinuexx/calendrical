@@ -1,10 +1,12 @@
 #include <gtest/gtest.h>
+#include <limits>
 #include <stdexcept>
 
 #include "calendar_traits.hpp"
 #include "calendars/gregorian_calendar.hpp"
 #include "calendars/julian_calendar.hpp"
 #include "calendars/hebrew_calendar.hpp"
+#include "calendars/observational_hebrew_calendar.hpp"
 #include "calendars/coptic_based_calendar.hpp"
 #include "calendars/iso_calendar.hpp"
 #include "calendars/icelandic_calendar.hpp"
@@ -65,6 +67,30 @@ namespace tests {
         EXPECT_FALSE(cal.is_valid_date({5783, hebrew_month::adarii, 1})); // 5783 is NOT leap year
         EXPECT_FALSE(cal.is_valid_date({5784, hebrew_month::tishri, 0}));
         EXPECT_FALSE(cal.is_valid_date({5784, hebrew_month::tishri, 31}));
+    }
+
+    TEST(calendar_validation, observational_hebrew_is_valid_date) {
+        const observational_hebrew_calendar cal{};
+
+        // Observed month lengths differ from the arithmetic calendar:
+        // Elul 5313 has 30 days here (R.D. 567118), Nisan 5784 only 29.
+        EXPECT_EQ(cal.to_date(567118_rd), (hebrew_date{5313, hebrew_month::elul, 30}));
+        EXPECT_TRUE(cal.is_valid_date({5313, hebrew_month::elul, 30}));
+        EXPECT_FALSE(cal.is_valid_date({5784, hebrew_month::nisan, 30}));
+
+        EXPECT_FALSE(cal.is_valid_date({5784, hebrew_month::nisan, 0}));
+        EXPECT_FALSE(cal.is_valid_date({5784, hebrew_month::nisan, 31}));
+        EXPECT_FALSE(cal.is_valid_date({5784, static_cast<hebrew_month>(14), 1}));
+    }
+
+    TEST(calendar_validation, hebrew_calendars_accept_their_own_dates) {
+        const hebrew_calendar arithmetic{};
+        const observational_hebrew_calendar observational{};
+        for (int64_t rd = 738000; rd < 739100; rd += 7) {
+            const fixed_date_t date{rd};
+            EXPECT_TRUE(arithmetic.is_valid_date(arithmetic.to_date(date))) << rd;
+            EXPECT_TRUE(observational.is_valid_date(observational.to_date(date))) << rd;
+        }
     }
 
     TEST(calendar_validation, coptic_is_valid_date) {
@@ -166,6 +192,23 @@ namespace tests {
         // Normal boundary
         auto boundary = [](const int64_t& x) { return x < 10; };
         EXPECT_EQ(last_passing(boundary, 0), 9);
+    }
+
+    TEST(helpers_validation, passing_searches_do_not_overflow) {
+        constexpr auto max = std::numeric_limits<int64_t>::max();
+        constexpr auto min = std::numeric_limits<int64_t>::min();
+        auto always = [](const int64_t&) { return true; };
+        auto never = [](const int64_t&) { return false; };
+
+        EXPECT_EQ(least_passing(always, max), max);
+        EXPECT_THROW(least_passing(never, max - 1), std::runtime_error);
+        EXPECT_EQ(last_passing(never, max), max - 1);
+        EXPECT_THROW(last_passing(always, max - 1), std::runtime_error);
+        EXPECT_THROW(last_passing(never, min), std::runtime_error);
+
+        // Guard: d0 .. d0 + 400 inclusive are checked.
+        EXPECT_EQ(least_passing([](const int64_t& x) { return x >= 400; }, 0), 400);
+        EXPECT_THROW(least_passing([](const int64_t& x) { return x >= 401; }, 0), std::runtime_error);
     }
 
     TEST(helpers_validation, binary_search_non_converging) {

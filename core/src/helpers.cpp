@@ -1,5 +1,6 @@
 #include "helpers.hpp"
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 
 namespace calendrical{
@@ -51,23 +52,31 @@ namespace calendrical{
 
     static constexpr int64_t passing_guard = 400; // little above the year
 
+    // Both searches evaluate phi on d0, d0 + 1, ..., d0 + passing_guard. The attempt counter is
+    // independent of d0 and the range is checked before every increment, so no step overflows.
     int64_t least_passing(const predicate_t<int64_t>& phi, int64_t d0)
     {
-        for (const auto end = d0 + passing_guard; d0 <= end; ++d0)
+        for (int64_t attempt = 0;; ++attempt, ++d0)
         {
             if (phi(d0))
                 return d0;
+            if (attempt == passing_guard || d0 == std::numeric_limits<int64_t>::max())
+                throw std::runtime_error("least_passing: predicate not satisfied within search guard");
         }
-        throw std::runtime_error("least_passing: predicate not satisfied within search guard");
     }
     int64_t last_passing(const predicate_t<int64_t>& phi, int64_t d0)
     {
-        for (const auto end = d0 + passing_guard; d0 <= end; ++d0)
+        for (int64_t attempt = 0;; ++attempt, ++d0)
         {
             if (!phi(d0))
+            {
+                if (d0 == std::numeric_limits<int64_t>::min())
+                    throw std::runtime_error("last_passing: boundary is below the representable range");
                 return d0 - 1;
+            }
+            if (attempt == passing_guard || d0 == std::numeric_limits<int64_t>::max())
+                throw std::runtime_error("last_passing: failed to find boundary within search guard");
         }
-        throw std::runtime_error("last_passing: failed to find boundary within search guard");
     }
 
     double binary_search(const predicate_t<double>& phi, const double_predicate_t<double>& psi, double u, double v)
