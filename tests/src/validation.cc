@@ -92,32 +92,11 @@ namespace tests {
         EXPECT_FALSE(cal.is_valid_date({2024, 1, 8}));
     }
 
-    TEST(parser_validation, gregorian_parser) {
-        EXPECT_NO_THROW((datetype_from_compact_string<gregorian_date>("2024-02-29")));
-        EXPECT_THROW((datetype_from_compact_string<gregorian_date>("2026-02-31")), std::invalid_argument);
-        EXPECT_THROW((datetype_from_compact_string<gregorian_date>("2025-02-29")), std::invalid_argument);
-        EXPECT_THROW((datetype_from_compact_string<gregorian_date>("2026-04-31")), std::invalid_argument);
-
-        EXPECT_NO_THROW((datetype_from_string<gregorian_date>("gregorian_date{year:2024,month:february,day:29}")));
-        EXPECT_THROW((datetype_from_string<gregorian_date>("gregorian_date{year:2026,month:february,day:31}")), std::invalid_argument);
-    }
-
-    TEST(parser_validation, julian_parser) {
-        EXPECT_NO_THROW((datetype_from_compact_string<julian_date>("2024-02-29")));
-        EXPECT_THROW((datetype_from_compact_string<julian_date>("0-01-01")), std::invalid_argument);
-        EXPECT_THROW((datetype_from_compact_string<julian_date>("2023-02-29")), std::invalid_argument);
-    }
-
-    TEST(parser_validation, simple_date_parser) {
-        EXPECT_NO_THROW((datetype_from_compact_string<simple_date>("2026-05-15")));
-        EXPECT_THROW((datetype_from_compact_string<simple_date>("2026-00-15")), std::invalid_argument);
-        EXPECT_THROW((datetype_from_compact_string<simple_date>("2026-05-00")), std::invalid_argument);
-    }
-
-    TEST(parser_validation, iso_date_parser) {
-        EXPECT_NO_THROW((datetype_from_compact_string<iso_date>("2024-10-5")));
-        EXPECT_THROW((datetype_from_compact_string<iso_date>("2024-10-8")), std::invalid_argument);
-        EXPECT_THROW((datetype_from_compact_string<iso_date>("2024-10-0")), std::invalid_argument);
+    TEST(parser_validation, parsers_do_not_validate_calendar_semantics) {
+        // Calendar-specific validation lives in the converters (is_valid_date), not in the parsers.
+        EXPECT_NO_THROW((datetype_from_compact_string<gregorian_date>("2026-02-31")));
+        EXPECT_NO_THROW((datetype_from_compact_string<julian_date>("0-01-01")));
+        EXPECT_NO_THROW((datetype_from_compact_string<iso_date>("2024-10-8")));
     }
 
     TEST(parser_validation, sexagesimal_name_parser) {

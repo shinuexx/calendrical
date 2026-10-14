@@ -128,6 +128,37 @@ namespace tests {
         EXPECT_THROW((void)cmd.execute({"gregorian", "julian", "not-a-date"}), std::runtime_error);
     }
 
+    TEST_F(cli_test_fixture, converters_validate_dates) {
+        const auto to_rd = [this](std::string_view conv, const std::string& date) {
+            return m_converters[conv]->to_rd(date);
+        };
+
+        EXPECT_NO_THROW((void)to_rd("gregorian", "2024-02-29"));
+        EXPECT_THROW((void)to_rd("gregorian", "2025-02-29"), std::invalid_argument);
+        EXPECT_THROW((void)to_rd("gregorian", "2026-04-31"), std::invalid_argument);
+
+        EXPECT_NO_THROW((void)to_rd("julian", "1900-02-29"));
+        EXPECT_THROW((void)to_rd("julian", "0-01-01"), std::invalid_argument);
+        EXPECT_THROW((void)to_rd("julian", "2023-02-29"), std::invalid_argument);
+
+        EXPECT_NO_THROW((void)to_rd("iso", "2024-10-5"));
+        EXPECT_THROW((void)to_rd("iso", "2024-10-8"), std::invalid_argument);
+        EXPECT_THROW((void)to_rd("iso", "2024-10-0"), std::invalid_argument);
+
+        EXPECT_NO_THROW((void)to_rd("coptic", "1739-13-6"));
+        EXPECT_THROW((void)to_rd("coptic", "1740-13-6"), std::invalid_argument);
+        EXPECT_THROW((void)to_rd("coptic", "1740-00-15"), std::invalid_argument);
+
+        EXPECT_NO_THROW((void)to_rd("hebrew", "5784-adarii-01"));
+        EXPECT_THROW((void)to_rd("hebrew", "5783-adarii-01"), std::invalid_argument);
+
+        EXPECT_NO_THROW((void)to_rd("chinese", "78-41-1-false-1"));
+        EXPECT_THROW((void)to_rd("chinese", "78-41-13-false-1"), std::invalid_argument);
+
+        EXPECT_NO_THROW((void)to_rd("bahai", "1-10-2-19-1"));
+        EXPECT_THROW((void)to_rd("bahai", "1-10-2-20-1"), std::invalid_argument);
+    }
+
     TEST_F(cli_test_fixture, convert_successful_conversions) {
         convert_command cmd(std::addressof(m_converters));
 
