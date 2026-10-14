@@ -10,7 +10,6 @@
 namespace tests {
     using namespace calendrical::time_and_astronomy;
 
-    static constexpr auto bogus = moment_t{ std::numeric_limits<double>::quiet_NaN() };
     static constexpr auto is_bogus(moment_t value) { return static_cast<double>(value) <=> 0 == std::partial_ordering::unordered; }
 
     static constexpr auto results = std::array<moment_t, 33>{
@@ -63,5 +62,5 @@ namespace tests {
     }
 
 
-    INSTANTIATE_TEST_CASE_P(midday_in_tehran, midday_in_tehran_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
+    INSTANTIATE_TEST_SUITE_P(midday_in_tehran, midday_in_tehran_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
 }

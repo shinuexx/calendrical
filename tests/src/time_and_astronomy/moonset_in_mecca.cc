@@ -64,5 +64,5 @@ namespace tests {
     }
 
 
-    INSTANTIATE_TEST_CASE_P(moonset_in_mecca, moonset_in_mecca_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
+    INSTANTIATE_TEST_SUITE_P(moonset_in_mecca, moonset_in_mecca_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
 }

@@ -51,5 +51,5 @@ namespace tests {
     }
 
 
-    INSTANTIATE_TEST_CASE_P(equation_of_time, equation_of_time_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
+    INSTANTIATE_TEST_SUITE_P(equation_of_time, equation_of_time_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
 }

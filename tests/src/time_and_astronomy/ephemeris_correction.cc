@@ -51,5 +51,5 @@ namespace tests {
     }
 
 
-    INSTANTIATE_TEST_CASE_P(ephemeris_correction, ephemeris_correction_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
+    INSTANTIATE_TEST_SUITE_P(ephemeris_correction, ephemeris_correction_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
 }

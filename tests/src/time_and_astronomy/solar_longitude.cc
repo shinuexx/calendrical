@@ -52,5 +52,5 @@ namespace tests {
     }
 
 
-    INSTANTIATE_TEST_CASE_P(solar_longitude, solar_longitude_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
+    INSTANTIATE_TEST_SUITE_P(solar_longitude, solar_longitude_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
 }

@@ -64,5 +64,5 @@ namespace tests {
         EXPECT_EQ(m_gregorian->to_fixed(output), input) << output.to_string() << " : " << m_gregorian->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(gregorian_calendar, gregorian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, gdates)));
+    INSTANTIATE_TEST_SUITE_P(gregorian_calendar, gregorian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, gdates)));
 }

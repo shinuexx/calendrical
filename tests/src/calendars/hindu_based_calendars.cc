@@ -312,11 +312,11 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : "  << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(old_hindu_solar_calendar, old_hindu_solar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, ohs_dates)));
-    INSTANTIATE_TEST_CASE_P(modern_hindu_solar_calendar, modern_hindu_solar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, mhs_dates)));
-    INSTANTIATE_TEST_CASE_P(astro_hindu_solar_calendar, astro_hindu_solar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, ahs_dates)));
+    INSTANTIATE_TEST_SUITE_P(old_hindu_solar_calendar, old_hindu_solar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, ohs_dates)));
+    INSTANTIATE_TEST_SUITE_P(modern_hindu_solar_calendar, modern_hindu_solar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, mhs_dates)));
+    INSTANTIATE_TEST_SUITE_P(astro_hindu_solar_calendar, astro_hindu_solar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, ahs_dates)));
 
-    INSTANTIATE_TEST_CASE_P(old_hindu_lunar_calendar, old_hindu_lunar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, ohl_dates)));
-    INSTANTIATE_TEST_CASE_P(modern_hindu_lunar_calendar, modern_hindu_lunar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, mhl_dates)));
-    INSTANTIATE_TEST_CASE_P(astro_hindu_lunar_calendar, astro_hindu_lunar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, ahl_dates)));
+    INSTANTIATE_TEST_SUITE_P(old_hindu_lunar_calendar, old_hindu_lunar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, ohl_dates)));
+    INSTANTIATE_TEST_SUITE_P(modern_hindu_lunar_calendar, modern_hindu_lunar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, mhl_dates)));
+    INSTANTIATE_TEST_SUITE_P(astro_hindu_lunar_calendar, astro_hindu_lunar_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, ahl_dates)));
 }

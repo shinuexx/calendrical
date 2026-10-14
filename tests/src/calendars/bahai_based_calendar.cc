@@ -120,6 +120,6 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : " << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(bahai_calendar, bahai_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
-    INSTANTIATE_TEST_CASE_P(astro_bahai_calendar, astro_bahai_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, astro_dates)));
+    INSTANTIATE_TEST_SUITE_P(bahai_calendar, bahai_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
+    INSTANTIATE_TEST_SUITE_P(astro_bahai_calendar, astro_bahai_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, astro_dates)));
 }

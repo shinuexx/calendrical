@@ -53,5 +53,5 @@ namespace tests {
     }
 
 
-    INSTANTIATE_TEST_CASE_P(next_new_moon, next_new_moon_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
+    INSTANTIATE_TEST_SUITE_P(next_new_moon, next_new_moon_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
 }

@@ -119,6 +119,6 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : " << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(persian_calendar, persian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
-    INSTANTIATE_TEST_CASE_P(arithmetic_persian_calendar, arithmetic_persian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
+    INSTANTIATE_TEST_SUITE_P(persian_calendar, persian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
+    INSTANTIATE_TEST_SUITE_P(arithmetic_persian_calendar, arithmetic_persian_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
 }

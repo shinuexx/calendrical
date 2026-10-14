@@ -110,6 +110,6 @@ namespace tests {
         EXPECT_EQ(m_calendar->julian_year_from_olympiad(output), y) << to_string(output) << " : " << m_calendar->julian_year_from_olympiad(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(roman_calendar, roman_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, gdates)));
-    INSTANTIATE_TEST_CASE_P(olympiad, olympiad_test, testing::ValuesIn(helpers::make_test_params_values(dates, olympiads)));
+    INSTANTIATE_TEST_SUITE_P(roman_calendar, roman_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, gdates)));
+    INSTANTIATE_TEST_SUITE_P(olympiad, olympiad_test, testing::ValuesIn(helpers::make_test_params_values(dates, olympiads)));
 }

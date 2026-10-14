@@ -8,9 +8,6 @@
 #include <array>
 
 namespace calendrical::time_and_astronomy {
-    static constexpr bool is_bogus(double x) {
-        return x <=> 0 == std::partial_ordering::unordered;
-    }
     static constexpr bool is_bogus(moment_t x) {
         return static_cast<double>(x) <=> 0 == std::partial_ordering::unordered;
     }

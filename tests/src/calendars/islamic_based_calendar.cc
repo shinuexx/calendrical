@@ -173,7 +173,7 @@ namespace tests {
         EXPECT_EQ(m_calendar->to_fixed(output), input) << output.to_string() << " : " << m_calendar->to_fixed(output) << " : " << input << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(islamic_calendar, islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
-    INSTANTIATE_TEST_CASE_P(observational_islamic_calendar, observational_islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
-    INSTANTIATE_TEST_CASE_P(saudi_islamic_calendar, saudi_islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, saudi_dates)));
+    INSTANTIATE_TEST_SUITE_P(islamic_calendar, islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, arithmetic_dates)));
+    INSTANTIATE_TEST_SUITE_P(observational_islamic_calendar, observational_islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, observational_dates)));
+    INSTANTIATE_TEST_SUITE_P(saudi_islamic_calendar, saudi_islamic_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, saudi_dates)));
 }

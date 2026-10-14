@@ -65,5 +65,5 @@ namespace tests {
     }
 
 
-    INSTANTIATE_TEST_CASE_P(dawn_in_paris, dawn_in_paris_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
+    INSTANTIATE_TEST_SUITE_P(dawn_in_paris, dawn_in_paris_test, testing::ValuesIn(helpers::make_test_params_values(dates, results)));
 }
