@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include "datetypes/icelandic_date.hpp"
 
 namespace calendrical::calendars{

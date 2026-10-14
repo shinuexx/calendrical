@@ -5,6 +5,7 @@
 #include "season.hpp"
 #include "lunar_phase.hpp"
 #include "lazy.hpp"
+#include <array>
 
 namespace calendrical::time_and_astronomy {
     static constexpr bool is_bogus(double x) {

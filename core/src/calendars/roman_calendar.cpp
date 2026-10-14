@@ -1,4 +1,5 @@
 #include "calendars/roman_calendar.hpp"
+#include <array>
 #include "helpers.hpp"
 
 namespace calendrical::calendars{

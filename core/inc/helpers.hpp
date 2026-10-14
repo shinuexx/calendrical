@@ -1,13 +1,14 @@
 #pragma once
 
+#include <algorithm>
+#include <array>
+#include <chrono>
 #include <functional>
 #include <numbers>
 #include <ranges>
+#include <stdexcept>
 #include <vector>
 #include "interval.hpp"
-
-#include <chrono>
-#include <stdexcept>
 
 namespace calendrical{
 

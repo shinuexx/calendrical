@@ -1,5 +1,6 @@
 #include "calendars/tibetan_calendar.hpp"
 #include "calendars/gregorian_calendar.hpp"
+#include <array>
 #include <cmath>
 
 namespace calendrical::calendars {

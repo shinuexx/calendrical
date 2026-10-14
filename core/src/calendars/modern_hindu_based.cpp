@@ -3,6 +3,7 @@
 #include "calendars/gregorian_calendar.hpp"
 #include "calendars/modern_hindu_base.hpp"
 #include "time_and_astronomy.hpp"
+#include <array>
 #include <cmath>
 
 namespace calendrical::calendars {

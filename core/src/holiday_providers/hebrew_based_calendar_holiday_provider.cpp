@@ -1,6 +1,7 @@
 #include "holiday_providers/hebrew_based_calendar_holiday_provider.hpp"
 
 #include <algorithm>
+#include <array>
 
 namespace calendrical::holiday_providers {
     hebrew_based_calendar_holiday_provider::hebrew_based_calendar_holiday_provider(

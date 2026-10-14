@@ -1,5 +1,6 @@
 #include "calendars/astro_hindu_lunar_calendar.hpp"
 #include "time_and_astronomy.hpp"
+#include <array>
 #include <cmath>
 
 namespace calendrical::calendars {

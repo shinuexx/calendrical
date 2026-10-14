@@ -1,5 +1,6 @@
 #include "calendars/hebrew_calendar.hpp"
 #include <algorithm>
+#include <array>
 
 namespace calendrical::calendars {
 

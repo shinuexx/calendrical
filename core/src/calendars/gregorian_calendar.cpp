@@ -1,4 +1,5 @@
 #include "calendars/gregorian_calendar.hpp"
+#include <array>
 
 namespace calendrical::calendars{
     month gregorian_calendar::get_month(const fixed_date_t& date, int32_t year) const {

@@ -1,4 +1,5 @@
 #include "calendars/iso_calendar.hpp"
+#include <array>
 
 namespace calendrical::calendars{
     iso_calendar::iso_calendar() {
