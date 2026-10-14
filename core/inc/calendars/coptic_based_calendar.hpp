@@ -11,6 +11,7 @@ namespace calendrical::calendars {
      */
     class coptic_based_calendar :
     public typed_calendar_if<simple_date> {
+        /** @brief Fixed date of the calendar epoch. */
         fixed_date_t m_epoch;
 
         /** @brief Internal month extractor using a resolved year. */

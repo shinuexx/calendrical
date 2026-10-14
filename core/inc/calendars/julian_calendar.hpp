@@ -17,6 +17,7 @@ namespace calendrical::calendars{
         /** @brief Calendar epoch in fixed-date coordinates. */
         static constexpr fixed_date_t ms_epoch{-1};
 
+        /** @brief Internal month extractor using an already resolved Julian @p year. */
         [[nodiscard]] month get_month(const fixed_date_t& date, int32_t year) const;
 
     public:

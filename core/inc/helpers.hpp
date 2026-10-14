@@ -34,7 +34,10 @@ namespace calendrical{
         return 0;
     }
 
-    /** @brief Floor division for integers (rounds toward negative infinity). */
+    /**
+     * @brief Floor division for integers (rounds toward negative infinity).
+     * @throws std::invalid_argument if @p y is zero.
+     */
     inline constexpr int64_t floor_div(int64_t x, int64_t y)
     {
         if (y == 0)
@@ -53,12 +56,15 @@ namespace calendrical{
 
         return quotient;
     }
-    template<std::integral T1, std::integral T2, typename = std::enable_if_t<sizeof(T1) < sizeof(int64_t) && sizeof(T2) < sizeof(int64_t)>>
+    template<std::integral T1, std::integral T2, typename = std::enable_if_t<(sizeof(T1) < sizeof(int64_t) && sizeof(T2) < sizeof(int64_t))>>
     /** @brief Narrow-integral overload forwarding to `int64_t` floor division. */
     inline constexpr int64_t floor_div(T1 x, T2 y) {
         return floor_div(static_cast<int64_t>(x), static_cast<int64_t>(y));
     }
-    /** @brief Floor division for floating-point values. */
+    /**
+     * @brief Floor division for floating-point values.
+     * @throws std::invalid_argument if @p y is zero.
+     */
     double floor_div(double x, double y);
 
     /** @brief Mathematical modulo for integers using @ref floor_div semantics. */
@@ -66,7 +72,7 @@ namespace calendrical{
     {
         return x - y * floor_div(x, y);
     }
-    template<std::integral T1, std::integral T2, typename = std::enable_if_t<sizeof(T1) < sizeof(int64_t) && sizeof(T2) < sizeof(int64_t)>>
+    template<std::integral T1, std::integral T2, typename = std::enable_if_t<(sizeof(T1) < sizeof(int64_t) && sizeof(T2) < sizeof(int64_t))>>
     /** @brief Narrow-integral overload forwarding to `int64_t` modulo. */
     inline constexpr int64_t mod(T1 x, T2 y) {
         return mod(static_cast<int64_t>(x), static_cast<int64_t>(y));
@@ -81,7 +87,7 @@ namespace calendrical{
             return x;
         return a + mod(x - a, b - a);
     }
-    template<std::integral T1, std::integral T2, std::integral T3, typename = std::enable_if_t<sizeof(T1) < sizeof(int64_t) && sizeof(T2) < sizeof(int64_t) && sizeof(T3) < sizeof(int64_t)>>
+    template<std::integral T1, std::integral T2, std::integral T3, typename = std::enable_if_t<(sizeof(T1) < sizeof(int64_t) && sizeof(T2) < sizeof(int64_t) && sizeof(T3) < sizeof(int64_t))>>
     /** @brief Narrow-integral overload forwarding to `int64_t` interval modulus. */
     inline constexpr int64_t interval_modulus(T1 x, T2 a, T3 b) {
         return interval_modulus(static_cast<int64_t>(x), static_cast<int64_t>(a), static_cast<int64_t>(b));
@@ -95,7 +101,7 @@ namespace calendrical{
         const auto m = mod(x, b);
         return m == 0 ? b : m;
     }
-    template<std::integral T1, std::integral T2, typename = std::enable_if_t<sizeof(T1) < sizeof(int64_t) && sizeof(T2) < sizeof(int64_t)>>
+    template<std::integral T1, std::integral T2, typename = std::enable_if_t<(sizeof(T1) < sizeof(int64_t) && sizeof(T2) < sizeof(int64_t))>>
     /** @brief Narrow-integral overload forwarding to `int64_t` adjusted remainder. */
     inline constexpr int64_t adjusted_remainder(T1 x, T2 b) {
         return adjusted_remainder(static_cast<int64_t>(x), static_cast<int64_t>(b));
@@ -111,17 +117,29 @@ namespace calendrical{
     /** @brief Unary value-transform function alias. */
     using value_function_t = std::function<T(const T&)>;
 
-    /** @brief Summation over values generated from indices satisfying predicate @p p. */
+    /** @brief Sum of `f(i)` for `i = k, k + 1, ...` while `p(i)` holds (0 if `p(k)` fails). */
     int64_t sigma(const predicate_t<int64_t> &p, const value_function_t<int64_t>& f, int64_t k);
-    /** @brief Product over values generated from indices satisfying predicate @p p. */
+    /** @brief Product of `f(i)` for `i = k, k + 1, ...` while `p(i)` holds (1 if `p(k)` fails). */
     int64_t pi(const predicate_t<int64_t>& p, const value_function_t<int64_t>& f, int64_t k);
 
-    /** @brief Smallest integer >= @p d0 satisfying predicate @p phi. */
+    /**
+     * @brief Smallest integer `d` in [@p d0, @p d0 + 400] for which @p phi holds.
+     * @throws std::runtime_error if @p phi fails on the whole range.
+     */
     int64_t least_passing(const predicate_t<int64_t>& phi, int64_t d0);
-    /** @brief Largest integer <= @p d0 satisfying predicate @p phi. */
+    /**
+     * @brief Scans upward from @p d0 and returns the day before the first `d` for which @p phi fails.
+     *
+     * Returns `d0 - 1` if @p phi already fails at @p d0. At most 401 days are checked.
+     * @throws std::runtime_error if @p phi holds on the whole range or `d0 - 1` is not representable.
+     */
     int64_t last_passing(const predicate_t<int64_t>& phi, int64_t d0);
 
-    /** @brief Generic binary search guided by predicates on interval/value. */
+    /**
+     * @brief Bisection on [@p u, @p v]: @p phi selects the half, @p psi decides when to stop.
+     * @return Midpoint of the final interval.
+     * @throws std::runtime_error if @p psi is not satisfied within 1000 iterations.
+     */
     double binary_search(const predicate_t<double>& phi, const double_predicate_t<double>& psi, double u, double v);
 
     /** @brief Inverts an angular function over interval [`a`, `b`) for target @p y. */
@@ -161,7 +179,7 @@ namespace calendrical{
     inline constexpr bool in(const interval<T>& range, const T& value) { return range.contains(value); }
 
     template <typename T>
-    /** @brief Negated form of @ref in(interval, value). */
+    /** @brief Negated form of `in(range, value)` for an @ref interval. */
     inline constexpr bool not_in(const interval<T>& range, const T& value) { return !range.contains(value); }
 
     template <typename T, typename ContainerT>
@@ -171,7 +189,7 @@ namespace calendrical{
         return std::find(std::begin(cont), std::end(cont), value) != std::end(cont);
     }
     template <typename T, typename ContainerT>
-    /** @brief Negated form of @ref in(cont, value). */
+    /** @brief Negated form of `in(cont, value)` for a generic container. */
     inline constexpr bool not_in(const ContainerT& cont, const T& value)
     {
         return std::find(std::begin(cont), std::end(cont), value) == std::end(cont);
@@ -184,7 +202,7 @@ namespace calendrical{
         return std::find(std::begin(list), std::end(list), value) != std::end(list);
     }
     template<typename T>
-    /** @brief Negated form of @ref in(initializer_list, value). */
+    /** @brief Negated form of `in(list, value)` for an initializer list. */
     inline constexpr bool not_in(const std::initializer_list<T>& list, const T& value)
     {
         return std::find(std::begin(list), std::end(list), value) == std::end(list);

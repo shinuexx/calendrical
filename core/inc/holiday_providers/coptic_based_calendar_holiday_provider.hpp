@@ -10,7 +10,9 @@ namespace calendrical::holiday_providers {
     class coptic_based_calendar_holiday_provider :
     public holiday_provider_if
     {
+        /** @brief Calendar the holidays are defined in (not owned). */
         const calendars::coptic_based_calendar* m_calendar;
+        /** @brief Gregorian calendar used to map holidays into Gregorian years. */
         const calendars::gregorian_calendar* m_gregorian;
 
     public:

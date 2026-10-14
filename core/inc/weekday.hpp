@@ -15,15 +15,23 @@ namespace calendrical {
      * 0=sunday, 1=monday, ..., 6=saturday.
      */
     struct weekday {
+        /** @brief Sunday (0). */
         static const weekday sunday;
+        /** @brief Monday (1). */
         static const weekday monday;
+        /** @brief Tuesday (2). */
         static const weekday tuesday;
+        /** @brief Wednesday (3). */
         static const weekday wednesday;
+        /** @brief Thursday (4). */
         static const weekday thursday;
+        /** @brief Friday (5). */
         static const weekday friday;
+        /** @brief Saturday (6). */
         static const weekday saturday;
 
     private:
+        /** @brief Raw weekday index; 0 = Sunday. */
         int m_v;
 
     public:
@@ -39,7 +47,9 @@ namespace calendrical {
         /** @brief Explicit conversion to the raw weekday index. */
         constexpr explicit operator int() const { return m_v; }
 
+        /** @brief Equality comparison on the raw index. */
         constexpr bool operator==(const weekday& other) const { return m_v == other.m_v; }
+        /** @brief Three-way comparison on the raw index. */
         constexpr auto operator<=>(const weekday& other) const { return m_v <=> other.m_v; }
 
         /** @brief Previous occurrence of this weekday on or before @p date. */
@@ -53,17 +63,20 @@ namespace calendrical {
         /** @brief Next occurrence strictly after @p date. */
         [[nodiscard]] fixed_date_t after(const fixed_date_t& date) const;
 
+        /** @brief Increments the raw index (no wrap-around) and returns the updated value. */
         constexpr weekday& operator++()
         {
             ++m_v;
             return *this;
         }
+        /** @brief Decrements the raw index (no wrap-around) and returns the updated value. */
         constexpr weekday& operator--()
         {
             --m_v;
             return *this;
         }
 
+        /** @brief Increments the raw index (no wrap-around) and returns the previous value. */
         constexpr weekday operator++(int)
         {
             const auto copy = *this;
@@ -71,6 +84,7 @@ namespace calendrical {
             return copy;
         }
 
+        /** @brief Decrements the raw index (no wrap-around) and returns the previous value. */
         constexpr weekday operator--(int)
         {
             const auto copy = *this;
@@ -78,6 +92,7 @@ namespace calendrical {
             return copy;
         }
 
+        /** @brief Difference of raw indices (not reduced modulo 7). */
         constexpr int operator-(const weekday& rhs) const { return m_v - rhs.m_v; }
 
         /** @brief Returns lowercase weekday name or a fallback debug string. */

@@ -11,16 +11,25 @@ namespace calendrical::holiday_providers {
     class hebrew_based_calendar_holiday_provider:
     public holiday_provider_if{
 
+        /** @brief Calendar the holidays are defined in (not owned). */
+
         const calendars::hebrew_based_calendar* m_hebrew;
+        /** @brief Gregorian calendar used to map holidays into Gregorian years. */
         const calendars::gregorian_calendar* m_gregorian;
+        /** @brief Coptic calendar used by the Sh'ela and Birkath ha-Hama rules. */
         const calendars::coptic_based_calendar* m_coptic;
+        /** @brief Coptic holiday provider used by the Sh'ela and Birkath ha-Hama rules. */
         std::unique_ptr<const coptic_based_calendar_holiday_provider> m_coptic_provider;
 
+        /** @brief Gregorian year containing the Hebrew epoch; maps Gregorian to Hebrew years. */
         int32_t m_gregorian_year_hebrew_epoch;
 
+        /** @brief Fixed date of 21 Adar, year 1: anchor of Samuel's tekufot. */
         fixed_date_t m_start_1_adar_21;
+        /** @brief Fixed date of 28 Adar, year 1: anchor of Adda's tekufot. */
         fixed_date_t m_start_1_adar_28;
 
+        /** @brief Length of Adda's solar year in days. */
         static constexpr double ADDA_Y{35975351 / 98496.0};
 
     public:

@@ -27,6 +27,7 @@
 
 namespace calendrical::cli {
     namespace {
+        /** @brief Process-wide calendar instance shared by the registered holiday providers. */
         template<typename CalendarT>
         const CalendarT& calendar_instance() {
             static const CalendarT instance{};

@@ -11,12 +11,20 @@
 
 namespace calendrical::cli {
     namespace {
+        /** @brief Parsed arguments of the `holidays` command. */
         struct holidays_request {
+            /** @brief Registered provider name (aliases already resolved). */
             std::string provider_name;
+            /** @brief Gregorian year to list holidays for. */
             int32_t year{};
+            /** @brief Print dates as `gregorian_date` instead of fixed dates. */
             bool as_gregorian{};
         };
 
+        /**
+         * @brief Parses a whole token as a (possibly negative) year.
+         * @throws std::runtime_error if @p token is not exactly an `int32_t`.
+         */
         [[nodiscard]] int32_t parse_year(std::string_view token) {
             int32_t value{};
             if (const auto [ptr, ec] = std::from_chars(token.data(), token.data() + token.size(), value);
@@ -26,6 +34,7 @@ namespace calendrical::cli {
             return value;
         }
 
+        /** @brief Maps user-facing aliases (e.g. `hebrew`, `chinese_calendar`) to registered provider names. */
         [[nodiscard]] std::string resolve_provider_name(std::string_view raw_name) {
             if (raw_name == "gregorian" || raw_name == "gregorian_calendar") return "gregorian";
             if (raw_name == "julian" || raw_name == "julian_calendar") return "julian";
@@ -40,6 +49,10 @@ namespace calendrical::cli {
             return std::string(raw_name);
         }
 
+        /**
+         * @brief Parses `[--as-gregorian|-g] <provider> <year>`.
+         * @throws std::runtime_error on an unknown option, a wrong number of positional arguments or a bad year.
+         */
         [[nodiscard]] holidays_request parse_request(const std::vector<std::string_view>& args) {
             bool as_gregorian = false;
             std::vector<std::string_view> positional;
@@ -68,6 +81,7 @@ namespace calendrical::cli {
             };
         }
 
+        /** @brief Prints @p holidays in date order, as fixed dates or as Gregorian dates. */
         void print_holidays(std::vector<holiday_t> holidays, bool as_gregorian) {
             const auto& gregorian = calendars::gregorian_calendar::standard;
             std::ranges::sort(holidays, holiday_t::date_only_less_t{});

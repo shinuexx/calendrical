@@ -15,8 +15,10 @@ namespace calendrical::calendars{
     class gregorian_calendar final :
     public typed_calendar_if<gregorian_date>
     {
+        /** @brief Fixed date of the calendar epoch. */
         fixed_date_t m_epoch;
 
+        /** @brief Internal month extractor using an already resolved Gregorian @p year. */
         [[nodiscard]] month get_month(const fixed_date_t &date, int32_t year) const;
 
     public:

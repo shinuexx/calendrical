@@ -11,7 +11,9 @@ namespace calendrical::holiday_providers {
      * Moveable Pentecost and preparatory Simmut observances are handled separately.
      */
     class samaritan_calendar_holiday_provider final : public holiday_provider_if {
+        /** @brief Calendar the holidays are defined in (not owned). */
         const calendars::samaritan_calendar* m_samaritan;
+        /** @brief Gregorian calendar used to map holidays into Gregorian years. */
         const calendars::gregorian_calendar* m_gregorian;
 
         /** @brief Helper for inclusive fixed-date ranges in a Samaritan month. */

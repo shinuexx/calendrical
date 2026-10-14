@@ -54,9 +54,13 @@ namespace calendrical {
         T max;
 
     private:
+        /** @brief Membership test for (min, max). */
         constexpr bool in_open(const T& value) const { return min < value && value < max; }
+        /** @brief Membership test for [min, max]. */
         constexpr bool in_closed(const T& value) const { return min <= value && value <= max; }
+        /** @brief Membership test for [min, max). */
         constexpr bool in_left_closed(const T& value) const { return min <= value && value < max; }
+        /** @brief Membership test for (min, max]. */
         constexpr bool in_right_closed(const T& value) const { return min < value && value <= max; }
 
     public:
@@ -81,15 +85,15 @@ namespace calendrical {
         /** @brief Function-call shorthand for @ref contains. */
         constexpr bool operator()(const T& value) const { return contains(value); }
 
+        /** @brief Casts endpoints to another value type while preserving boundary policy. */
         template <typename T2>
             requires (std::convertible_to<T, T2> || std::constructible_from<T2, T>)
-        /** @brief Casts endpoints to another value type while preserving boundary policy. */
         constexpr interval<T2> cast() const { return { type, static_cast<T2>(min), static_cast<T2>(max) }; }
 
+        /** @brief Implicit conversion to another `interval<T2>` via @ref cast. */
         template <typename T2>
             requires (std::convertible_to<T, T2> || std::constructible_from<T2, T>)
         // ReSharper disable once CppNonExplicitConversionOperator
-        /** @brief Implicit conversion to another `interval<T2>` via @ref cast. */
         constexpr operator interval<T2>() const { return cast<T2>(); } // NOLINT(*-explicit-constructor)
 
         /** @brief Returns the same bounds with both endpoints open. */

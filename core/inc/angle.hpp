@@ -20,6 +20,7 @@ namespace calendrical
      */
     class angle_t
     {
+        /** @brief Angle in degrees. */
         double m_v;
  
     public:
@@ -48,17 +49,17 @@ namespace calendrical
         [[nodiscard]] constexpr angle_t operator+(const angle_t &right) const { return angle_t{m_v + right.m_v}; }
         /** @brief Subtracts two angles. */
         [[nodiscard]] constexpr angle_t operator-(const angle_t &right) const { return angle_t{m_v - right.m_v}; }
-        template <typename T>
-            requires std::is_arithmetic_v<T>
         /** @brief Scales an angle by a scalar factor. */
+        template <typename T>
+            requires std::is_arithmetic_v<T>
         [[nodiscard]] constexpr angle_t operator*(T right) const { return angle_t{m_v * static_cast<double>(right)}; }
-        template <typename T>
-            requires std::is_arithmetic_v<T>
         /** @brief Scales an angle by a scalar factor (commutative). */
-        [[nodiscard]] friend constexpr angle_t operator*(T left, const angle_t &right) { return right * left; }
         template <typename T>
             requires std::is_arithmetic_v<T>
+        [[nodiscard]] friend constexpr angle_t operator*(T left, const angle_t &right) { return right * left; }
         /** @brief Divides an angle by a scalar factor. */
+        template <typename T>
+            requires std::is_arithmetic_v<T>
         [[nodiscard]] constexpr angle_t operator/(T right) const { return angle_t{m_v / static_cast<double>(right)}; }
         /** @brief Returns the ratio of two angles. */
         [[nodiscard]] constexpr double operator/(const angle_t &right) const { return m_v / right.m_v; }

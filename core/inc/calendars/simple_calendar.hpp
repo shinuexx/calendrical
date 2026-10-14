@@ -11,6 +11,7 @@ namespace calendrical::calendars{
     class simple_calendar final :
         public typed_calendar_if<simple_date>
     {
+        /** @brief Fixed date of the calendar epoch. */
         fixed_date_t m_epoch;
 
     public:

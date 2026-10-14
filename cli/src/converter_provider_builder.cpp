@@ -37,9 +37,11 @@
 
 namespace calendrical::cli {
     namespace {
+        /** @brief Date type handled by @p CalendarT. */
         template<typename CalendarT>
         using calendar_date_t = typename CalendarT::date_type;
 
+        /** @brief Returns a parser for the compact (`-`-separated) notation of @p CalendarT's date type. */
         template<typename CalendarT>
         auto compact_date_parser() {
             return [](const std::string& input) {
@@ -47,6 +49,7 @@ namespace calendrical::cli {
             };
         }
 
+        /** @brief Registers a compact-notation converter over a default-constructed @p CalendarT. */
         template<std::derived_from<calendar_if> CalendarT>
         void add_calendar_converter(
             converter_provider& provider,
@@ -59,6 +62,7 @@ namespace calendrical::cli {
             );
         }
 
+        /** @brief Registers a compact-notation converter over a copy of @p calendar. */
         template<std::derived_from<calendar_if> CalendarT>
         void add_calendar_converter(
             converter_provider& provider,

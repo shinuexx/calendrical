@@ -8,6 +8,7 @@
 #include <array>
 
 namespace calendrical::time_and_astronomy {
+    /** @brief Returns whether @p x is the NaN "bogus" marker returned for events that do not occur. */
     static constexpr bool is_bogus(moment_t x) {
         return static_cast<double>(x) <=> 0 == std::partial_ordering::unordered;
     }

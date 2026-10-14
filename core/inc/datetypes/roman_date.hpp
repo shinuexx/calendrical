@@ -37,7 +37,9 @@ namespace calendrical::datetypes {
      */
     struct olympiad {
         /** @brief Olympiad cycle number. */
-        int32_t cycle, year;
+        int32_t cycle;
+        /** @brief Year within the olympiad (1-4). */
+        int32_t year;
         /** @brief Equality comparison on both components. */
         bool operator==(const olympiad & output) const = default;
     };

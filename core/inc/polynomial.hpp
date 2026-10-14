@@ -13,6 +13,7 @@ namespace calendrical{
     */
    template<std::size_t N>
    class polynomial{
+      /** @brief Coefficients in ascending order of power. */
       std::array<double, N> m_coefficients;
 
    public:

@@ -13,6 +13,8 @@ namespace calendrical::calendars{
     class icelandic_calendar final:
         public typed_calendar_if<icelandic_date>{
 
+        /** @brief Fixed date of the calendar epoch. */
+
         fixed_date_t m_epoch;
 
         /** @brief Coefficients used by the leap-year rule/epoch arithmetic. */

@@ -10,6 +10,7 @@ namespace calendrical::holiday_providers {
      */
     class modern_hindu_lunar_calendar_holiday_provider :
         public holiday_provider_if{
+        /** @brief Calendar the holidays are defined in (not owned). */
         const calendars::modern_hindu_lunar_calendar* m_lunar;
 
     public:

@@ -15,6 +15,7 @@ namespace calendrical::calendars {
     class roman_calendar :
     public typed_calendar_if<roman_date>
     {
+        /** @brief Julian calendar the Roman nomenclature is layered on. */
         julian_calendar m_julian;
 
     public:

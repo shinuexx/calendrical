@@ -26,23 +26,30 @@ namespace calendrical{
 
         /** @brief Comparator comparing holidays strictly by date. */
         struct date_only_less_t {
+            /** @brief Enables heterogeneous lookup against a bare @ref fixed_date_t. */
             using is_transparent = void;
 
+            /** @brief Returns whether @p lhs falls on an earlier date than @p rhs. */
             constexpr bool operator()(const holiday_t& lhs, const holiday_t& rhs) const noexcept {
                 return lhs.date < rhs.date;
             }
+            /** @brief Returns whether holiday @p lhs falls before date @p rhs. */
             constexpr bool operator()(const holiday_t& lhs, const fixed_date_t& rhs) const noexcept {
                 return lhs.date < rhs;
             }
+            /** @brief Returns whether date @p lhs falls before holiday @p rhs. */
             constexpr bool operator()(const fixed_date_t& lhs, const holiday_t& rhs) const noexcept {
                 return lhs < rhs.date;
             }
         };
 
+        /** @brief Ready-to-use instance of @ref date_only_less_t. */
         static constexpr date_only_less_t date_only_less{};
     };
 
+    /** @brief Namespace-level alias of @ref holiday_t::date_only_less_t. */
     using date_only_less_t = holiday_t::date_only_less_t;
+    /** @brief Namespace-level alias of @ref holiday_t::date_only_less. */
     inline constexpr date_only_less_t date_only_less = holiday_t::date_only_less;
 
     /**

@@ -18,8 +18,11 @@ namespace calendrical{
      */
     template<typename T>
     class lazy{
+        /** @brief Materialized value; empty until the factory has run. */
         mutable std::optional<T> m_value;
+        /** @brief Deferred factory; cleared after it produced @ref m_value. */
         mutable std::function<T()> m_factory;
+        /** @brief Guards the one-time initialization in @ref ensure_loaded. */
         mutable std::once_flag m_once;
 
         lazy(const lazy&) = delete;
@@ -27,6 +30,10 @@ namespace calendrical{
         lazy(lazy&&) = delete;
         lazy& operator=(lazy&&) = delete;
 
+        /**
+         * @brief Runs the factory once if no value is stored yet.
+         * @throws std::logic_error if neither a materialized value nor a factory is available.
+         */
         void ensure_loaded() const {
             std::call_once(m_once, [this] {
                 if (!m_value) {

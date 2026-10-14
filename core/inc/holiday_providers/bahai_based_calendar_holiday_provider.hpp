@@ -11,8 +11,11 @@ namespace calendrical::holiday_providers {
     class bahai_based_calendar_holiday_provider:
         public holiday_provider_if
     {
+        /** @brief Astronomical Baha'i calendar (Naw-Ruz, Ridvan, sunset-based holidays). */
         const calendars::astro_bahai_calendar* m_astro;
+        /** @brief Arithmetic Baha'i calendar (classic variant). */
         const calendars::bahai_calendar* m_classic;
+        /** @brief Gregorian calendar used to map holidays into Gregorian years. */
         const calendars::gregorian_calendar* m_gregorian;
 
         /** @brief Converts a fixed Bahai month/day in the astronomical Bahai year of @p gyear to a fixed date. */
