@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <chrono>
+#include <cstdio>
 #include <fstream>
 #include <regex>
 #include <string>
@@ -44,6 +46,25 @@ namespace tests {
         EXPECT_FALSE(calendrical::compiler().empty());
         EXPECT_FALSE(calendrical::platform().empty());
         EXPECT_GE(calendrical::cxx_standard(), 202002L);
+    }
+
+    TEST(version, build_time_matches_build_datetime) {
+        const auto time = calendrical::build_time();
+        if (calendrical::build_datetime() == "unknown") {
+            EXPECT_FALSE(time.has_value());
+            return;
+        }
+        ASSERT_TRUE(time.has_value());
+
+        const auto day = std::chrono::floor<std::chrono::days>(*time);
+        const std::chrono::year_month_day ymd{day};
+        const std::chrono::hh_mm_ss hms{*time - day};
+        char text[32];
+        std::snprintf(text, sizeof text, "%04d-%02u-%02uT%02d:%02d:%02dZ",
+                      static_cast<int>(ymd.year()), static_cast<unsigned>(ymd.month()), static_cast<unsigned>(ymd.day()),
+                      static_cast<int>(hms.hours().count()), static_cast<int>(hms.minutes().count()),
+                      static_cast<int>(hms.seconds().count()));
+        EXPECT_EQ(calendrical::build_datetime(), text);
     }
 
     TEST(version, libinfo_summarizes_build_information) {

@@ -266,6 +266,7 @@ calendrical::commit();           // full git hash, or "unknown" outside a git ch
 calendrical::branch();           // git branch, "HEAD" when detached
 calendrical::is_dirty();         // uncommitted changes to tracked files at build time
 calendrical::build_datetime();   // "2026-10-14T12:34:56Z" (UTC, honours SOURCE_DATE_EPOCH)
+calendrical::build_time();       // the same as std::optional<std::chrono::sys_seconds>
 calendrical::build_type();       // "Release", "Debug", ... or "unspecified"
 calendrical::compiler();         // "GNU 13.3.0"
 calendrical::platform();         // "Linux x86_64"

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+#include <optional>
 #include <string>
 #include <string_view>
 
@@ -34,6 +36,8 @@ namespace calendrical {
     [[nodiscard]] std::string_view library_version() noexcept;
     /** @brief UTC time the library was built, ISO 8601 (`2026-10-14T12:34:56Z`), or `"unknown"`. */
     [[nodiscard]] std::string_view build_datetime() noexcept;
+    /** @brief Time the library was built as a time point, or `std::nullopt`; matches @ref build_datetime. */
+    [[nodiscard]] std::optional<std::chrono::sys_seconds> build_time() noexcept;
     /** @brief Full git commit hash the library was built from, or `"unknown"`. */
     [[nodiscard]] std::string_view commit() noexcept;
     /** @brief Git branch the library was built from (`"HEAD"` when detached), or `"unknown"`. */

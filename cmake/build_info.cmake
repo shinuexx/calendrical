@@ -52,9 +52,18 @@ if (GIT_EXECUTABLE)
 endif()
 
 if (WITH_TIMESTAMP)
+    # One clock reading for both forms, so they always agree.
+    string(TIMESTAMP epoch "%s" UTC)
     string(TIMESTAMP datetime "%Y-%m-%dT%H:%M:%SZ" UTC)
+    string(TIMESTAMP check "%s" UTC)
+    if (NOT check STREQUAL epoch)
+        string(TIMESTAMP epoch "%s" UTC)
+        string(TIMESTAMP datetime "%Y-%m-%dT%H:%M:%SZ" UTC)
+    endif()
+    set(CALENDRICAL_BUILD_TIME "std::chrono::sys_seconds{std::chrono::seconds{${epoch}}}")
 else()
     set(datetime "unknown")
+    set(CALENDRICAL_BUILD_TIME "std::nullopt")
 endif()
 
 foreach(var COMPILER PLATFORM)
