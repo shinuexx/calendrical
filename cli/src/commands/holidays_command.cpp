@@ -37,6 +37,7 @@ namespace calendrical::cli {
         /** @brief Maps user-facing aliases (e.g. `hebrew`, `chinese_calendar`) to registered provider names. */
         [[nodiscard]] std::string resolve_provider_name(std::string_view raw_name) {
             if (raw_name == "gregorian" || raw_name == "gregorian_calendar") return "gregorian";
+            if (raw_name == "us" || raw_name == "us_calendar" || raw_name == "usa") return "us";
             if (raw_name == "julian" || raw_name == "julian_calendar") return "julian";
             if (raw_name == "islamic" || raw_name == "islamic_based_calendar") return "islamic_based";
             if (raw_name == "hebrew" || raw_name == "hebrew_based_calendar") return "hebrew_based";

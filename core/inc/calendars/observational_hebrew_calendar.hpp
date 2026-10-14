@@ -16,15 +16,22 @@ namespace calendrical::calendars{
         /** @brief Arithmetic Hebrew helper used for some intermediate calculations. */
         std::unique_ptr<const hebrew_calendar> m_hebrew;
 
-        /** @brief Approximate first day of Nisan in Gregorian year @p gyear. */
-        [[nodiscard]] static fixed_date_t first_of_nisan(int32_t gyear);
-
         /** @brief Finds the crescent-based month start near @p date. */
         [[nodiscard]] fixed_date_t get_crescent(const fixed_date_t& date) const;
 
     public:
         /** @brief Reference location used for observational Hebrew calculations. */
         static constexpr location hebrew_location{ 32.82_deg, 35_deg, 0, moment_t::hms(2) };
+
+        /**
+         * @brief First day of Nisan in Gregorian year @p gyear according to the observational Hebrew calendar (CC 18.22).
+         *
+         * Determined by the visible crescent on or after 14 days before the vernal equinox.
+         *
+         * @param gyear Gregorian year.
+         * @return Fixed date of 1 Nisan.
+         */
+        [[nodiscard]] static fixed_date_t first_of_nisan(int32_t gyear);
 
         /** @brief Constructs an observational Hebrew calendar instance. */
         observational_hebrew_calendar();

@@ -66,7 +66,15 @@ class holiday_csv {
             {"epiphany", "Epiphany"},
             {"easter", "Easter"},
             {"pentecost", "Pentecost"},
-            {"birkath_ha_hama", "Birkath ha-Hama"}
+            {"birkath_ha_hama", "Birkath ha-Hama"},
+            {"observ_hebrew_1_nisan", "Observ. Hebrew 1 Nisan"},
+            {"observational_hebrew_first_of_nisan", "Observ. Hebrew 1 Nisan"},
+            {"us_independence_day", "U.S. Independence Day"},
+            {"us_labor_day", "U.S. Labor Day"},
+            {"us_memorial_day", "U.S. Memorial Day"},
+            {"us_election_day", "U.S. Election Day"},
+            {"us_daylight_saving_start", "U.S. Daylight Saving Start"},
+            {"us_daylight_saving_end", "U.S. Daylight Saving End"}
         };
     }
 

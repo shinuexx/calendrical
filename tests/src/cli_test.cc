@@ -295,6 +295,26 @@ namespace tests {
         EXPECT_EQ(cmd.execute({"persian", "1404"}), 0);
         EXPECT_EQ(cmd.execute({"bahai", "182"}), 0);
         EXPECT_EQ(cmd.execute({"modern_hindu_lunar_calendar", "2082"}), 0);
+        EXPECT_EQ(cmd.execute({"us", "2026"}), 0);
+        EXPECT_EQ(cmd.execute({"usa", "2026"}), 0);
+        EXPECT_EQ(cmd.execute({"us_calendar", "2026"}), 0);
+        EXPECT_EQ(cmd.execute({"--as-gregorian", "us", "2026"}), 0);
+    }
+
+    TEST_F(cli_test_fixture, holidays_us_command) {
+        holidays_command cmd(std::addressof(m_holiday_providers));
+
+        testing::internal::CaptureStdout();
+        EXPECT_EQ(cmd.execute({"--as-gregorian", "us", "2026"}), 0);
+        const auto output = testing::internal::GetCapturedStdout();
+
+        EXPECT_NE(output.find("provider=us year=2026"), std::string::npos);
+        EXPECT_NE(output.find("independence day"), std::string::npos);
+        EXPECT_NE(output.find("labor day"), std::string::npos);
+        EXPECT_NE(output.find("memorial day"), std::string::npos);
+        EXPECT_NE(output.find("election day"), std::string::npos);
+        EXPECT_NE(output.find("daylight saving start"), std::string::npos);
+        EXPECT_NE(output.find("daylight saving end"), std::string::npos);
     }
 
     // ==========================================
