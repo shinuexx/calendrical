@@ -99,9 +99,9 @@ namespace calendrical::calendars {
             (year1 == year2 &&
                 (month1 < month2 ||
                     (month1 == month2 &&
-                        (leap_month1 && !leap_month2) ||
+                        ((leap_month1 && !leap_month2) ||
                         (leap_month1 == leap_month2 &&
-                            day1 < day2 ||
-                            (day1 == day2 && (!leap_day1 || leap_day2))))));
+                            (day1 < day2 ||
+                            (day1 == day2 && (!leap_day1 || leap_day2))))))));
     }
 }

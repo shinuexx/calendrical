@@ -69,13 +69,13 @@ namespace tests {
         EXPECT_EQ(dispatcher.dispatch(3, argv_list), 0);
 
         const char* argv_unknown[] = {"calendrical_cli", "help", "unknown"};
-        EXPECT_THROW(dispatcher.dispatch(3, argv_unknown), std::runtime_error);
+        EXPECT_THROW((void)dispatcher.dispatch(3, argv_unknown), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, dispatcher_unknown_command_throws) {
         command_dispatcher dispatcher;
         const char* argv[] = {"calendrical_cli", "nonexistent_command"};
-        EXPECT_THROW(dispatcher.dispatch(2, argv), std::runtime_error);
+        EXPECT_THROW((void)dispatcher.dispatch(2, argv), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, dispatcher_lookup_operator) {
@@ -94,7 +94,7 @@ namespace tests {
 
     TEST_F(cli_test_fixture, convert_uninitialized_provider_throws) {
         convert_command cmd(nullptr);
-        EXPECT_THROW(cmd.execute({"gregorian", "julian", "2026-02-18"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "julian", "2026-02-18"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, convert_help_flags_return_zero) {
@@ -106,26 +106,26 @@ namespace tests {
 
     TEST_F(cli_test_fixture, convert_invalid_arg_count_throws) {
         convert_command cmd(std::addressof(m_converters));
-        EXPECT_THROW(cmd.execute({}), std::runtime_error);
-        EXPECT_THROW(cmd.execute({"gregorian"}), std::runtime_error);
-        EXPECT_THROW(cmd.execute({"gregorian", "julian"}), std::runtime_error);
-        EXPECT_THROW(cmd.execute({"gregorian", "julian", "2026-02-18", "extra"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "julian"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "julian", "2026-02-18", "extra"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, convert_unsupported_converters_throw) {
         convert_command cmd(std::addressof(m_converters));
-        EXPECT_THROW(cmd.execute({"unknown_src", "julian", "2026-02-18"}), std::runtime_error);
-        EXPECT_THROW(cmd.execute({"gregorian", "unknown_dst", "2026-02-18"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"unknown_src", "julian", "2026-02-18"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "unknown_dst", "2026-02-18"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, convert_invalid_date_throws) {
         convert_command cmd(std::addressof(m_converters));
         // Invalid month day (caught by is_valid_date)
-        EXPECT_THROW(cmd.execute({"gregorian", "julian", "2026-02-31"}), std::invalid_argument);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "julian", "2026-02-31"}), std::invalid_argument);
         // Invalid month value (caught by parser)
-        EXPECT_THROW(cmd.execute({"gregorian", "julian", "2026-13-01"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "julian", "2026-13-01"}), std::runtime_error);
         // Invalid format (caught by field parser)
-        EXPECT_THROW(cmd.execute({"gregorian", "julian", "not-a-date"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "julian", "not-a-date"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, convert_successful_conversions) {
@@ -146,7 +146,7 @@ namespace tests {
 
     TEST_F(cli_test_fixture, holidays_uninitialized_provider_throws) {
         holidays_command cmd(nullptr);
-        EXPECT_THROW(cmd.execute({"gregorian", "2026"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "2026"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, holidays_help_flags_return_zero) {
@@ -158,27 +158,27 @@ namespace tests {
 
     TEST_F(cli_test_fixture, holidays_invalid_arg_count_throws) {
         holidays_command cmd(std::addressof(m_holiday_providers));
-        EXPECT_THROW(cmd.execute({}), std::runtime_error);
-        EXPECT_THROW(cmd.execute({"gregorian"}), std::runtime_error);
-        EXPECT_THROW(cmd.execute({"gregorian", "2026", "extra"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "2026", "extra"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, holidays_invalid_year_throws) {
         holidays_command cmd(std::addressof(m_holiday_providers));
-        EXPECT_THROW(cmd.execute({"gregorian", "not_a_year"}), std::runtime_error);
-        EXPECT_THROW(cmd.execute({"gregorian", "2026abc"}), std::runtime_error);
-        EXPECT_THROW(cmd.execute({"gregorian", ""}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "not_a_year"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", "2026abc"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"gregorian", ""}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, holidays_unknown_option_throws) {
         holidays_command cmd(std::addressof(m_holiday_providers));
-        EXPECT_THROW(cmd.execute({"--unknown_flag", "gregorian", "2026"}), std::runtime_error);
-        EXPECT_THROW(cmd.execute({"-x", "gregorian", "2026"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"--unknown_flag", "gregorian", "2026"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"-x", "gregorian", "2026"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, holidays_unsupported_provider_throws) {
         holidays_command cmd(std::addressof(m_holiday_providers));
-        EXPECT_THROW(cmd.execute({"unsupported_provider", "2026"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"unsupported_provider", "2026"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, holidays_successful_executions) {
@@ -208,10 +208,10 @@ namespace tests {
 
     TEST_F(cli_test_fixture, list_uninitialized_providers_throw) {
         list_command cmd1(nullptr, std::addressof(m_holiday_providers));
-        EXPECT_THROW(cmd1.execute({}), std::runtime_error);
+        EXPECT_THROW((void)cmd1.execute({}), std::runtime_error);
 
         list_command cmd2(std::addressof(m_converters), nullptr);
-        EXPECT_THROW(cmd2.execute({}), std::runtime_error);
+        EXPECT_THROW((void)cmd2.execute({}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, list_help_flags_return_zero) {
@@ -222,12 +222,12 @@ namespace tests {
 
     TEST_F(cli_test_fixture, list_too_many_arguments_throws) {
         list_command cmd(std::addressof(m_converters), std::addressof(m_holiday_providers));
-        EXPECT_THROW(cmd.execute({"commands", "extra_topic"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"commands", "extra_topic"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, list_unsupported_topic_throws) {
         list_command cmd(std::addressof(m_converters), std::addressof(m_holiday_providers));
-        EXPECT_THROW(cmd.execute({"unsupported_topic"}), std::runtime_error);
+        EXPECT_THROW((void)cmd.execute({"unsupported_topic"}), std::runtime_error);
     }
 
     TEST_F(cli_test_fixture, list_supported_topics) {

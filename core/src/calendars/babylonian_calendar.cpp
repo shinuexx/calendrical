@@ -35,7 +35,7 @@ namespace calendrical::calendars {
     fixed_date_t babylonian_calendar::to_fixed(const simple_lunar_date& date) const
     {
         auto [year, month, leap, day] = date;
-        const auto month1 = leap || mod(year, 19) == 18 && month > 6 ? month : month - 1;
+        const auto month1 = (leap || (mod(year, 19) == 18 && month > 6)) ? month : month - 1;
         const auto months = floor_div((year - 1) * 235 + 13, 19) + month1;
         const auto midmonth = ms_epoch + static_cast<int64_t>(std::round(mean_synodic_month * static_cast<double>(months))) + 15;
         return new_month_on_or_before(midmonth) + day - 1;

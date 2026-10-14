@@ -1,12 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
-
-cmake_policy(SET CMP0079 NEW)
-if (POLICY CMP0167)
-  cmake_policy(SET CMP0167 OLD)
-endif()
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+cmake_minimum_required(VERSION 3.20)
 
 # Enable Hot Reload for MSVC compilers if supported.
 if (POLICY CMP0141)
@@ -14,13 +6,63 @@ if (POLICY CMP0141)
   set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<IF:$<AND:$<C_COMPILER_ID:MSVC>,$<CXX_COMPILER_ID:MSVC>>,$<$<CONFIG:Debug,RelWithDebInfo>:EditAndContinue>,$<$<CONFIG:Debug,RelWithDebInfo>:ProgramDatabase>>")
 endif()
 
-project(calendrical)
+project(calendrical VERSION 1.0.0 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+include(GNUInstallDirs)
 include(CTest)
+
+# Compiler warnings interface target
+add_library(calendrical_warning_flags INTERFACE)
+add_library(calendrical::warning_flags ALIAS calendrical_warning_flags)
+
+if (MSVC)
+  target_compile_options(calendrical_warning_flags INTERFACE
+    /W4
+    /permissive-
+    /utf-8
+    /Zc:__cplusplus
+  )
+else()
+  target_compile_options(calendrical_warning_flags INTERFACE
+    -Wall
+    -Wextra
+    -Wpedantic
+  )
+endif()
 
 add_subdirectory(core)
 add_subdirectory(cli)
 add_subdirectory(tests)
+
+# Package export and installation configuration
+install(EXPORT calendricalTargets
+  FILE calendricalTargets.cmake
+  NAMESPACE calendrical::
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/calendrical
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+  "${CMAKE_CURRENT_BINARY_DIR}/calendricalConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+)
+
+configure_package_config_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/cmake/calendricalConfig.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/calendricalConfig.cmake"
+  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/calendrical
+)
+
+install(FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/calendricalConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/calendricalConfigVersion.cmake"
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/calendrical
+)
 
 option(CALENDRICAL_BUILD_DOCS "Build API documentation with Doxygen" ON)
 

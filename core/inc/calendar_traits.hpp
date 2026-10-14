@@ -252,7 +252,7 @@ namespace calendrical::calendar_traits {
             if (lower == "autumn") return season::autumn;
             if (lower == "winter") return season::winter;
 
-            switch (const auto numeric = detail::parse_int32(value, "season")) {
+            switch (detail::parse_int32(value, "season")) {
                 case static_cast<int32_t>(season::spring): return season::spring;
                 case static_cast<int32_t>(season::summer): return season::summer;
                 case static_cast<int32_t>(season::autumn): return season::autumn;
@@ -272,7 +272,7 @@ namespace calendrical::calendar_traits {
             if (lower == "nones") return roman_event::nones;
             if (lower == "ides") return roman_event::ides;
 
-            switch (const auto numeric = detail::parse_int32(value, "roman_event")) {
+            switch (detail::parse_int32(value, "roman_event")) {
                 case static_cast<int32_t>(roman_event::kalends): return roman_event::kalends;
                 case static_cast<int32_t>(roman_event::nones): return roman_event::nones;
                 case static_cast<int32_t>(roman_event::ides): return roman_event::ides;
@@ -292,7 +292,7 @@ namespace calendrical::calendar_traits {
             if (lower == "full_moon" || lower == "full") return lunar_phase::full_moon;
             if (lower == "last_quarter") return lunar_phase::last_quarter;
 
-            switch (const auto numeric = detail::parse_int32(value, "lunar_phase")) {
+            switch (detail::parse_int32(value, "lunar_phase")) {
                 case static_cast<int32_t>(lunar_phase::new_moon): return lunar_phase::new_moon;
                 case static_cast<int32_t>(lunar_phase::first_quarter): return lunar_phase::first_quarter;
                 case static_cast<int32_t>(lunar_phase::full_moon): return lunar_phase::full_moon;
@@ -313,7 +313,7 @@ namespace calendrical::calendar_traits {
             if (lower == "blind") return chinese_marriage_augury::blind;
             if (lower == "widow") return chinese_marriage_augury::widow;
 
-            switch (const auto numeric = detail::parse_int32(value, "chinese_marriage_augury")) {
+            switch (detail::parse_int32(value, "chinese_marriage_augury")) {
                 case static_cast<int32_t>(chinese_marriage_augury::double_bright): return chinese_marriage_augury::double_bright;
                 case static_cast<int32_t>(chinese_marriage_augury::bright): return chinese_marriage_augury::bright;
                 case static_cast<int32_t>(chinese_marriage_augury::blind): return chinese_marriage_augury::blind;
@@ -334,7 +334,7 @@ namespace calendrical::calendar_traits {
             if (lower == "left_closed") return interval_type::left_closed;
             if (lower == "right_closed") return interval_type::right_closed;
 
-            switch (const auto numeric = detail::parse_int32(value, "interval_type")) {
+            switch (detail::parse_int32(value, "interval_type")) {
                 case static_cast<int32_t>(interval_type::opened): return interval_type::opened;
                 case static_cast<int32_t>(interval_type::closed): return interval_type::closed;
                 case static_cast<int32_t>(interval_type::left_closed): return interval_type::left_closed;

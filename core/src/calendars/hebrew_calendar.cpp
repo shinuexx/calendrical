@@ -105,7 +105,7 @@ namespace calendrical::calendars {
             extra = { weekday::monday, weekday::wednesday, weekday::friday };
         else if (hmonth == hebrew_month::kislev && hday == 30)
             extra = { weekday::monday };
-        else if (in(std::array{ hebrew_month::kislev, hebrew_month::shevat }, hmonth) || hmonth == hebrew_month::adar && hday < 30)
+        else if (in(std::array{ hebrew_month::kislev, hebrew_month::shevat }, hmonth) || (hmonth == hebrew_month::adar && hday < 30))
             extra = { weekday::sunday, weekday::monday };
         else
             extra = { weekday::sunday };
