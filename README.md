@@ -286,6 +286,11 @@ leave the timestamp out; the build-info source is then recompiled only when the 
 - Time and astronomy: sunrise/sunset, ecliptic longitudes, lunar phases, ephemeris corrections, etc.
 - Holiday providers for selected calendars
 
+## Holiday Rules and Design Notes
+
+See [the holiday documentation index](docs/README.md) for implemented rules, proposed extensions,
+open convention questions, and links to the matching providers and tests.
+
 ## Developer Workflow
 
 1. Modify code.
