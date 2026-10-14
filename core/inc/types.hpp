@@ -1,6 +1,7 @@
 #pragma once
 
 #include "fixed_date.hpp"
+#include <compare>
 #include <string>
 #include <vector>
 
@@ -16,8 +17,12 @@ namespace calendrical{
 
         /** @brief Equality comparison. */
         constexpr bool operator==(const holiday_t& other) const = default;
-        /** @brief Ordering comparison. */
-        constexpr auto operator<=>(const holiday_t& other) const = default;
+        /** @brief Chronological ordering; holidays on the same date are ordered by name. */
+        constexpr std::strong_ordering operator<=>(const holiday_t& other) const {
+            if (const auto cmp = date <=> other.date; cmp != 0)
+                return cmp;
+            return name <=> other.name;
+        }
 
         /** @brief Comparator comparing holidays strictly by date. */
         struct date_only_less_t {

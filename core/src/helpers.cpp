@@ -53,25 +53,21 @@ namespace calendrical{
 
     int64_t least_passing(const predicate_t<int64_t>& phi, int64_t d0)
     {
-        const auto begin = d0;
-        while (!phi(d0) && std::abs(begin - d0) < passing_guard)
-            ++d0;
-        if (!phi(d0))
+        for (const auto end = d0 + passing_guard; d0 <= end; ++d0)
         {
-            throw std::runtime_error("least_passing: predicate not satisfied within search guard");
+            if (phi(d0))
+                return d0;
         }
-        return d0;
+        throw std::runtime_error("least_passing: predicate not satisfied within search guard");
     }
     int64_t last_passing(const predicate_t<int64_t>& phi, int64_t d0)
     {
-        const auto begin = d0;
-        while (phi(d0) && std::abs(begin - d0) < passing_guard)
-            ++d0;
-        if (phi(d0))
+        for (const auto end = d0 + passing_guard; d0 <= end; ++d0)
         {
-            throw std::runtime_error("last_passing: failed to find boundary within search guard");
+            if (!phi(d0))
+                return d0 - 1;
         }
-        return d0 - 1;
+        throw std::runtime_error("last_passing: failed to find boundary within search guard");
     }
 
     double binary_search(const predicate_t<double>& phi, const double_predicate_t<double>& psi, double u, double v)

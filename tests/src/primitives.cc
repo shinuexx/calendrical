@@ -153,9 +153,9 @@ namespace tests {
         EXPECT_DOUBLE_EQ(unix_from_moment(moment_t{ input }), output) << input << " : " << unix_from_moment(moment_t{ input }) << " : " << output << std::endl;
     }
 
-    INSTANTIATE_TEST_CASE_P(julian_days, julian_days_test, testing::ValuesIn(helpers::make_test_params_values(dates, expected_julian_days)));
-    INSTANTIATE_TEST_CASE_P(modified_julian_days, modified_julian_days_test, testing::ValuesIn(helpers::make_test_params_values(dates, expected_modified_julian_days)));
-    INSTANTIATE_TEST_CASE_P(unix_time, unix_time_test, testing::ValuesIn(helpers::make_test_params_values(dates, expected_unix_time)));
+    INSTANTIATE_TEST_SUITE_P(julian_days, julian_days_test, testing::ValuesIn(helpers::make_test_params_values(dates, expected_julian_days)));
+    INSTANTIATE_TEST_SUITE_P(modified_julian_days, modified_julian_days_test, testing::ValuesIn(helpers::make_test_params_values(dates, expected_modified_julian_days)));
+    INSTANTIATE_TEST_SUITE_P(unix_time, unix_time_test, testing::ValuesIn(helpers::make_test_params_values(dates, expected_unix_time)));
 
     TEST(holiday_types, equality_considers_name_and_date) {
         using namespace calendrical;
@@ -174,8 +174,9 @@ namespace tests {
         holiday_t earlier_z{"Zeta Holiday", 10_rd};
         holiday_t later_a{"Alpha Holiday", 20_rd};
 
-        // Default <=> sorts by name first, so later_a < earlier_z
-        EXPECT_TRUE(later_a < earlier_z);
+        // Default <=> is chronological, ties broken by name
+        EXPECT_TRUE(earlier_z < later_a);
+        EXPECT_TRUE((holiday_t{"Alpha", 10_rd} < holiday_t{"Beta", 10_rd}));
 
         // date_only_less_t sorts strictly by date
         holiday_t::date_only_less_t cmp;
