@@ -2,6 +2,8 @@
 #include "holiday_csv_loader.hpp"
 #include "holiday_providers/chinese_calendar_holiday_provider.hpp"
 #include "calendars/chinese_calendar.hpp"
+#include "calendars/korean_calendar.hpp"
+#include "calendars/vietnamese_calendar.hpp"
 #include <algorithm>
 
 namespace tests {
@@ -41,6 +43,40 @@ TEST_F(chinese_holidays_test, in_year) {
         const auto holidays = m_provider.in_year(y);
         EXPECT_EQ(holidays.size(), 3u);
         EXPECT_TRUE(std::is_sorted(holidays.begin(), holidays.end()));
+    }
+}
+
+TEST(chinese_family_holidays_test, new_year_uses_calendar_location) {
+    const calendars::chinese_calendar chinese{};
+    const calendars::korean_calendar korean{};
+    const calendars::vietnamese_calendar vietnamese{};
+    const holiday_providers::chinese_calendar_holiday_provider chinese_provider{std::addressof(chinese)};
+    const holiday_providers::chinese_calendar_holiday_provider korean_provider{std::addressof(korean)};
+    const holiday_providers::chinese_calendar_holiday_provider vietnamese_provider{std::addressof(vietnamese)};
+    const auto& gregorian = calendars::gregorian_calendar::standard;
+
+    // Usually all three coincide.
+    EXPECT_EQ(chinese_provider.new_year(2026), gregorian.to_fixed({2026, month::february, 17}));
+    EXPECT_EQ(korean_provider.new_year(2026), gregorian.to_fixed({2026, month::february, 17}));
+    EXPECT_EQ(vietnamese_provider.new_year(2026), gregorian.to_fixed({2026, month::february, 17}));
+
+    // Vietnam (UTC+7) sees the new moon a day earlier than China (UTC+8).
+    EXPECT_EQ(chinese_provider.new_year(2007), gregorian.to_fixed({2007, month::february, 18}));
+    EXPECT_EQ(vietnamese_provider.new_year(2007), gregorian.to_fixed({2007, month::february, 17}));
+
+    // 1985: in UTC+7 a new moon falls on the other side of the winter solstice, so the leap
+    // month lands differently and Tet comes a whole month before the Chinese New Year.
+    EXPECT_EQ(chinese_provider.new_year(1985), gregorian.to_fixed({1985, month::february, 20}));
+    EXPECT_EQ(vietnamese_provider.new_year(1985), gregorian.to_fixed({1985, month::january, 21}));
+
+    for (const auto* provider : {&korean_provider, &vietnamese_provider}) {
+        const auto* calendar = static_cast<const calendars::chinese_based_calendar*>(provider->calendar());
+        for (int32_t y = 2000; y <= 2010; ++y) {
+            const auto date = calendar->to_date(provider->new_year(y));
+            EXPECT_EQ(date.month, 1);
+            EXPECT_FALSE(date.leap_month);
+            EXPECT_EQ(date.day, 1);
+        }
     }
 }
 

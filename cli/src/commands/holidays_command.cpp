@@ -35,6 +35,8 @@ namespace calendrical::cli {
             if (raw_name == "persian" || raw_name == "persian_based_calendar") return "persian_based";
             if (raw_name == "modern_hindu_lunar_calendar") return "modern_hindu_lunar";
             if (raw_name == "chinese_calendar") return "chinese";
+            if (raw_name == "korean_calendar") return "korean";
+            if (raw_name == "vietnamese_calendar") return "vietnamese";
             return std::string(raw_name);
         }
 

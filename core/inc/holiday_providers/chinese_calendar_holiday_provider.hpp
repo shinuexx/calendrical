@@ -8,7 +8,8 @@ namespace calendrical::holiday_providers {
      * @brief Holiday provider for Chinese-family lunisolar calendars.
      *
      * Works with any @ref calendars::chinese_based_calendar, so the same rules apply to the
-     * Chinese, Korean, Vietnamese and Japanese variants (each with its own location).
+     * Chinese, Korean (Seollal), Vietnamese (Tet) and Japanese variants, each computed for
+     * its own location.
      */
     class chinese_calendar_holiday_provider final : public holiday_provider_if {
         const calendars::chinese_based_calendar* m_chinese;
@@ -27,7 +28,7 @@ namespace calendrical::holiday_providers {
         /** @brief Returns Chinese observances that fall in Gregorian year @p gyear. */
         [[nodiscard]] std::vector<holiday_t> in_year(int32_t gyear) const override;
 
-        /** @brief Chinese New Year (first day of month 1) in Gregorian year @p gyear. */
+        /** @brief Lunar New Year (first day of month 1) in Gregorian year @p gyear. */
         [[nodiscard]] fixed_date_t new_year(int32_t gyear) const;
         /** @brief Qingming (day of the minor solar term at 15 degrees) in Gregorian year @p gyear. */
         [[nodiscard]] fixed_date_t qing_ming(int32_t gyear) const;

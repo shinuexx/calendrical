@@ -6,7 +6,7 @@
 namespace calendrical::holiday_providers {
     std::vector<holiday_t> chinese_calendar_holiday_provider::in_year(int32_t gyear) const {
         std::vector<holiday_t> result{
-            {"chinese new year", new_year(gyear)},
+            {"lunar new year", new_year(gyear)},
             {"qingming", qing_ming(gyear)},
             {"dragon festival", dragon_festival(gyear)}
         };
