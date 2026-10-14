@@ -12,6 +12,7 @@ add_library(calendrical
     src/season.cpp
     src/time_and_astronomy.cpp
     src/weekday.cpp
+    src/calendars/akan_calendar.cpp
     src/calendars/arithmetic_french_calendar.cpp
     src/calendars/arithmetic_persian_calendar.cpp
     src/calendars/astro_bahai_calendar.cpp
@@ -51,6 +52,7 @@ add_library(calendrical
     src/calendars/simple_calendar.cpp
     src/calendars/tibetan_calendar.cpp
     src/calendars/vietnamese_calendar.cpp
+    src/datetypes/akan_name.cpp
     src/datetypes/sexagesimal_name.cpp
     src/datetypes/stringifiers.cpp
     src/holiday_providers/bahai_based_calendar_holiday_provider.cpp

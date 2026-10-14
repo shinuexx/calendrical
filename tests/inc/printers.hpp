@@ -16,6 +16,7 @@
 
 #include <datetypes/lunar_date.hpp>
 #include <datetypes/sexagesimal_name.hpp>
+#include <datetypes/akan_name.hpp>
 
 namespace calendrical{
     namespace datetypes {
@@ -29,6 +30,7 @@ namespace calendrical{
         void PrintTo(const hebrew_date &dates, std::ostream *os);
         void PrintTo(const chinese_date& dates, std::ostream *os);
         void PrintTo(const sexagesimal_name& dates, std::ostream *os);
+        void PrintTo(const akan_name& name, std::ostream *os);
         void PrintTo(const simple_lunar_date &dates, std::ostream *os);
         void PrintTo(const bahai_date &dates, std::ostream *os);
         void PrintTo(const lunar_date &dates, std::ostream *os);

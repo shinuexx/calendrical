@@ -83,6 +83,46 @@ namespace calendrical{
     };
 
     /**
+     * @brief Runtime-polymorphic base interface for cyclic calendars.
+     *
+     * A cyclic calendar names days by their position in a repeating cycle, so a
+     * name alone does not identify a single fixed date. Unlike
+     * @ref typed_calendar_if there is no `to_fixed`; a name is resolved relative
+     * to a reference date instead.
+     */
+    struct cyclic_calendar_if {
+        constexpr cyclic_calendar_if() = default;
+        /** @brief Returns the fixed date at position 0 of the cycle. */
+        [[nodiscard]] virtual fixed_date_t epoch() const = 0;
+        /** @brief Returns the number of days after which names repeat. */
+        [[nodiscard]] virtual int64_t cycle_length() const = 0;
+        constexpr virtual ~cyclic_calendar_if() = default;
+    };
+
+    template<typename T>
+    /**
+     * @brief Typed cyclic calendar interface exposing conversions to a concrete name type.
+     */
+    struct typed_cyclic_calendar_if : cyclic_calendar_if {
+        /** @brief Concrete name type handled by the calendar implementation. */
+        using date_type = T;
+
+        constexpr typed_cyclic_calendar_if() = default;
+        /** @brief Returns the name of fixed date @p date. */
+        [[nodiscard]] virtual T to_date(const fixed_date_t& date) const = 0;
+        /**
+         * @brief Returns the last date on or before @p reference named @p name.
+         *
+         * The result lies in the half-open range `(reference - cycle_length(), reference]`.
+         * Implementations throw `std::invalid_argument` when @p name is not valid.
+         */
+        [[nodiscard]] virtual fixed_date_t on_or_before(const T& name, const fixed_date_t& reference) const = 0;
+        /** @brief Validates that @p name denotes a position in the cycle. */
+        [[nodiscard]] virtual bool is_valid_date(const T& name) const = 0;
+        constexpr ~typed_cyclic_calendar_if() override = default;
+    };
+
+    /**
      * @brief Interface for holiday providers backed by a specific calendar.
      */
     struct holiday_provider_if {
