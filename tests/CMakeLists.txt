@@ -19,7 +19,6 @@ file(GLOB TIME_AND_ASTRONOMY_TESTS ${TESTS_SRC}time_and_astronomy/*.cc)
 file(GLOB BASICS_TESTS ${TESTS_SRC}*.cc)
 
 add_executable (tests 
-	"main.cc"
 	${CALENDARS_TESTS}
 	${HOLIDAYS_TESTS}
 	${TIME_AND_ASTRONOMY_TESTS}
