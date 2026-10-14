@@ -36,7 +36,9 @@ endif()
 
 add_subdirectory(core)
 add_subdirectory(cli)
-add_subdirectory(tests)
+if (BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
 
 # Package export and installation configuration
 install(EXPORT calendricalTargets

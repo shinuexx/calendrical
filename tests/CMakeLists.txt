@@ -67,3 +67,18 @@ target_link_libraries(tests
 )
 
 add_test(NAME calendrical_tests COMMAND tests)
+
+# Smoke test for the exported CMake package: install into a scratch prefix, then configure,
+# build and run a separate consumer project that uses find_package(calendrical).
+add_test(NAME package_consumer
+    COMMAND ${CMAKE_COMMAND}
+        -DBUILD_DIR=${PROJECT_BINARY_DIR}
+        -DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/package_consumer
+        -DWORK_DIR=${CMAKE_CURRENT_BINARY_DIR}/package_consumer
+        -DCONFIG=$<CONFIG>
+        -DGENERATOR=${CMAKE_GENERATOR}
+        -DGENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}
+        -DCXX_COMPILER=${CMAKE_CXX_COMPILER}
+        "-DCXX_FLAGS=${CMAKE_CXX_FLAGS}"
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/package_consumer/run.cmake
+)

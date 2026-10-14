@@ -77,7 +77,7 @@ target_link_libraries(calendrical PRIVATE $<BUILD_INTERFACE:calendrical_warning_
 target_include_directories(calendrical
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/inc>
-        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+        $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/calendrical>
 )
 
 install(TARGETS calendrical
@@ -85,9 +85,11 @@ install(TARGETS calendrical
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/calendrical
 )
 
+# Headers include each other by bare name ("types.hpp"), so they get their own directory
+# instead of landing directly in <prefix>/include.
 install(DIRECTORY inc/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/calendrical
 )
