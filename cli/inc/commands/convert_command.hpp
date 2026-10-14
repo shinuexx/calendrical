@@ -13,6 +13,7 @@ namespace calendrical::cli {
     public:
         explicit convert_command(const converter_provider* converter_provider);
 
+        void print_help() const override;
         [[nodiscard]] int execute(const std::vector<std::string_view>& args) const override;
     };
 }

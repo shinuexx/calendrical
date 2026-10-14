@@ -10,10 +10,10 @@
 #include "holiday_provider_provider_builder.hpp"
 
 int main(int argc, const char* const argv[]) {
-    const auto cnvrtr_prvdr = calendrical::cli::build_converter_provider();
-    const auto hld_prvdr_prvdr = calendrical::cli::build_holiday_provider_provider();
-
     try {
+        const auto cnvrtr_prvdr = calendrical::cli::build_converter_provider();
+        const auto hld_prvdr_prvdr = calendrical::cli::build_holiday_provider_provider();
+
         calendrical::cli::commands::command_dispatcher dispatcher{};
         dispatcher.add<calendrical::cli::convert_command>(std::addressof(cnvrtr_prvdr));
         dispatcher.add<calendrical::cli::holidays_command>(std::addressof(hld_prvdr_prvdr));

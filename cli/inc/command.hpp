@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -24,6 +25,13 @@ namespace calendrical::cli {
             return m_description;
         }
 
+        virtual void print_help() const = 0;
         [[nodiscard]] virtual int execute(const std::vector<std::string_view>& args) const = 0;
     };
+
+    [[nodiscard]] inline bool has_help_flag(const std::vector<std::string_view>& args) noexcept {
+        return std::ranges::any_of(args, [](std::string_view arg) {
+            return arg == "--help" || arg == "-h";
+        });
+    }
 }

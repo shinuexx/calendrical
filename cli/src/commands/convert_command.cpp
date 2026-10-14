@@ -9,24 +9,30 @@ namespace calendrical::cli {
         : command("convert", "Convert date between calendars"),
           m_converter_provider(converter_provider) {}
 
+    void convert_command::print_help() const {
+        std::cout << "Usage:\n";
+        std::cout << "  calendrical_cli convert <from> <to> <date>\n\n";
+        std::cout << "Options:\n";
+        std::cout << "  -h, --help  Show help\n\n";
+        std::cout << "Arguments:\n";
+        std::cout << "  from      Source converter\n";
+        std::cout << "  to        Target converter\n";
+        std::cout << "  date      Date in source converter format\n\n";
+        std::cout << "Supported converters:\n";
+        if (m_converter_provider) {
+            for (const auto& [name, converter] : m_converter_provider->converters()) {
+                std::cout << "  " << name << ": " << converter->format() << '\n';
+            }
+        }
+    }
+
     int convert_command::execute(const std::vector<std::string_view>& args) const {
         if (!m_converter_provider) {
             throw std::runtime_error("Converter provider is not initialized");
         }
 
-        if (args.size() == 1 && (args[0] == "--help" || args[0] == "-h")) {
-            std::cout << "Usage:\n";
-            std::cout << "  calendrical_cli convert <from> <to> <date>\n\n";
-            std::cout << "Options:\n";
-            std::cout << "  -h, --help  Show help\n\n";
-            std::cout << "Arguments:\n";
-            std::cout << "  from      Source converter\n";
-            std::cout << "  to        Target converter\n";
-            std::cout << "  date      Date in source converter format\n\n";
-            std::cout << "Supported converters:\n";
-            for (const auto& [name, converter] : m_converter_provider->converters()) {
-                std::cout << "  " << name << ": " << converter->format() << '\n';
-            }
+        if (has_help_flag(args)) {
+            print_help();
             return 0;
         }
 

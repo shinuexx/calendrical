@@ -21,6 +21,7 @@ namespace calendrical::cli {
     public:
         list_command(const converter_provider* converter_provider, const holiday_provider_provider* holiday_provider_provider);
 
+        void print_help() const override;
         [[nodiscard]] int execute(const std::vector<std::string_view>& args) const override;
     };
 }

@@ -42,17 +42,12 @@ namespace calendrical::cli {
             positional.reserve(args.size());
 
             for (const auto arg : args) {
-                if (arg == "--help" || arg == "-h") {
-                    std::cout << "Usage:\n";
-                    std::cout << "  calendrical_cli holidays [--as-gregorian] <provider> <year>\n\n";
-                    std::cout << "Options:\n";
-                    std::cout << "  -h, --help          Show help\n";
-                    std::cout << "  -g, --as-gregorian  Print holiday date as gregorian_date instead of fixed_date\n";
-                    throw std::invalid_argument("");
-                }
                 if (arg == "--as-gregorian" || arg == "-g") {
                     as_gregorian = true;
                     continue;
+                }
+                if (arg.starts_with("-")) {
+                    throw std::runtime_error("Unknown option: " + std::string(arg));
                 }
                 positional.push_back(arg);
             }
@@ -86,17 +81,25 @@ namespace calendrical::cli {
         : command("holidays", "List holidays for calendar/year"),
           m_holiday_provider_provider(holiday_provider_provider) {}
 
+    void holidays_command::print_help() const {
+        std::cout << "Usage:\n";
+        std::cout << "  calendrical_cli holidays [--as-gregorian] <provider> <year>\n\n";
+        std::cout << "Options:\n";
+        std::cout << "  -h, --help          Show help\n";
+        std::cout << "  -g, --as-gregorian  Print holiday date as gregorian_date instead of fixed_date\n";
+    }
+
     int holidays_command::execute(const std::vector<std::string_view>& args) const {
         if (!m_holiday_provider_provider) {
             throw std::runtime_error("Holiday provider provider is not initialized");
         }
 
-        holidays_request req;
-        try {
-            req = parse_request(args);
-        } catch (const std::invalid_argument&) {
+        if (has_help_flag(args)) {
+            print_help();
             return 0;
         }
+
+        const auto req = parse_request(args);
 
         const auto* provider = (*m_holiday_provider_provider)[req.provider_name];
         if (!provider) {

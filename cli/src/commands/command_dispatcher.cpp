@@ -56,6 +56,14 @@ namespace calendrical::cli::commands {
 
         const std::string_view subcommand = argv[1];
         if (subcommand == "help" || subcommand == "--help" || subcommand == "-h") {
+            if (subcommand == "help" && argc > 2) {
+                const std::string_view target_cmd = argv[2];
+                if (const auto* cmd = (*this)[target_cmd]; cmd) {
+                    cmd->print_help();
+                    return 0;
+                }
+                throw std::runtime_error("Unknown command for help: " + std::string(target_cmd));
+            }
             print_main_help();
             return 0;
         }
