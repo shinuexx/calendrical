@@ -88,15 +88,14 @@ namespace calendrical{
      * A cyclic calendar names days by their position in a repeating cycle, so a
      * name alone does not identify a single fixed date. Unlike
      * @ref typed_calendar_if there is no `to_fixed`; a name is resolved relative
-     * to a reference date instead.
+     * to a reference date instead. It derives from @ref calendar_if, whose
+     * `epoch()` here returns the fixed date at position 0 of the cycle.
      */
-    struct cyclic_calendar_if {
+    struct cyclic_calendar_if : calendar_if {
         constexpr cyclic_calendar_if() = default;
-        /** @brief Returns the fixed date at position 0 of the cycle. */
-        [[nodiscard]] virtual fixed_date_t epoch() const = 0;
         /** @brief Returns the number of days after which names repeat. */
         [[nodiscard]] virtual int64_t cycle_length() const = 0;
-        constexpr virtual ~cyclic_calendar_if() = default;
+        constexpr ~cyclic_calendar_if() override = default;
     };
 
     template<typename T>

@@ -11,12 +11,6 @@ namespace calendrical::datetypes {
         return static_cast<int32_t>(
             adjusted_remainder(prefix_difference + 36 * (stem_difference - prefix_difference), cycle_length));
     }
-    akan_name akan_name::from(int64_t n) {
-        return {
-            static_cast<int32_t>(adjusted_remainder(n, prefix_count)),
-            static_cast<int32_t>(adjusted_remainder(n, stem_count)),
-        };
-    }
     std::string akan_name::to_string() const {
         std::ostringstream oss{};
         oss << "akan_name{prefix:" << prefix << ",stem:" << stem << '}';

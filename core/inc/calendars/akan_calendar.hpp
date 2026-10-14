@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../datetypes/akan_name.hpp"
-#include "../types.hpp"
+#include "datetypes/akan_name.hpp"
+#include "types.hpp"
 
 namespace calendrical::calendars {
     /** @brief Alias for the date type handled by @ref akan_calendar. */
@@ -16,6 +16,8 @@ namespace calendrical::calendars {
     class akan_calendar final : public typed_cyclic_calendar_if<akan_name> {
         /** @brief Fixed date whose name is position 0 of the cycle, {6, 7}. */
         static constexpr fixed_date_t ms_epoch{37};
+        /** @brief Name of RD 0, the date from which @ref on_or_before counts. */
+        static constexpr akan_name ms_name_of_rd_zero = akan_name::from(-static_cast<int64_t>(ms_epoch));
 
     public:
         constexpr akan_calendar() = default;

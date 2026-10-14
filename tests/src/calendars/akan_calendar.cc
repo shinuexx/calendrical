@@ -5,7 +5,6 @@
 
 #include <set>
 #include <stdexcept>
-#include <utility>
 #include <vector>
 
 namespace tests {
@@ -13,6 +12,9 @@ namespace tests {
 
     namespace {
         const akan_calendar calendar{};
+
+        static_assert(akan_name::from(0) == akan_name{ 6, 7 });
+        static_assert(akan_name{ 1, 7 } < akan_name{ 2, 1 });
 
         /** All 42 valid names, in (prefix, stem) order. */
         std::vector<akan_name> all_names() {
@@ -55,11 +57,11 @@ namespace tests {
     }
 
     TEST(akan_calendar, cycle_covers_all_42_names) {
-        std::set<std::pair<int32_t, int32_t>> seen;
+        std::set<akan_name> seen;
         for (auto rd = 38_rd; rd < 38_rd + 42; ++rd) {
             const auto name = calendar.to_date(rd);
             EXPECT_TRUE(calendar.is_valid_date(name)) << name;
-            seen.emplace(name.prefix, name.stem);
+            seen.insert(name);
         }
         EXPECT_EQ(seen.size(), 42u);
     }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "helpers.hpp"
+#include <compare>
 #include <cstdint>
 #include <iosfwd>
 #include <string>
@@ -45,11 +47,18 @@ namespace calendrical::datetypes {
          */
         [[nodiscard]] int32_t difference(const akan_name &other) const;
         /** @brief Returns the name at position @p n of the cycle; position 0 is {6, 7}. */
-        [[nodiscard]] static akan_name from(int64_t n);
+        [[nodiscard]] static constexpr akan_name from(int64_t n) {
+            return {
+                static_cast<int32_t>(adjusted_remainder(n, prefix_count)),
+                static_cast<int32_t>(adjusted_remainder(n, stem_count)),
+            };
+        }
         /** @brief Returns a debug-friendly string representation. */
         [[nodiscard]] std::string to_string() const;
         /** @brief Equality comparison on prefix and stem. */
         constexpr bool operator==(const akan_name &other) const = default;
+        /** @brief Lexicographic ordering by prefix, then stem; allows use as an ordered container key. */
+        constexpr auto operator<=>(const akan_name &other) const = default;
     };
 
     /** @brief Stream output for @ref akan_name. */

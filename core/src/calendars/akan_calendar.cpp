@@ -1,4 +1,5 @@
 #include "calendars/akan_calendar.hpp"
+#include "helpers.hpp"
 #include <stdexcept>
 
 namespace calendrical::calendars {
@@ -10,7 +11,6 @@ namespace calendrical::calendars {
         if (!name.is_valid())
             throw std::invalid_argument("akan_calendar::on_or_before: invalid name " + name.to_string());
         // Days from RD 0 to the nearest occurrence of name, reduced into (reference - 42, reference].
-        static const akan_name name_zero = akan_name::from(-static_cast<int64_t>(ms_epoch));
-        return fixed_date_t{ interval_modulus(static_cast<int64_t>(name_zero.difference(name)), reference, reference.subtract(akan_name::cycle_length)) };
+        return fixed_date_t{ interval_modulus(static_cast<int64_t>(ms_name_of_rd_zero.difference(name)), reference, reference.subtract(akan_name::cycle_length)) };
     }
 }
