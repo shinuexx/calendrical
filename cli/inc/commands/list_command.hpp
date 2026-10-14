@@ -8,16 +8,6 @@
 #include "holiday_provider_provider.hpp"
 
 namespace calendrical::cli {
-    /** @brief Topics accepted by `list`. */
-    enum class list_topic {
-        /** @brief Available subcommands. */
-        commands,
-        /** @brief Registered date converters. */
-        calendars,
-        /** @brief Registered holiday providers. */
-        holiday_calendars
-    };
-
     /** @brief `list [topic]`: prints available commands, converters or holiday providers. */
     class list_command final : public command {
         /** @brief Source of named converters (not owned). */

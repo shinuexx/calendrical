@@ -81,10 +81,10 @@ namespace calendrical::cli {
             };
         }
 
-        /** @brief Prints @p holidays in date order, as fixed dates or as Gregorian dates. */
+        /** @brief Prints @p holidays in date order (same-day holidays by name), as fixed dates or as Gregorian dates. */
         void print_holidays(std::vector<holiday_t> holidays, bool as_gregorian) {
             const auto& gregorian = calendars::gregorian_calendar::standard;
-            std::ranges::sort(holidays, holiday_t::date_only_less_t{});
+            std::ranges::sort(holidays);
 
             for (const auto &[name, date] : holidays) {
                 if (as_gregorian) {

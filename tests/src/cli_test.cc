@@ -244,6 +244,32 @@ namespace tests {
         EXPECT_THROW((void)cmd.execute({"unsupported_provider", "2026"}), std::runtime_error);
     }
 
+    TEST_F(cli_test_fixture, holidays_same_day_are_printed_by_name) {
+        struct same_day_provider final : calendrical::holiday_provider_if {
+            [[nodiscard]] const calendrical::calendar_if* calendar() const override { return nullptr; }
+            [[nodiscard]] std::vector<calendrical::holiday_t> in_year(int32_t) const override {
+                using calendrical::fixed_date_t;
+                return {{"zeta", fixed_date_t{10}}, {"beta", fixed_date_t{5}}, {"alpha", fixed_date_t{10}}};
+            }
+        };
+        holiday_provider_provider providers;
+        providers.add<same_day_provider>("same_day");
+        holidays_command cmd(std::addressof(providers));
+
+        testing::internal::CaptureStdout();
+        EXPECT_EQ(cmd.execute({"same_day", "2026"}), 0);
+        const auto output = testing::internal::GetCapturedStdout();
+
+        const auto beta = output.find("beta");
+        const auto alpha = output.find("alpha");
+        const auto zeta = output.find("zeta");
+        ASSERT_NE(beta, std::string::npos);
+        ASSERT_NE(alpha, std::string::npos);
+        ASSERT_NE(zeta, std::string::npos);
+        EXPECT_LT(beta, alpha);
+        EXPECT_LT(alpha, zeta);
+    }
+
     TEST_F(cli_test_fixture, holidays_successful_executions) {
         holidays_command cmd(std::addressof(m_holiday_providers));
 
