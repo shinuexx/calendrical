@@ -52,12 +52,12 @@ namespace tests {
             EXPECT_NE(converter->format().find("ALAUTUN"), std::string::npos);
             for (const std::string input : {"20-0-0-0-0", "13-0-0-18-0", "13-0-0-0--1",
                                            "-1-0-0-0-0", "400319966-0-0-0-0-0-0-0-0"}) {
-                EXPECT_THROW(converter->to_rd(input), std::invalid_argument) << input;
+                EXPECT_THROW((void)converter->to_rd(input), std::invalid_argument) << input;
             }
             const auto last = converter->from_rd(calendars::mayan_calendar::max_date);
             const auto parsed = datetype_from_string<mayan_long_count>(last);
             EXPECT_EQ(calendars::mayan_calendar{}.to_fixed(parsed), calendars::mayan_calendar::max_date);
-            EXPECT_THROW(converter->from_rd(fixed_date_t{std::numeric_limits<int64_t>::max()}), std::out_of_range);
+            EXPECT_THROW((void)converter->from_rd(fixed_date_t{std::numeric_limits<int64_t>::max()}), std::out_of_range);
         }
     }
 
