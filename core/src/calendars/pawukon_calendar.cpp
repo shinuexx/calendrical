@@ -1,5 +1,6 @@
 #include "calendars/pawukon_calendar.hpp"
 #include "helpers.hpp"
+#include <ranges>
 #include <stdexcept>
 #include <string>
 
@@ -30,11 +31,8 @@ namespace calendrical::calendars {
         const int64_t last = range.contains(range.max) ? range.max + 1 : range.max;
         const auto positions = calendrical::positions_in_range<int64_t>(
             day_in_period, period, delta, interval_left_closed_between(first, last));
-        std::vector<fixed_date_t> result{};
-        result.reserve(positions.size());
-        for (const auto position : positions)
-            result.emplace_back(position);
-        return result;
+        auto dates = positions | std::views::transform([](int64_t position) { return fixed_date_t{ position }; });
+        return { dates.begin(), dates.end() };
     }
 
     std::vector<fixed_date_t> pawukon_calendar::in_range(const pawukon_date& date, const interval<fixed_date_t>& range) const {
