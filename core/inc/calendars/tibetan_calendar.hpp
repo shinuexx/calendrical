@@ -16,10 +16,10 @@ namespace calendrical::calendars {
         /** @brief Tibetan epoch in fixed-date coordinates. */
         static const fixed_date_t ms_epoch;
 
-        /** @brief Solar equation correction used by the Tibetan calendar model. */
-        [[nodiscard]] static angle_t tibetan_sun_equation(const angle_t& a);
-        /** @brief Lunar equation correction used by the Tibetan calendar model. */
-        [[nodiscard]] static angle_t tibetan_moon_equation(const angle_t& a);
+        /** @brief Solar equation correction used by the Tibetan calendar model (in days). */
+        [[nodiscard]] static double tibetan_sun_equation(double a);
+        /** @brief Lunar equation correction used by the Tibetan calendar model (in days). */
+        [[nodiscard]] static double tibetan_moon_equation(double a);
 
     public:
 

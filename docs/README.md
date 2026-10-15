@@ -80,3 +80,8 @@ provide different levels of coverage:
 Preserve this distinction in further work and add sources and tests appropriate
 to the specific rule. These documents describe the code; changes to rules belong
 in the implementation and tests.
+
+## API migration
+
+- [Explicit angle conversion](angle-migration.md): explicit degree access with `degrees()`,
+  ratio calculations with `angle / angle_t::full_circle`, and day-fraction conversion.

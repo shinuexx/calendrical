@@ -37,8 +37,6 @@ namespace calendrical
         explicit constexpr operator double() const { return m_v; }
         /** @brief Raw degree value in degrees. */
         [[nodiscard]] constexpr double degrees() const { return m_v; }
-        /** @brief Day fraction corresponding to this angle (degrees / 360°). */
-        [[nodiscard]] constexpr double day_fraction() const { return m_v / 360.0; }
 
         /** @brief Equality comparison on the raw degree value. */
         constexpr bool operator==(const angle_t &other) const { return m_v == other.m_v; }
@@ -137,7 +135,7 @@ namespace calendrical
     /** @brief Absolute value of the angle. */
     [[nodiscard]] constexpr angle_t abs(const angle_t &x) { return x.degrees() < 0 ? -x : x; }
     /** @brief Converts an angle to a day fraction (angle / 360°), as a dimensionless scalar. */
-    [[nodiscard]] constexpr double day_fraction(const angle_t &a) { return a.day_fraction(); }
+    [[nodiscard]] constexpr double day_fraction(const angle_t &a) { return a.degrees() / 360.0; }
 }
 
 /** @brief User-defined angle literal in degrees (floating-point overload). */

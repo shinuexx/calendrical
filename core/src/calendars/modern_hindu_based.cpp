@@ -69,7 +69,7 @@ namespace calendrical::calendars {
 
     moment_t modern_hindu_base::hindu_new_moon_before(const moment_t& t)
     {
-        const auto T = static_cast<double>(t) - day_fraction(hindu_lunar_phase(t)) * hindu_synodic_month;
+        const auto T = static_cast<double>(t) - (hindu_lunar_phase(t) / angle_t::full_circle) * hindu_synodic_month;
         auto p = [](const double &l, const double &u) {
             return hindu_zodiac(moment_t{ l }) == hindu_zodiac(moment_t{ u }) || u - l < hindu_E;
         };
@@ -97,7 +97,7 @@ namespace calendrical::calendars {
         constexpr double a{6e2 / 1577917828};
         const auto days = date - ms_epoch;
         const double precession = 27 - std::abs(108 * interval_modulus(a * days - 0.25, -0.5, 0.5));
-        return angle_t{ mod(static_cast<double>(hindu_solar_longitude(moment_t{ date })) - precession, 360) };
+        return mod(hindu_solar_longitude(moment_t{ date }) - angle_t{ precession }, 360);
     }
     double modern_hindu_base::hindu_solar_sidereal_difference(const fixed_date_t& date)
     {

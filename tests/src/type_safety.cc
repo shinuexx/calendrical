@@ -67,6 +67,14 @@ namespace tests::type_safety {
     static_assert(std::is_convertible_v<season, angle_t>);
     static_assert(std::is_convertible_v<lunar_phase, angle_t>);
 
+    // Numeric types cannot be implicitly mixed with angle_t additively or in comparisons.
+    static_assert(!can_add<angle_t, double>);
+    static_assert(!can_add<double, angle_t>);
+    static_assert(!can_subtract<angle_t, double>);
+    static_assert(!can_subtract<double, angle_t>);
+    static_assert(!can_compare<angle_t, double>);
+    static_assert(!can_compare<double, angle_t>);
+
     // Angles cannot mix additively with calendar dates or moments (e.g. 10_rd + 20_deg).
     static_assert(!can_add<fixed_date_t, angle_t>);
     static_assert(!can_add<angle_t, fixed_date_t>);
@@ -105,12 +113,11 @@ namespace tests::type_safety {
 
     // --- raw value accessors ---------------------------------------------------------------
     static_assert(std::same_as<decltype(angle_t{}.degrees()), double>);
-    static_assert(std::same_as<decltype(angle_t{}.day_fraction()), double>);
     static_assert(std::same_as<decltype(day_fraction(angle_t{})), double>);
     static_assert(std::same_as<decltype(moment_t{}.days()), double>);
     static_assert(std::same_as<decltype(fixed_date_t{}.value()), int64_t>);
     static_assert((12.5_deg).degrees() == 12.5);
-    static_assert((90_deg).day_fraction() == 0.25);
+    static_assert(day_fraction(90_deg) == 0.25);
     static_assert(day_fraction(180_deg) == 0.5);
     static_assert((3.25_m).days() == 3.25);
     static_assert((7_rd).value() == 7);
@@ -208,7 +215,7 @@ namespace tests::type_safety {
         EXPECT_DOUBLE_EQ(day_fraction(90_deg), 0.25);
         EXPECT_DOUBLE_EQ(day_fraction(180_deg), 0.5);
         EXPECT_DOUBLE_EQ(day_fraction(360_deg), 1.0);
-        EXPECT_DOUBLE_EQ((270_deg).day_fraction(), 0.75);
+        EXPECT_DOUBLE_EQ(day_fraction(270_deg), 0.75);
     }
 
     TEST(type_safety, angle_enum_implicit_conversion) {

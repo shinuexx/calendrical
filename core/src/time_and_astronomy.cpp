@@ -528,13 +528,13 @@ namespace calendrical::time_and_astronomy {
     }
 
     moment_t lunar_phase_at_or_before(const angle_t& psi, const moment_t& t) {
-        const auto T = t - mean_synodic_month * day_fraction(mod(lunar_phase(t) - psi, 360));
+        const auto T = t - mean_synodic_month * (mod(lunar_phase(t) - psi, 360) / angle_t::full_circle);
         const auto a = T - 2;
         const auto b = std::min(t, T + 2);
         return moment_t{ inverse_angular(make_value_function(lunar_phase), psi.degrees(), a, b) };
     }
     moment_t lunar_phase_at_or_after(const angle_t& psi, const moment_t& t) {
-        const auto T = t + mean_synodic_month * day_fraction(mod(psi - lunar_phase(t), 360));
+        const auto T = t + mean_synodic_month * (mod(psi - lunar_phase(t), 360) / angle_t::full_circle);
         const auto a = std::max(t, T - 2);
         const auto b = T + 2;
         return moment_t{ inverse_angular(make_value_function(lunar_phase), psi.degrees(), a, b) };
