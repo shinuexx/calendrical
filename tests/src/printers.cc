@@ -12,6 +12,7 @@ namespace calendrical{
         void PrintTo(const hebrew_date &dates, std::ostream *os) {*os << dates.to_string(); }
         void PrintTo(const chinese_date& dates, std::ostream *os) { *os << dates.to_string(); }
         void PrintTo(const sexagesimal_name& dates, std::ostream *os) { *os << dates.to_string(); }
+        void PrintTo(const akan_name& name, std::ostream *os) { *os << name.to_string(); }
         void PrintTo(const simple_lunar_date& dates, std::ostream *os) { *os << dates.to_string(); }
         void PrintTo(const bahai_date &dates, std::ostream *os) { *os << dates.to_string(); }
         void PrintTo(const lunar_date &dates, std::ostream *os) { *os << dates.to_string(); }
