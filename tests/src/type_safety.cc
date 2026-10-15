@@ -1,5 +1,9 @@
 #include <gtest/gtest.h>
+#include <array>
+#include <cmath>
 #include <cstdint>
+#include <limits>
+#include <stdexcept>
 #include <type_traits>
 
 #include "angle.hpp"
@@ -15,8 +19,9 @@ namespace tests::type_safety {
     using namespace tests::operator_traits;
 
     // --- moment_t <-> fixed_date_t -------------------------------------------------------
-    // A date converts to the moment of its midnight without loss, so that direction is
-    // implicit; the opposite one drops the time of day and stays explicit.
+    // A date converts to the moment of its midnight, exactly for |day| <= 2^53 (beyond that
+    // double rounds to the nearest representable day), so that direction is implicit; the
+    // opposite one drops the time of day and stays explicit.
     static_assert(std::is_convertible_v<fixed_date_t, moment_t>);
     static_assert(!std::is_convertible_v<moment_t, fixed_date_t>);
     static_assert(std::is_constructible_v<fixed_date_t, moment_t>);
@@ -94,6 +99,47 @@ namespace tests::type_safety {
             EXPECT_EQ(midnight.to_fixed_date(), date);
             EXPECT_EQ(floor(midnight + 0.75), date);
         }
+    }
+
+    TEST(type_safety, date_to_moment_is_exact_up_to_2_pow_53) {
+        constexpr int64_t exact_limit = int64_t{ 1 } << 53;
+        EXPECT_EQ(moment_t{ fixed_date_t{ exact_limit } }.to_fixed_date(), fixed_date_t{ exact_limit });
+        EXPECT_EQ(moment_t{ fixed_date_t{ -exact_limit } }.to_fixed_date(), fixed_date_t{ -exact_limit });
+        // Not every whole day above 2^53 is a double: the conversion rounds to the nearest one.
+        EXPECT_EQ(moment_t{ fixed_date_t{ exact_limit + 1 } }.to_fixed_date(), fixed_date_t{ exact_limit });
+    }
+
+    TEST(type_safety, moment_to_date_rejects_values_without_a_date) {
+        constexpr double nan = std::numeric_limits<double>::quiet_NaN();
+        constexpr double inf = std::numeric_limits<double>::infinity();
+        constexpr double two_pow_63 = 0x1p63;
+        const std::array<moment_t, 4> invalid{
+            moment_t{ nan },
+            moment_t{ -inf },
+            moment_t{ two_pow_63 },
+            // INT64_MAX - 1 is not a double; it converts to 2^63, which is out of range.
+            moment_t{ fixed_date_t{ std::numeric_limits<int64_t>::max() - 1 } },
+        };
+        for (const auto& m : invalid) {
+            EXPECT_THROW((void)m.to_fixed_date(), std::domain_error) << m;
+            EXPECT_THROW((void)floor(m), std::domain_error) << m;
+            EXPECT_THROW((void)ceil(m), std::domain_error) << m;
+            EXPECT_THROW((void)round(m), std::domain_error) << m;
+        }
+
+        const moment_t lowest{ -two_pow_63 };
+        EXPECT_EQ(floor(lowest), fixed_date_t{ std::numeric_limits<int64_t>::min() });
+        EXPECT_EQ(ceil(lowest), fixed_date_t{ std::numeric_limits<int64_t>::min() });
+        EXPECT_EQ(round(lowest), fixed_date_t{ std::numeric_limits<int64_t>::min() });
+        const moment_t highest{ std::nextafter(two_pow_63, 0.0) };
+        const fixed_date_t highest_date{ static_cast<int64_t>(std::nextafter(two_pow_63, 0.0)) };
+        EXPECT_EQ(floor(highest), highest_date);
+        EXPECT_EQ(ceil(highest), highest_date);
+        EXPECT_EQ(round(highest), highest_date);
+
+        EXPECT_EQ(floor(moment_t{ inf }), fixed_date_t::end_of_time);
+        EXPECT_EQ(ceil(moment_t{ inf }), fixed_date_t::end_of_time);
+        EXPECT_EQ(round(moment_t{ inf }), fixed_date_t::end_of_time);
     }
 
     TEST(type_safety, moment_and_date_mix_chronologically) {

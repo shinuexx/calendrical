@@ -29,8 +29,11 @@ namespace calendrical {
         /**
          * @brief Converts a fixed date to the moment of its midnight.
          *
-         * Implicit because no information is lost; the opposite direction
+         * Implicit because the conversion keeps the day exactly for every date
+         * with |day| <= 2^53, which covers all calendrical use; the opposite direction
          * (@ref to_fixed_date) drops the time of day and stays explicit.
+         * Beyond 2^53 a `double` cannot hold every whole day, so the moment is the
+         * nearest representable value (e.g. day 2^53 + 1 becomes 2^53).
          * @ref fixed_date_t::end_of_time maps to @ref end_of_time.
          */
         constexpr moment_t(const fixed_date_t& rd) // NOLINT(*-explicit-constructor)
@@ -134,6 +137,7 @@ namespace calendrical {
          * @brief Converts to the fixed date containing this moment (floor of the day value).
          *
          * @ref end_of_time maps to @ref fixed_date_t::end_of_time.
+         * @throws std::domain_error for NaN, -infinity and values outside [-2^63, 2^63).
          */
         [[nodiscard]] fixed_date_t to_fixed_date() const;
 
@@ -162,9 +166,15 @@ namespace calendrical {
 
     /** @brief Fixed date containing @p m; same as @ref moment_t::to_fixed_date. */
     fixed_date_t floor(const moment_t& m);
-    /** @brief First fixed date whose midnight is not earlier than @p m. */
+    /**
+     * @brief First fixed date whose midnight is not earlier than @p m.
+     * @throws std::domain_error like @ref moment_t::to_fixed_date.
+     */
     fixed_date_t ceil(const moment_t& m);
-    /** @brief Fixed date whose midnight is nearest to @p m (halfway rounds away from zero). */
+    /**
+     * @brief Fixed date whose midnight is nearest to @p m (halfway rounds away from zero).
+     * @throws std::domain_error like @ref moment_t::to_fixed_date.
+     */
     fixed_date_t round(const moment_t& m);
     /** @brief Absolute value of the day value of @p m. */
     constexpr moment_t abs(const moment_t& m) { return m.days() < 0 ? -m : m; }
