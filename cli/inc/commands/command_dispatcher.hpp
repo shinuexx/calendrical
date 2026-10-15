@@ -14,14 +14,14 @@ namespace calendrical::cli::commands {
     /**
      * @brief Routes `argv` to the registered subcommand.
      *
-     * Also handles `-h`, `--help`, `help`, `help <command>` and `--version`.
+     * Also handles `-h`, `--help`, `help`, `help <command>`, `-i`, `--interactive` and `--version`.
      */
     class command_dispatcher final {
         /** @brief Registered subcommands keyed by name. */
         std::map<std::string, std::unique_ptr<command>, std::less<>> m_commands;
 
         /** @brief Returns `argv[from..argc)` as string views (empty if @p from >= @p argc). */
-        static std::vector<std::string_view> pack_args(int argc, const char* const argv[], int from);
+        [[nodiscard]] static std::vector<std::string_view> pack_args(int argc, const char* const argv[], int from);
         /** @brief Prints the list of registered subcommands and usage examples. */
         void print_main_help() const;
 
@@ -42,13 +42,13 @@ namespace calendrical::cli::commands {
         }
 
         /** @brief Returns the subcommand registered as @p name, or `nullptr`. */
-        const command* operator[](std::string_view name) const;
+        [[nodiscard]] const command* operator[](std::string_view name) const;
         /**
          * @brief Runs the subcommand named by `argv[1]` with the remaining arguments.
          * @return The subcommand's exit code, or 0 after printing help.
          * @throws std::runtime_error for an unknown subcommand.
          */
-        int dispatch(int argc, const char* const argv[]) const;
+        [[nodiscard]] int dispatch(int argc, const char* const argv[]) const;
 
         /** @brief Destroys the dispatcher and its subcommands. */
         ~command_dispatcher() = default;

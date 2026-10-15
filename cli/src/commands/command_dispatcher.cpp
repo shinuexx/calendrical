@@ -22,6 +22,7 @@ namespace calendrical::cli::commands {
     void command_dispatcher::print_main_help() const {
         std::cout << "Usage:\n";
         std::cout << "  calendrical_cli <command> [args]\n";
+        std::cout << "  calendrical_cli -i | --interactive\n";
         std::cout << "  calendrical_cli --version\n\n";
         std::cout << "Commands:\n";
         for (const auto& [name, cmd] : m_commands) {
@@ -31,6 +32,7 @@ namespace calendrical::cli::commands {
         std::cout << "  calendrical_cli convert gregorian julian 2026-02-18\n";
         std::cout << "  calendrical_cli holidays --as-gregorian gregorian 2026\n";
         std::cout << "  calendrical_cli list calendars\n";
+        std::cout << "  calendrical_cli -i\n";
     }
 
     command_dispatcher& command_dispatcher::add(std::unique_ptr<command> cmd) {
@@ -61,6 +63,13 @@ namespace calendrical::cli::commands {
         if (subcommand == "--version") {
             std::cout << libinfo();
             return 0;
+        }
+        if (subcommand == "-i" || subcommand == "--interactive") {
+            const auto* cmd = (*this)["interactive"];
+            if (!cmd) {
+                throw std::runtime_error("Unknown command: " + std::string(subcommand));
+            }
+            return cmd->execute(pack_args(argc, argv, 2));
         }
         if (subcommand == "help" || subcommand == "--help" || subcommand == "-h") {
             if (subcommand == "help" && argc > 2) {

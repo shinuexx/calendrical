@@ -45,6 +45,7 @@ add_library(calendrical
     src/calendars/observational_islamic_calendar.cpp
     src/calendars/old_hindu_lunar_calendar.cpp
     src/calendars/old_hindu_solar_calendar.cpp
+    src/calendars/pawukon_calendar.cpp
     src/calendars/persian_based_calendar.cpp
     src/calendars/persian_calendar.cpp
     src/calendars/roman_calendar.cpp
@@ -55,6 +56,7 @@ add_library(calendrical
     src/calendars/vietnamese_calendar.cpp
     src/datetypes/akan_name.cpp
     src/datetypes/mayan_dates.cpp
+    src/datetypes/pawukon_date.cpp
     src/datetypes/sexagesimal_name.cpp
     src/datetypes/stringifiers.cpp
     src/holiday_providers/bahai_based_calendar_holiday_provider.cpp
@@ -66,6 +68,7 @@ add_library(calendrical
     src/holiday_providers/julian_calendar_holiday_provider.cpp
     src/holiday_providers/modern_hindu_lunar_calendar_holiday_provider.cpp
     src/holiday_providers/modern_hindu_solar_calendar_holiday_provider.cpp
+    src/holiday_providers/pawukon_calendar_holiday_provider.cpp
     src/holiday_providers/persian_based_calendar_holiday_provider.cpp
     src/holiday_providers/samaritan_calendar_holiday_provider.cpp
     src/holiday_providers/simple_calendar_holiday_provider.cpp
