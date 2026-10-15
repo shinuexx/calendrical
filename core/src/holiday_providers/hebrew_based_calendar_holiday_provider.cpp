@@ -256,9 +256,9 @@ namespace calendrical::holiday_providers {
     std::vector<moment_t> hebrew_based_calendar_holiday_provider::samuel_season_in_gregorian(const angle_t &season,
                                                                                              int32_t year) const {
         constexpr auto Y = 365.25;
-        const auto start = static_cast<double>(m_start_1_adar_21) + 0.75;
+        const auto start = moment_t{ m_start_1_adar_21 } + 0.75;
         const auto offset = season / angle_t::full_circle * Y;
-        auto r = m_gregorian->cycle_in_gregorian(season, year, Y, moment_t{ start + offset });
+        auto r = m_gregorian->cycle_in_gregorian(season, year, Y, start + offset);
         return {r.begin(), r.end()};
     }
 

@@ -22,10 +22,9 @@ namespace calendrical {
         /** @brief Constructs a zero-initialized fixed date. */
         constexpr fixed_date_t() : m_v{} {}
 
-        // ReSharper disable once CppNonExplicitConversionOperator
-        /** @brief Converts to the underlying integer day index. */
-        constexpr operator int64_t() const { return m_v; } // NOLINT(*-explicit-constructor)
-        /** @brief Raw day number; prefer it over relying on the implicit conversion. */
+        /** @brief Explicitly extracts the underlying integer day index. */
+        constexpr explicit operator int64_t() const { return m_v; }
+        /** @brief Raw integer day index for algorithms that operate on day numbers. */
         [[nodiscard]] constexpr int64_t value() const { return m_v; }
 
         /** @brief Equality comparison on the day number. */

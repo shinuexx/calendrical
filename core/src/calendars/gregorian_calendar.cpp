@@ -121,7 +121,9 @@ namespace calendrical::calendars{
         const auto year_range = get_year_range(year);
         const auto pos = season / 360_deg * L;
         const auto D = pos - mod(start.days(), L);
-        auto t = positions_in_range<double>(pos, L, D, year_range);
+        // This cycle helper works in fractional days rather than integer date indices.
+        const interval<double> day_range{ year_range.type, moment_t{ year_range.min }.days(), moment_t{ year_range.max }.days() };
+        auto t = positions_in_range<double>(pos, L, D, day_range);
         return std::move(t) | std::views::transform(bind_constructor<moment_t>{});
     }
 }

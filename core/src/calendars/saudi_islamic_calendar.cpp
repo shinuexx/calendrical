@@ -22,7 +22,7 @@ namespace calendrical::calendars {
         const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, moment_t{ date }).to_fixed_date();
         const auto age = date - moon;
         const auto T = age <= 3 && !saudi_criterion(date) ? moon.subtract(30) : moon;
-        return fixed_date_t{ least_passing(make_predicate(saudi_criterion), T) };
+        return fixed_date_t{ least_passing(make_predicate(saudi_criterion), T.value()) };
     }
     fixed_date_t saudi_islamic_calendar::to_fixed(const simple_date& date) const
     {

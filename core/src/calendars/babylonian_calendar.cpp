@@ -23,7 +23,7 @@ namespace calendrical::calendars {
         const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, moment_t{ date }).to_fixed_date();
         const auto age = date - moon;
         const auto T = age <= 3 && !babylonian_criterion(date) ? moon.subtract(30) : moon;
-        return fixed_date_t{ least_passing(make_predicate(babylonian_criterion), T) };
+        return fixed_date_t{ least_passing(make_predicate(babylonian_criterion), T.value()) };
     }
 
     // ReSharper disable once CppMemberFunctionMayBeStatic

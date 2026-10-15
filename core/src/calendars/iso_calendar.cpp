@@ -48,7 +48,7 @@ namespace calendrical::calendars{
 
     // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t iso_calendar::get_day(const fixed_date_t &date) const {
-        return static_cast<int32_t>(adjusted_remainder(date, 7));
+        return static_cast<int32_t>(adjusted_remainder(date.value(), 7));
     }
 
     int32_t iso_calendar::get_week(const fixed_date_t &date) const {
