@@ -4,7 +4,8 @@ This index covers ten documents extracted for [issue #5](https://github.com/shin
 The source set comes from branch `wip/akan-mayan-cyclic-and-interactive-cli`,
 commit `d6fe7f6952fd7ada2c433402569f13f6fd7cd060`. Implementation descriptions were
 checked against `master` at commit `ea0790376041c48680a20b28229efb5745fabd0c`,
-after [PR #3](https://github.com/shinuexx/calendrical/pull/3) was merged.
+after [PR #3](https://github.com/shinuexx/calendrical/pull/3) was merged. The Hebrew document
+was updated for public `first_of_nisan()` after [PR #11](https://github.com/shinuexx/calendrical/pull/11).
 When the code changes, update the relevant rule and its status.
 
 ## Documents
@@ -27,8 +28,9 @@ This is not a complete index of all holiday providers. `gregorian`, `julian` and
 are documented in the Doxygen comments of the [Gregorian](../core/inc/holiday_providers/gregorian_calendar_holiday_provider.hpp),
 [Julian](../core/inc/holiday_providers/julian_calendar_holiday_provider.hpp) and
 [Chinese-family](../core/inc/holiday_providers/chinese_calendar_holiday_provider.hpp)
-provider headers. US holiday coverage proposed in [PR #11](https://github.com/shinuexx/calendrical/pull/11)
-is also outside this document set; consult its provider header once merged.
+provider headers. The `us` provider (Independence Day, Labor Day, Memorial Day,
+Election Day and DST start/end, CC 2.32–2.40) is documented in its
+[provider header](../core/inc/holiday_providers/us_holiday_provider.hpp).
 
 ## Meaning of statuses
 
