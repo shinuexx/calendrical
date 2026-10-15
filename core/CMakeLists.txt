@@ -66,6 +66,7 @@ add_library(calendrical
     src/holiday_providers/samaritan_calendar_holiday_provider.cpp
     src/holiday_providers/simple_calendar_holiday_provider.cpp
     src/holiday_providers/tibetan_calendar_holiday_provider.cpp
+    src/holiday_providers/us_holiday_provider.cpp
 )
 
 add_library(calendrical::calendrical ALIAS calendrical)

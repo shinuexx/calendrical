@@ -295,6 +295,40 @@ namespace tests {
         EXPECT_EQ(cmd.execute({"persian", "1404"}), 0);
         EXPECT_EQ(cmd.execute({"bahai", "182"}), 0);
         EXPECT_EQ(cmd.execute({"modern_hindu_lunar_calendar", "2082"}), 0);
+        EXPECT_EQ(cmd.execute({"us", "2026"}), 0);
+        EXPECT_EQ(cmd.execute({"usa", "2026"}), 0);
+        EXPECT_EQ(cmd.execute({"us_calendar", "2026"}), 0);
+        EXPECT_EQ(cmd.execute({"--as-gregorian", "us", "2026"}), 0);
+    }
+
+    TEST_F(cli_test_fixture, holidays_us_command) {
+        holidays_command cmd(std::addressof(m_holiday_providers));
+
+        testing::internal::CaptureStdout();
+        EXPECT_EQ(cmd.execute({"--as-gregorian", "us", "2026"}), 0);
+        const auto output = testing::internal::GetCapturedStdout();
+
+        EXPECT_NE(output.find("provider=us year=2026"), std::string::npos);
+
+        const auto pos_start = output.find("gregorian_date{year:2026,month:march,day:8} | daylight saving start");
+        const auto pos_memorial = output.find("gregorian_date{year:2026,month:may,day:25} | memorial day");
+        const auto pos_indep = output.find("gregorian_date{year:2026,month:july,day:4} | independence day");
+        const auto pos_labor = output.find("gregorian_date{year:2026,month:september,day:7} | labor day");
+        const auto pos_dst_end = output.find("gregorian_date{year:2026,month:november,day:1} | daylight saving end");
+        const auto pos_election = output.find("gregorian_date{year:2026,month:november,day:3} | election day");
+
+        ASSERT_NE(pos_start, std::string::npos);
+        ASSERT_NE(pos_memorial, std::string::npos);
+        ASSERT_NE(pos_indep, std::string::npos);
+        ASSERT_NE(pos_labor, std::string::npos);
+        ASSERT_NE(pos_dst_end, std::string::npos);
+        ASSERT_NE(pos_election, std::string::npos);
+
+        EXPECT_LT(pos_start, pos_memorial);
+        EXPECT_LT(pos_memorial, pos_indep);
+        EXPECT_LT(pos_indep, pos_labor);
+        EXPECT_LT(pos_labor, pos_dst_end);
+        EXPECT_LT(pos_dst_end, pos_election);
     }
 
     // ==========================================

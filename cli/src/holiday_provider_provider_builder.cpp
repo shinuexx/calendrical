@@ -24,6 +24,7 @@
 #include "holiday_providers/samaritan_calendar_holiday_provider.hpp"
 #include "holiday_providers/simple_calendar_holiday_provider.hpp"
 #include "holiday_providers/tibetan_calendar_holiday_provider.hpp"
+#include "holiday_providers/us_holiday_provider.hpp"
 
 namespace calendrical::cli {
     namespace {
@@ -39,6 +40,7 @@ namespace calendrical::cli {
         holiday_provider_provider provider{};
 
         provider.add<holiday_providers::gregorian_calendar_holiday_provider>("gregorian");
+        provider.add<holiday_providers::us_holiday_provider>("us");
         provider.add<holiday_providers::julian_calendar_holiday_provider>("julian");
         provider.add<holiday_providers::islamic_based_calendar_holiday_provider>(
             "islamic_based",
