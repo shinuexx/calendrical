@@ -69,7 +69,7 @@ namespace calendrical::calendars {
 
     moment_t modern_hindu_base::hindu_new_moon_before(const moment_t& t)
     {
-        const auto T = static_cast<double>(t) - static_cast<double>(hindu_lunar_phase(t)) * hindu_synodic_month / 360;
+        const auto T = static_cast<double>(t) - day_fraction(hindu_lunar_phase(t)) * hindu_synodic_month;
         auto p = [](const double &l, const double &u) {
             return hindu_zodiac(moment_t{ l }) == hindu_zodiac(moment_t{ u }) || u - l < hindu_E;
         };
@@ -127,7 +127,7 @@ namespace calendrical::calendars {
     double modern_hindu_base::hindu_equation_of_time(const fixed_date_t& date)
     {
         const auto offset = hindu_sine(hindu_mean_position(moment_t{ date }, hindu_anomalistic_year));
-        const double equation_sun = offset * static_cast<double>(angle_t::dms(57, 18)) * ( 14/360.0 - std::abs(offset) / 1080);
+        const double equation_sun = offset * angle_t::dms(57, 18).degrees() * ( 14/360.0 - std::abs(offset) / 1080);
         return hindu_daily_motion(date) / 360 * (equation_sun / 360) * hindu_sidereal_year;
     }
 
@@ -135,18 +135,18 @@ namespace calendrical::calendars {
     {
         constexpr double a{ 1577917828 / (1582237828 * 360.0) };
         constexpr double quarter{ 0.25 };
-        return moment_t{ static_cast<int64_t>(date) + quarter + (ujjain.longitude - m_hindu_location.longitude) / 360_deg
+        return moment_t{ static_cast<int64_t>(date) + quarter + day_fraction(ujjain.longitude - m_hindu_location.longitude)
             - hindu_equation_of_time(date)
-            + a * (static_cast<double>(hindu_ascensional_difference(date, m_hindu_location)) + quarter * hindu_solar_sidereal_difference(date)) };
+            + a * (hindu_ascensional_difference(date, m_hindu_location).degrees() + quarter * hindu_solar_sidereal_difference(date)) };
     }
 
     moment_t modern_hindu_base::hindu_sunset(const fixed_date_t& date) const
     {
         constexpr double a{ 1577917828 / (1582237828 * 360.0) };
         constexpr double quarter{ 0.25 };
-        return moment_t{ static_cast<int64_t>(date) + quarter + (ujjain.longitude - m_hindu_location.longitude) / 360_deg
+        return moment_t{ static_cast<int64_t>(date) + quarter + day_fraction(ujjain.longitude - m_hindu_location.longitude)
             - hindu_equation_of_time(date)
-            + a * (static_cast<double>(-hindu_ascensional_difference(date, m_hindu_location)) + quarter * hindu_solar_sidereal_difference(date)) };
+            + a * ((-hindu_ascensional_difference(date, m_hindu_location)).degrees() + quarter * hindu_solar_sidereal_difference(date)) };
     }
 
     moment_t modern_hindu_base::hindu_standard_from_sundial(const moment_t& t) const
@@ -214,7 +214,7 @@ namespace calendrical::calendars {
         const auto T = static_cast<double>(t) + hindu_sidereal_year / 360 * mod(l - hindu_solar_longitude(t), 360).degrees();
         const auto a = std::max(static_cast<double>(t), T - 5);
         const double b = T + 5;
-        return moment_t{ inverse_angular(make_value_function(hindu_solar_longitude), l, a, b) };
+        return moment_t{ inverse_angular(make_value_function(hindu_solar_longitude), l.degrees(), a, b) };
     }
 
     moment_t modern_hindu_base::mesha_samkranti(int32_t gyear)
@@ -229,7 +229,7 @@ namespace calendrical::calendars {
         const double T = static_cast<double>(t) + mod(phase - hindu_lunar_phase(t), 360).degrees() * hindu_synodic_month / 360;
         const auto a = std::max(static_cast<double>(t), T - 2);
         const double b = T + 2;
-        return moment_t{ inverse_angular(make_value_function(hindu_lunar_phase), phase, a, b) };
+        return moment_t{ inverse_angular(make_value_function(hindu_lunar_phase), phase.degrees(), a, b) };
     }
 
     fixed_date_t modern_hindu_base::hindu_lunar_new_year(int32_t gyear) const

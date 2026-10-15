@@ -239,7 +239,7 @@ namespace calendrical::time_and_astronomy {
         for (auto &[x, y, z]: solar_longitude_xyz)
             a += x * sin(angle_t{ y + z * c });
         const auto l = 282.7771834 + 36000.76953744 * c + 0.000005729577951308232 * a;
-        return angle_t{ mod(l + aberration(t) + nutation(t), 360) };
+        return mod(angle_t{ l } + aberration(t) + nutation(t), 360);
     }
 
     static constexpr auto A_p = make_polynomial(124.9, -1934.134, 0.002063);
@@ -263,7 +263,7 @@ namespace calendrical::time_and_astronomy {
         const auto T = t + rate * mod(l - solar_longitude(t), 360).degrees();
         const auto a = std::max(t, T - 5);
         const auto b = T + 5;
-        return moment_t{ inverse_angular(make_value_function(solar_longitude), l, a, b) };
+        return moment_t{ inverse_angular(make_value_function(solar_longitude), l.degrees(), a, b) };
     }
     moment_t season_in_gregorian(const angle_t& season, int32_t year)
     {
@@ -485,7 +485,7 @@ namespace calendrical::time_and_astronomy {
         const auto venus = 3958 * sin(angle_t{ 119.75 + c * 131.849 });
         const auto jupiter = 318 * sin(angle_t{ 53.09 + c * 479264.29 });
         const auto flat_earth = 1962 * sin(L1 - F);
-        return angle_t{ mod(static_cast<double>(L1) + (correction + venus + jupiter + flat_earth) * 1e-6 + nutation(t), 360) };
+        return mod(L1 + angle_t{ (correction + venus + jupiter + flat_earth) * 1e-6 } + nutation(t), 360);
     }
 
     static constexpr auto moon_node_p = make_polynomial(93.2720950, 483202.0175233, -0.0036539, -1 / 3526000.0, 1 / 863310000.0);
@@ -528,16 +528,16 @@ namespace calendrical::time_and_astronomy {
     }
 
     moment_t lunar_phase_at_or_before(const angle_t& psi, const moment_t& t) {
-        const auto T = t - mean_synodic_month * mod(lunar_phase(t) - psi, 360).degrees() / 360;
+        const auto T = t - mean_synodic_month * day_fraction(mod(lunar_phase(t) - psi, 360));
         const auto a = T - 2;
         const auto b = std::min(t, T + 2);
-        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi, a, b) };
+        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi.degrees(), a, b) };
     }
     moment_t lunar_phase_at_or_after(const angle_t& psi, const moment_t& t) {
-        const auto T = t + mean_synodic_month * mod(psi - lunar_phase(t), 360).degrees() / 360;
+        const auto T = t + mean_synodic_month * day_fraction(mod(psi - lunar_phase(t), 360));
         const auto a = std::max(t, T - 2);
         const auto b = T + 2;
-        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi, a, b) };
+        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi.degrees(), a, b) };
     }
 
     static constexpr auto lunar_latitude_table = std::array{
@@ -732,7 +732,7 @@ namespace calendrical::time_and_astronomy {
             value = sine_offset(alt, location, a);
         else
             value = m;
-        const auto offset = interval_modulus(asin(value) / angle_t::full_circle, -0.5, 0.5);
+        const auto offset = interval_modulus(day_fraction(asin(value)), -0.5, 0.5);
         if (std::abs(value) > 1)
             return bogus;
         return local_from_apparent(moment_t{ date } + (early ? 0.25 - offset : 0.75 + offset), location);
@@ -773,7 +773,7 @@ namespace calendrical::time_and_astronomy {
         constexpr auto R{6.372e6};
         const auto h = std::max(0.0, location.elevation);
         const auto dip = acos(R / (R + h));
-        return angle_t{ 34 / 6e1 + dip + 19 * std::sqrt(h) / 3600 };
+        return angle_t{ 34 / 6e1 } + dip + angle_t{ 19 * std::sqrt(h) / 3600 };
     }
     moment_t sunrise(const fixed_date_t& date, const location& location) {
         const auto a = refraction(moment_t{ date } + 0.25, location) + angle_t::dms(0, 16);
@@ -915,7 +915,7 @@ namespace calendrical::time_and_astronomy {
         const auto h = lunar_altitude(t, location);
         const auto ARCL = arc_of_light(t);
         return interval_opened_between<angle_t>(lunar_phase::new_moon, lunar_phase::first_quarter).contains(phase)
-            && interval_closed_between<double>(10.6, 90).contains(ARCL)
+            && interval_closed_between<angle_t>(10.6_deg, 90_deg).contains(ARCL)
             && h > 4.1_deg;
     }
     angle_t arg_of_vision(const moment_t& t, const location& location) {
@@ -950,7 +950,7 @@ namespace calendrical::time_and_astronomy {
     double lunar_semi_diameter(const moment_t& t, const location& location) {
         const auto h = lunar_altitude(t, location);
         const auto p = lunar_parallax(t, location);
-        return 0.27245 * p * (sin(h) * sin(p) + 1);
+        return (0.27245 * p * (sin(h) * sin(p) + 1)).degrees();
     }
     angle_t lunar_diameter(const moment_t& t) {
         return angle_t{ 1792367000 / (9 * lunar_distance(t)) };

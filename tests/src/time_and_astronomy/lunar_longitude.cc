@@ -48,7 +48,7 @@ namespace tests {
     TEST_P(lunar_longitude_test, calculate) {
         auto &[rd, output] = GetParam();
         const moment_t input{ rd };
-        EXPECT_NEAR(lunar_longitude(input), output, 1e-6) << output << " : " << lunar_longitude(input) << " : " << input << std::endl;
+        EXPECT_NEAR(lunar_longitude(input).degrees(), output.degrees(), 1e-6) << output << " : " << lunar_longitude(input) << " : " << input << std::endl;
     }
 
 

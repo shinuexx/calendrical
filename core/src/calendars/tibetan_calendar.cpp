@@ -18,8 +18,8 @@ namespace calendrical::calendars {
             return -tibetan_sun_equation(a - 6_deg);
         if (a > 3_deg)
             return tibetan_sun_equation(6_deg - a);
-        if (is_integer(a)) {
-            const auto i = static_cast<int32_t>(static_cast<double>(a));
+        if (is_integer(a.degrees())) {
+            const auto i = static_cast<int32_t>(a.degrees());
             return t[i];
         }
         const auto ca = ceil(a);
@@ -45,8 +45,8 @@ namespace calendrical::calendars {
             return -tibetan_moon_equation(a - 14_deg);
         if (a > 7_deg)
             return tibetan_moon_equation(14_deg - a);
-        if (is_integer(a)) {
-            const auto i = static_cast<int32_t>(static_cast<double>(a));
+        if (is_integer(a.degrees())) {
+            const auto i = static_cast<int32_t>(a.degrees());
             return t[i];
         }
         const auto ca = ceil(a);
@@ -86,7 +86,7 @@ namespace calendrical::calendars {
         const auto lunar_anomaly = mod(days *  3781 / 105840.0 + 2837 / 15120.0, 1);
         const auto sun = -tibetan_sun_equation(angle_t{12 * solar_anomaly});
         const auto moon = tibetan_moon_equation(angle_t{28 * lunar_anomaly});
-        return fixed_date_t{ static_cast<int64_t>(std::floor(static_cast<int64_t>(ms_epoch) + mean + sun + moon)) };
+        return fixed_date_t{ static_cast<int64_t>(std::floor(static_cast<int64_t>(ms_epoch) + mean + (sun + moon).degrees())) };
     }
 
     int32_t tibetan_calendar::get_month(const fixed_date_t& date) const
