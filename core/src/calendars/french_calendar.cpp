@@ -20,8 +20,8 @@ namespace calendrical::calendars{
 
     fixed_date_t french_calendar::get_new_year(int32_t year) const
     {
-        const auto approx = std::floor(ms_epoch + 180 + mean_tropical_year * (year - 1));
-        return new_year_on_or_before(fixed_date_t{ static_cast<int64_t>(approx) });
+        const auto approx = floor(moment_t{ ms_epoch + 180 } + mean_tropical_year * (year - 1));
+        return new_year_on_or_before(approx);
     }
     int32_t french_calendar::get_year(const fixed_date_t& date) const
     {

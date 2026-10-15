@@ -11,6 +11,6 @@ namespace calendrical::calendars {
         if (!name.is_valid())
             throw std::invalid_argument("akan_calendar::on_or_before: invalid name " + name.to_string());
         // Days from RD 0 to the nearest occurrence of name, reduced into (reference - 42, reference].
-        return fixed_date_t{ interval_modulus(static_cast<int64_t>(ms_name_of_rd_zero.difference(name)), reference, reference.subtract(akan_name::cycle_length)) };
+        return fixed_date_t{ interval_modulus(static_cast<int64_t>(ms_name_of_rd_zero.difference(name)), reference.value(), reference.subtract(akan_name::cycle_length).value()) };
     }
 }

@@ -27,10 +27,10 @@ namespace calendrical::calendars {
         // CC's cap-Delta: the position of RD 0 in the cycle.
         const auto delta = static_cast<int64_t>(day_from_fixed(fixed_date_t{ 0 })) % period;
         // The helper scans the half-open range [min, max); map the boundary policy of range onto it.
-        const int64_t first = range.contains(range.min) ? range.min : range.min + 1;
-        const int64_t last = range.contains(range.max) ? range.max + 1 : range.max;
+        const auto first = range.contains(range.min) ? range.min : range.min + 1;
+        const auto last = range.contains(range.max) ? range.max + 1 : range.max;
         const auto positions = calendrical::positions_in_range<int64_t>(
-            day_in_period, period, delta, interval_left_closed_between(first, last));
+            day_in_period, period, delta, interval_left_closed_between(first.value(), last.value()));
         auto dates = positions | std::views::transform(bind_constructor<fixed_date_t>{});
         return { dates.begin(), dates.end() };
     }

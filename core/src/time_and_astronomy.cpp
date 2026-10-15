@@ -837,14 +837,14 @@ namespace calendrical::time_and_astronomy {
     moment_t local_from_italian(const moment_t& t) {
         const auto date = t.to_fixed_date();
         const auto z = local_zero_hour(t - 1);
-        return t - static_cast<double>(date) + z;
+        return t - date + z;
     }
     moment_t italian_from_local(const moment_t& t) {
         const auto date = t.to_fixed_date();
         const auto z0 = local_zero_hour(t - 1);
         if (const auto z = local_zero_hour(t); t > z)
-            return t + static_cast<double>(date) + 1 - z;
-        return t + static_cast<double>(date) - z0;
+            return t + date + 1 - z;
+        return t + date - z0;
     }
 
     moment_t daytime_temporal_hour(const fixed_date_t& date, const location& location) {
@@ -961,14 +961,14 @@ namespace calendrical::time_and_astronomy {
         const auto age = date - moon;
         const auto T = age <= 3 && !visible_crescent(date, location) ? moon.subtract(30) : moon;
         const auto f = [&](const int64_t& x) { return visible_crescent(fixed_date_t{ x }, location); };
-        return fixed_date_t{ least_passing(f, T) };
+        return fixed_date_t{ least_passing(f, T.value()) };
     }
     fixed_date_t phasis_on_or_after(const fixed_date_t& date, const location& location) {
         const auto moon = lunar_phase_at_or_before(lunar_phase::new_moon, moment_t{ date }).to_fixed_date();
         const auto age = date - moon;
         const auto T = 4 <= age || visible_crescent(date.subtract(1), location) ? moon.add(29) : date;
         const auto f = [&](const int64_t& x) { return visible_crescent(fixed_date_t{ x }, location); };
-        return fixed_date_t{ least_passing(f, T) };
+        return fixed_date_t{ least_passing(f, T.value()) };
     }
     moment_t moonlag(const fixed_date_t& date, const location& location) {
         const moment_t sun = sunset(date, location);
