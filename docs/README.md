@@ -14,6 +14,7 @@ When the code changes, update the relevant rule and its status.
 | --- | --- | --- |
 | Classical Armenian | [Simple-calendar holidays](armenian-simple-holidays-pseudocode.md) | Navasard and the generic provider's scope |
 | Bahá’í | [Holidays and variants](bahai-holidays-pseudocode.md) | Classic New Year, astronomical holidays, birthdays, proposed series |
+| Balinese Pawukon | [Calendar and holidays](balinese-pawukon-holidays-pseudocode.md) | 210-day cycle, Kajeng Keliwon, Tumpek |
 | Coptic / Ethiopic | [Months and holidays](coptic-months-notes.md) | Numeric months, fixed holidays, working aliases |
 | Hebrew | [Holidays and rules](hebrew-holidays-pseudocode.md) | Postponements, diaspora, series, supporting Coptic rules |
 | Hindu lunar | [Holidays and tithi](hindu-lunar-holidays-pseudocode.md) | Month/day rules, time of day, multi-day observances |
