@@ -80,3 +80,8 @@ provide different levels of coverage:
 Preserve this distinction in further work and add sources and tests appropriate
 to the specific rule. These documents describe the code; changes to rules belong
 in the implementation and tests.
+
+## API migration
+
+- [Explicit fixed-date conversion](fixed-date-migration.md): integer day arithmetic,
+  scalar access with `value()` and fractional-day calculations using `moment_t`.

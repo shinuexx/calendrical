@@ -37,9 +37,8 @@ namespace calendrical::calendars {
     fixed_date_t chinese_based_calendar::to_fixed(const chinese_date& date) const
     {
         auto [cycle, year, month, leap_month, day] = date;
-        const moment_t mid_year{
-                std::floor(static_cast<double>(m_epoch) + mean_tropical_year * ((cycle - 1) * 60 + year - 1 + 0.5)) };
-        const auto new_year = new_year_on_or_before(mid_year.to_fixed_date());
+        const auto mid_year = floor(moment_t{ m_epoch } + mean_tropical_year * ((cycle - 1) * 60 + year - 1 + 0.5));
+        const auto new_year = new_year_on_or_before(mid_year);
         const auto p = new_moon_on_or_after(new_year + (month - 1) * 29);
         const auto d = to_date(p);
         const auto prior_new_moon = month == d.month && leap_month == d.leap_month ? p : new_moon_on_or_after(p.add(1));
@@ -81,7 +80,7 @@ namespace calendrical::calendars {
 
     fixed_date_t chinese_based_calendar::day_name_on_or_before(const sexagesimal_name& name, const fixed_date_t& date)
     {
-        return fixed_date_t{ interval_modulus(day_name_zero.difference(name), date, date.subtract(60)) };
+        return fixed_date_t{ interval_modulus(day_name_zero.difference(name), date.value(), date.subtract(60).value()) };
     }
 
     const sexagesimal_name chinese_based_calendar::day_name_zero{ day_name(0_rd) };

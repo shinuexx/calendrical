@@ -62,9 +62,9 @@ namespace calendrical::calendars {
     fixed_date_t samaritan_calendar::to_fixed(const simple_date& date) const
     {
         auto [year, month, day] = date;
-        const auto a = std::floor(static_cast<double>(m_epoch) + 50 + 365.25 * (year - std::ceil((month - 5.0) / 8)));
-        const auto ny = new_year_on_or_before(fixed_date_t{ static_cast<int64_t>(a) });
-        const auto nm = new_moon_at_or_before(moment_t{ static_cast<double>(ny) + 29.5 * (month - 1) + 15 });
+        const auto a = floor(moment_t{ m_epoch } + 50 + 365.25 * (year - std::ceil((month - 5.0) / 8)));
+        const auto ny = new_year_on_or_before(a);
+        const auto nm = new_moon_at_or_before(moment_t{ ny } + 29.5 * (month - 1) + 15);
         return nm + day - 1;
     }
     int32_t samaritan_calendar::get_month(const fixed_date_t& date) const

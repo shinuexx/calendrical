@@ -34,10 +34,29 @@ namespace tests::type_safety {
     // Sum of two points, accepted on purpose until a dedicated duration type exists.
     static_assert(add_yields<moment_t, fixed_date_t, moment_t>);
 
+    // --- fixed_date_t: integer day arithmetic never silently becomes a scalar -----------
+    static_assert(!std::is_convertible_v<fixed_date_t, int64_t>);
+    static_assert(std::is_constructible_v<int64_t, fixed_date_t>);
+    static_assert(!std::is_convertible_v<fixed_date_t, double>);
+    static_assert(!can_add<fixed_date_t, double>);
+    static_assert(!can_add<double, fixed_date_t>);
+    static_assert(!can_add<fixed_date_t, angle_t>);
+    static_assert(!can_add<angle_t, fixed_date_t>);
+    static_assert(!can_subtract<fixed_date_t, double>);
     static_assert(subtract_yields<fixed_date_t, fixed_date_t, int64_t>);
     static_assert(add_yields<fixed_date_t, int, fixed_date_t>);
     static_assert(add_yields<int, fixed_date_t, fixed_date_t>);
     static_assert(subtract_yields<fixed_date_t, int, fixed_date_t>);
+    static_assert(add_yields<fixed_date_t, int64_t, fixed_date_t>);
+    static_assert(add_yields<int64_t, fixed_date_t, fixed_date_t>);
+    static_assert(subtract_yields<fixed_date_t, int64_t, fixed_date_t>);
+    static_assert((10_rd + 2).value() == 12);
+    static_assert((2 + 10_rd).value() == 12);
+    static_assert((10_rd - 2).value() == 8);
+    static_assert(10_rd - 7_rd == 3);
+    // Date arithmetic remains exact above the contiguous integer range of double.
+    static_assert((9007199254740993_rd + 1).value() == 9007199254740994LL);
+    static_assert(9007199254740993_rd - 9007199254740992_rd == 1);
 
     static_assert(add_yields<moment_t, moment_t, moment_t>);
     static_assert(add_yields<moment_t, double, moment_t>);

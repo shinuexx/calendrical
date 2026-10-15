@@ -59,7 +59,7 @@ namespace calendrical::holiday_providers {
         if (expunged) {
             return fixed_date_t{ least_passing(
                            [&](const int64_t &d) { return m_lunar->hindu_lunar_on_or_before(m_lunar->to_date(fixed_date_t{ d }), ldate); },
-                           try_) -
+                           try_.value()) -
                    1 };
         }
         if (lday != m_lunar->to_date(try_).day) {

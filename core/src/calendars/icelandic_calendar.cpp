@@ -58,7 +58,7 @@ namespace calendrical::calendars {
         const auto season = odate.season;
         const auto midsummer = winter(year).subtract(90);
         const auto t1 = summer(year);
-        int64_t start;
+        fixed_date_t start;
         if (season == season::winter)
             start = midsummer + 90;
         else if (date >= midsummer)
