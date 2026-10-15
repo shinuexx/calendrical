@@ -186,7 +186,7 @@ namespace calendrical::cli {
             }
 
             try {
-                cmd->execute(cmd_args);
+                (void)cmd->execute(cmd_args);
             } catch (const std::exception& ex) {
                 err << "Error: " << ex.what() << '\n';
                 err.flush();
