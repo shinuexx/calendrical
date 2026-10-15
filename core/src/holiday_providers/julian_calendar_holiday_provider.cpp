@@ -47,9 +47,9 @@ namespace calendrical::holiday_providers{
     }
 
     std::vector<moment_t> julian_calendar_holiday_provider::season_in_gregorian(const angle_t& season, int32_t year) const {
-        constexpr auto Y = 365 + moment_t::hms(6);
-        moment_t const offset = season / 360_deg * Y;
-        auto r = m_gregorian->cycle_in_gregorian(season, year, Y, moment_t{m_season_start} + offset);
+        constexpr double Y = 365 + moment_t::hms(6).days();
+        const double offset = season / angle_t::full_circle * Y;
+        auto r = m_gregorian->cycle_in_gregorian(season, year, Y, moment_t{ m_season_start } + offset);
         return {r.begin(), r.end()};
     }
 }

@@ -11,7 +11,7 @@
 namespace tests {
     using namespace calendrical::time_and_astronomy;
 
-    static constexpr auto is_bogus(moment_t value) { return static_cast<double>(value) <=> 0 == std::partial_ordering::unordered; }
+    static constexpr auto is_bogus(moment_t value) { return value.days() <=> 0 == std::partial_ordering::unordered; }
 
     static constexpr auto results = std::array<moment_t, 33>{
         -214131.147334_m,
@@ -60,7 +60,7 @@ namespace tests {
         if (is_bogus(output)){
             EXPECT_TRUE(is_bogus(actual)) << output << " : " << actual<< " : " << rd << std::endl;
         } else {
-            EXPECT_NEAR(actual, output, 1e-6) << output << " : " << actual << " : " << rd << std::endl;
+            EXPECT_NEAR(actual.days(), output.days(), 1e-6) << output << " : " << actual << " : " << rd << std::endl;
         }
     }
 

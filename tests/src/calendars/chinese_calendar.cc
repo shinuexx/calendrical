@@ -151,7 +151,7 @@ namespace tests{
 
     TEST_P(major_solar_term_test, next_zhonggi) {
         auto& [input, output] = GetParam();
-        EXPECT_NEAR(m_calendar->major_solar_term_on_or_after(input), output, 1e-6) << input << " : " << m_calendar->major_solar_term_on_or_after(input) << " : " << output << std::endl;
+        EXPECT_NEAR(m_calendar->major_solar_term_on_or_after(input).days(), output.days(), 1e-6) << input << " : " << m_calendar->major_solar_term_on_or_after(input) << " : " << output << std::endl;
     }
 
     INSTANTIATE_TEST_SUITE_P(chinese_calendar, chinese_calendar_test, testing::ValuesIn(helpers::make_test_params_values(dates, cdates)));

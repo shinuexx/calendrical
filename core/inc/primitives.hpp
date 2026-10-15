@@ -14,7 +14,7 @@ namespace calendrical::primitives {
 
     /** @brief Converts library moment to Julian Day number. */
     inline constexpr double jd_from_moment(moment_t t) {
-        return t - JD_EPOCH;
+        return (t - JD_EPOCH).days();
     }
 
     /** @brief Modified Julian Day epoch offset in library `fixed_date_t` coordinates. */

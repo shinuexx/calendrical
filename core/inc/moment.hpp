@@ -39,10 +39,9 @@ namespace calendrical {
         constexpr moment_t(const fixed_date_t& rd) // NOLINT(*-explicit-constructor)
             : m_v{ rd == fixed_date_t::end_of_time ? std::numeric_limits<double>::infinity() : static_cast<double>(rd.value()) } {}
 
-        // ReSharper disable once CppNonExplicitConversionOperator
-        /** @brief Converts to the raw floating-point day value. */
-        constexpr operator double() const { return m_v; } // NOLINT(*-explicit-constructor)
-        /** @brief Raw day value; prefer it over relying on the implicit conversion. */
+        /** @brief Converts to the raw floating-point day value; prefer @ref days, which names the unit. */
+        constexpr explicit operator double() const { return m_v; }
+        /** @brief Raw day value. */
         [[nodiscard]] constexpr double days() const { return m_v; }
         /** @brief Converts to a fixed date using the library rounding rule. */
         explicit operator fixed_date_t() const { return to_fixed_date(); }

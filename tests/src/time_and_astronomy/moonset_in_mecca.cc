@@ -11,7 +11,7 @@ namespace tests {
     using namespace calendrical::time_and_astronomy;
 
     static constexpr auto bogus = moment_t{ std::numeric_limits<double>::quiet_NaN() };
-    static constexpr auto is_bogus(moment_t value) { return static_cast<double>(value) <=> 0 == std::partial_ordering::unordered; }
+    static constexpr auto is_bogus(moment_t value) { return value.days() <=> 0 == std::partial_ordering::unordered; }
 
     static constexpr auto results = std::array<moment_t, 33>{
         0.084225_m,
