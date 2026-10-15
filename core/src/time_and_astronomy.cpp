@@ -10,7 +10,7 @@
 namespace calendrical::time_and_astronomy {
     /** @brief Returns whether @p x is the NaN "bogus" marker returned for events that do not occur. */
     static constexpr bool is_bogus(moment_t x) {
-        return static_cast<double>(x) <=> 0 == std::partial_ordering::unordered;
+        return x.days() <=> 0 == std::partial_ordering::unordered;
     }
 
     static constexpr auto bogus = moment_t{ std::numeric_limits<double>::quiet_NaN() };
@@ -97,7 +97,7 @@ namespace calendrical::time_and_astronomy {
     }
     double julian_centuries(const moment_t& t)
     {
-        return (dynamic_from_universal(t) - J2000) / 36525;
+        return (dynamic_from_universal(t) - J2000).days() / 36525;
     }
 
     static constexpr auto eot_lambda_p = make_polynomial(280.46645, 36000.76983, 0.0003032);
@@ -154,7 +154,7 @@ namespace calendrical::time_and_astronomy {
 
     angle_t sidereal_from_moment(const moment_t& t)
     {
-        const auto c = (t - J2000) / 36525;
+        const double c = (t - J2000).days() / 36525;
         return angle_t{ mod(sidereal_p(c), 360) };
     }
 
@@ -263,7 +263,7 @@ namespace calendrical::time_and_astronomy {
         const auto T = t + rate * mod(l - solar_longitude(t), 360).degrees();
         const auto a = std::max(t, T - 5);
         const auto b = T + 5;
-        return moment_t{ inverse_angular(make_value_function(solar_longitude), l.degrees(), a, b) };
+        return moment_t{ inverse_angular(make_value_function(solar_longitude), l.degrees(), a.days(), b.days()) };
     }
     moment_t season_in_gregorian(const angle_t& season, int32_t year)
     {
@@ -531,13 +531,13 @@ namespace calendrical::time_and_astronomy {
         const auto T = t - mean_synodic_month * (mod(lunar_phase(t) - psi, 360) / angle_t::full_circle);
         const auto a = T - 2;
         const auto b = std::min(t, T + 2);
-        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi.degrees(), a, b) };
+        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi.degrees(), a.days(), b.days()) };
     }
     moment_t lunar_phase_at_or_after(const angle_t& psi, const moment_t& t) {
         const auto T = t + mean_synodic_month * (mod(psi - lunar_phase(t), 360) / angle_t::full_circle);
         const auto a = std::max(t, T - 2);
         const auto b = T + 2;
-        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi.degrees(), a, b) };
+        return moment_t{ inverse_angular(make_value_function(lunar_phase), psi.degrees(), a.days(), b.days()) };
     }
 
     static constexpr auto lunar_latitude_table = std::array{
@@ -804,9 +804,9 @@ namespace calendrical::time_and_astronomy {
         const auto approx = waning ? (offset > 0 ? t.add(1 - offset) : t.subtract(offset)) : t.add(0.5 + offset);
         const moment_t rise = moment_t{ binary_search(
             [&location](const double& x) { return observed_lunar_altitude(moment_t{ x }, location) > 0_deg; },
-            [](const double& l, const double& u) { return u - l < static_cast<double>(min1); },
-            approx.subtract(0.25),
-            approx.add(0.25)
+            [](const double& l, const double& u) { return u - l < min1.days(); },
+            approx.subtract(0.25).days(),
+            approx.add(0.25).days()
         ) };
         if (rise >= t.add(1))
             return bogus;
@@ -822,9 +822,9 @@ namespace calendrical::time_and_astronomy {
         const auto approx = waxing ? (offset > 0 ? t.add(offset) : t.add(1 + offset)) : t.add(0.5 - offset);
         const moment_t rise = moment_t{ binary_search(
             [&location](const double& x) { return observed_lunar_altitude(moment_t{ x }, location) < 0_deg; },
-            [](const double& l, const double& u) { return u - l < static_cast<double>(min1); },
-            approx.subtract(0.25),
-            approx.add(0.25)
+            [](const double& l, const double& u) { return u - l < min1.days(); },
+            approx.subtract(0.25).days(),
+            approx.add(0.25).days()
         ) };
         if (rise >= t.add(1) )
             return bogus;

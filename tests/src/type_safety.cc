@@ -60,10 +60,29 @@ namespace tests::type_safety {
     static_assert((9007199254740993_rd + 1).value() == 9007199254740994LL);
     static_assert(9007199254740993_rd - 9007199254740992_rd == 1);
 
+    // --- moment_t: day arithmetic stays typed, the raw value is explicit (issue #21) ------
+    static_assert(!std::is_convertible_v<moment_t, double>);
+    static_assert(std::is_constructible_v<double, moment_t>);
+    static_assert(!std::is_convertible_v<double, moment_t>);
+    static_assert(std::is_constructible_v<moment_t, double>);
+    static_assert(!can_compare<moment_t, double>);
+    static_assert(!can_compare<double, moment_t>);
+    static_assert(!can_equal<moment_t, double>);
+    static_assert(!can_equal<double, moment_t>);
     static_assert(add_yields<moment_t, moment_t, moment_t>);
     static_assert(add_yields<moment_t, double, moment_t>);
     static_assert(add_yields<double, moment_t, moment_t>);
     static_assert(subtract_yields<moment_t, moment_t, moment_t>);
+    static_assert(subtract_yields<moment_t, double, moment_t>);
+    static_assert(subtract_yields<double, moment_t, moment_t>);
+    static_assert(multiply_yields<moment_t, double, moment_t>);
+    static_assert(multiply_yields<double, moment_t, moment_t>);
+    static_assert(divide_yields<moment_t, double, moment_t>);
+    static_assert(divide_yields<moment_t, moment_t, double>);
+    static_assert((10.5_m + 2).days() == 12.5);
+    static_assert((10.5_m - 0.5).days() == 10.0);
+    static_assert(3_m / 2_m == 1.5);
+    static_assert(static_cast<double>(2.5_m) == 2.5);
 
     // end_of_time is preserved by the implicit conversion, also in constant expressions.
     static_assert(moment_t{ fixed_date_t::end_of_time } == moment_t::end_of_time);

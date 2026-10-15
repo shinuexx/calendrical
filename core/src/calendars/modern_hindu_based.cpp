@@ -31,7 +31,7 @@ namespace calendrical::calendars {
     }
     angle_t modern_hindu_base::hindu_mean_position(const moment_t& t, const double& period)
     {
-        return angle_t{ 360 * mod((static_cast<double>(t) - hindu_creation) / period, 1) };
+        return angle_t{ 360 * mod((t.days() - hindu_creation) / period, 1) };
     }
     angle_t modern_hindu_base::hindu_true_position(const moment_t& t, const double& period, const double& size, const double& anomalistic, const double& change)
     {
@@ -69,18 +69,18 @@ namespace calendrical::calendars {
 
     moment_t modern_hindu_base::hindu_new_moon_before(const moment_t& t)
     {
-        const auto T = static_cast<double>(t) - (hindu_lunar_phase(t) / angle_t::full_circle) * hindu_synodic_month;
+        const auto T = t.days() - (hindu_lunar_phase(t) / angle_t::full_circle) * hindu_synodic_month;
         auto p = [](const double &l, const double &u) {
             return hindu_zodiac(moment_t{ l }) == hindu_zodiac(moment_t{ u }) || u - l < hindu_E;
         };
         const double a = T - 1;
-        const double b = std::min(static_cast<double>(t), T + 1);
+        const double b = std::min(t.days(), T + 1);
         return moment_t{ binary_search([](const double& x) { return hindu_lunar_phase(moment_t{ x }) < 180_deg; }, p, a, b) };
     }
     int32_t modern_hindu_base::hindu_calendar_year(const moment_t& t)
     {
         return static_cast<int32_t>(
-                std::round((static_cast<double>(t) - static_cast<int64_t>(ms_epoch)) / hindu_sidereal_year - hindu_solar_longitude(t) / 360_deg));
+                std::round((t - ms_epoch).days() / hindu_sidereal_year - hindu_solar_longitude(t) / 360_deg));
     }
     angle_t modern_hindu_base::hindu_ascensional_difference(const fixed_date_t& date, const location& location)
     {
@@ -157,20 +157,20 @@ namespace calendrical::calendars {
         double a, b, h;
         if (q == 0)
         {
-            a = static_cast<double>(hindu_sunset(date.subtract(1)));
-            b = static_cast<double>(hindu_sunrise(date));
+            a = hindu_sunset(date.subtract(1)).days();
+            b = hindu_sunrise(date).days();
             h = -0.25;
         }
         else if (q == 3)
         {
-            a = static_cast<double>(hindu_sunset(date));
-            b = static_cast<double>(hindu_sunrise(date.add(1)));
+            a = hindu_sunset(date).days();
+            b = hindu_sunrise(date.add(1)).days();
             h = 0.75;
         }
         else
         {
-            a = static_cast<double>(hindu_sunrise(date));
-            b = static_cast<double>(hindu_sunset(date));
+            a = hindu_sunrise(date).days();
+            b = hindu_sunset(date).days();
             h = 0.25;
         }
         return moment_t{ a + 2 * (b - a) * (time - h) };
@@ -211,8 +211,8 @@ namespace calendrical::calendars {
 
     moment_t modern_hindu_base::hindu_solar_longitude_at_or_after(const angle_t& l, const moment_t& t)
     {
-        const auto T = static_cast<double>(t) + hindu_sidereal_year / 360 * mod(l - hindu_solar_longitude(t), 360).degrees();
-        const auto a = std::max(static_cast<double>(t), T - 5);
+        const auto T = t.days() + hindu_sidereal_year / 360 * mod(l - hindu_solar_longitude(t), 360).degrees();
+        const auto a = std::max(t.days(), T - 5);
         const double b = T + 5;
         return moment_t{ inverse_angular(make_value_function(hindu_solar_longitude), l.degrees(), a, b) };
     }
@@ -226,8 +226,8 @@ namespace calendrical::calendars {
     moment_t modern_hindu_base::hindu_lunar_day_at_or_after(const double& k, const moment_t& t)
     {
         const angle_t phase = (k - 1) * 12_deg;
-        const double T = static_cast<double>(t) + mod(phase - hindu_lunar_phase(t), 360).degrees() * hindu_synodic_month / 360;
-        const auto a = std::max(static_cast<double>(t), T - 2);
+        const double T = t.days() + mod(phase - hindu_lunar_phase(t), 360).degrees() * hindu_synodic_month / 360;
+        const auto a = std::max(t.days(), T - 2);
         const double b = T + 2;
         return moment_t{ inverse_angular(make_value_function(hindu_lunar_phase), phase.degrees(), a, b) };
     }

@@ -95,7 +95,7 @@ namespace tests {
         static_assert(time_and_astronomy::J2000 == moment_t{ 730120.5 });
         static_assert(calendars::gregorian_calendar::standard.epoch() == fixed_date_t{ 1 });
 
-        constexpr auto j2000_val = static_cast<double>(time_and_astronomy::J2000);
+        constexpr auto j2000_val = time_and_astronomy::J2000.days();
         static_assert(j2000_val == 730120.5);
 
         EXPECT_EQ(calendars::gregorian_calendar::standard.to_fixed({ 2000, month::january, 1 }), fixed_date_t{ 730120 });

@@ -87,3 +87,5 @@ in the implementation and tests.
   ratio calculations with `angle / angle_t::full_circle`, and day-fraction conversion.
 - [Explicit fixed-date conversion](fixed-date-migration.md): integer day arithmetic,
   scalar access with `value()` and fractional-day calculations using `moment_t`.
+- [Explicit moment conversion](moment-migration.md): typed day arithmetic, raw day
+  access with `days()` and rounding back to dates with `floor`, `ceil` and `round`.

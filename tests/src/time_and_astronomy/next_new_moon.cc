@@ -49,7 +49,7 @@ namespace tests {
         constexpr moment_t epsilon = moment_t::hms(0,1);
         auto &[rd, output] = GetParam();
         const moment_t input{ rd };
-        EXPECT_NEAR(new_moon_on_or_after(input), output, epsilon) << moment_t::to_hh_mm_ss(output) << " : " << moment_t::to_hh_mm_ss(new_moon_on_or_after(input)) << " : " << input << std::endl;
+        EXPECT_NEAR(new_moon_on_or_after(input).days(), output.days(), epsilon.days()) << moment_t::to_hh_mm_ss(output) << " : " << moment_t::to_hh_mm_ss(new_moon_on_or_after(input)) << " : " << input << std::endl;
     }
 
 
