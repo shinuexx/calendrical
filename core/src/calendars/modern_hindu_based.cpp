@@ -154,26 +154,27 @@ namespace calendrical::calendars {
         const auto date = t.to_fixed_date();
         const auto time = t.time();
         const auto q = static_cast<int32_t>(std::floor(4 * time));
-        double a, b, h;
+        moment_t a, b;
+        double h;
         if (q == 0)
         {
-            a = hindu_sunset(date.subtract(1)).days();
-            b = hindu_sunrise(date).days();
+            a = hindu_sunset(date.subtract(1));
+            b = hindu_sunrise(date);
             h = -0.25;
         }
         else if (q == 3)
         {
-            a = hindu_sunset(date).days();
-            b = hindu_sunrise(date.add(1)).days();
+            a = hindu_sunset(date);
+            b = hindu_sunrise(date.add(1));
             h = 0.75;
         }
         else
         {
-            a = hindu_sunrise(date).days();
-            b = hindu_sunset(date).days();
+            a = hindu_sunrise(date);
+            b = hindu_sunset(date);
             h = 0.25;
         }
-        return moment_t{ a + 2 * (b - a) * (time - h) };
+        return a + 2 * (b - a) * (time - h);
     }
 
     moment_t modern_hindu_base::alt_hindu_sunrise(const fixed_date_t& date) const
@@ -211,10 +212,10 @@ namespace calendrical::calendars {
 
     moment_t modern_hindu_base::hindu_solar_longitude_at_or_after(const angle_t& l, const moment_t& t)
     {
-        const auto T = t.days() + hindu_sidereal_year / 360 * mod(l - hindu_solar_longitude(t), 360).degrees();
-        const auto a = std::max(t.days(), T - 5);
-        const double b = T + 5;
-        return moment_t{ inverse_angular(make_value_function(hindu_solar_longitude), l.degrees(), a, b) };
+        const auto T = t + hindu_sidereal_year / 360 * mod(l - hindu_solar_longitude(t), 360).degrees();
+        const auto a = std::max(t, T - 5);
+        const auto b = T + 5;
+        return moment_t{ inverse_angular(make_value_function(hindu_solar_longitude), l.degrees(), a.days(), b.days()) };
     }
 
     moment_t modern_hindu_base::mesha_samkranti(int32_t gyear)
@@ -226,10 +227,10 @@ namespace calendrical::calendars {
     moment_t modern_hindu_base::hindu_lunar_day_at_or_after(const double& k, const moment_t& t)
     {
         const angle_t phase = (k - 1) * 12_deg;
-        const double T = t.days() + mod(phase - hindu_lunar_phase(t), 360).degrees() * hindu_synodic_month / 360;
-        const auto a = std::max(t.days(), T - 2);
-        const double b = T + 2;
-        return moment_t{ inverse_angular(make_value_function(hindu_lunar_phase), phase.degrees(), a, b) };
+        const auto T = t + mod(phase - hindu_lunar_phase(t), 360).degrees() * hindu_synodic_month / 360;
+        const auto a = std::max(t, T - 2);
+        const auto b = T + 2;
+        return moment_t{ inverse_angular(make_value_function(hindu_lunar_phase), phase.degrees(), a.days(), b.days()) };
     }
 
     fixed_date_t modern_hindu_base::hindu_lunar_new_year(int32_t gyear) const
