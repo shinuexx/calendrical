@@ -186,7 +186,10 @@ namespace calendrical::cli {
             }
 
             try {
-                (void)cmd->execute(cmd_args);
+                if (const int rc = cmd->execute(cmd_args); rc != 0) {
+                    err << "Command exited with code " << rc << '\n';
+                    err.flush();
+                }
             } catch (const std::exception& ex) {
                 err << "Error: " << ex.what() << '\n';
                 err.flush();

@@ -204,6 +204,15 @@ namespace tests {
         EXPECT_NE(err.str().find("Unknown command: bad_command_xyz"), std::string::npos);
     }
 
+    namespace {
+        class mock_failing_command final : public command {
+        public:
+            mock_failing_command() : command("failing", "Test command returning error code") {}
+            void print_help() const override {}
+            int execute(const std::vector<std::string_view>&) const override { return 42; }
+        };
+    }
+
     TEST_F(cli_interactive_fixture, command_runtime_error_reports_and_continues) {
         // convert with invalid arguments causes convert_command to throw,
         // session should report error to err and continue until exit
@@ -214,6 +223,19 @@ namespace tests {
 
         EXPECT_EQ(cmd.execute({}), 0);
         EXPECT_NE(err.str().find("Error:"), std::string::npos);
+    }
+
+    TEST_F(cli_interactive_fixture, command_non_zero_exit_code_reports_and_continues) {
+        command_dispatcher dispatcher;
+        dispatcher.add<mock_failing_command>();
+
+        std::istringstream in("failing\nexit\n");
+        std::ostringstream out;
+        std::ostringstream err;
+        interactive_command cmd(std::addressof(dispatcher), in, out, err);
+
+        EXPECT_EQ(cmd.execute({}), 0);
+        EXPECT_NE(err.str().find("Command exited with code 42"), std::string::npos);
     }
 
     TEST_F(cli_interactive_fixture, unclosed_quote_reports_error_and_continues) {
