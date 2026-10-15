@@ -31,7 +31,7 @@ namespace calendrical::calendars {
         const int64_t last = range.contains(range.max) ? range.max + 1 : range.max;
         const auto positions = calendrical::positions_in_range<int64_t>(
             day_in_period, period, delta, interval_left_closed_between(first, last));
-        auto dates = positions | std::views::transform([](int64_t position) { return fixed_date_t{ position }; });
+        auto dates = positions | std::views::transform(bind_constructor<fixed_date_t>{});
         return { dates.begin(), dates.end() };
     }
 
