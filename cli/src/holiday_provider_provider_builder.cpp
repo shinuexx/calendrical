@@ -8,6 +8,7 @@
 #include "calendars/korean_calendar.hpp"
 #include "calendars/modern_hindu_lunar_calendar.hpp"
 #include "calendars/modern_hindu_solar_calendar.hpp"
+#include "calendars/pawukon_calendar.hpp"
 #include "calendars/persian_calendar.hpp"
 #include "calendars/samaritan_calendar.hpp"
 #include "calendars/tibetan_calendar.hpp"
@@ -20,6 +21,7 @@
 #include "holiday_providers/julian_calendar_holiday_provider.hpp"
 #include "holiday_providers/modern_hindu_lunar_calendar_holiday_provider.hpp"
 #include "holiday_providers/modern_hindu_solar_calendar_holiday_provider.hpp"
+#include "holiday_providers/pawukon_calendar_holiday_provider.hpp"
 #include "holiday_providers/persian_based_calendar_holiday_provider.hpp"
 #include "holiday_providers/samaritan_calendar_holiday_provider.hpp"
 #include "holiday_providers/simple_calendar_holiday_provider.hpp"
@@ -86,6 +88,10 @@ namespace calendrical::cli {
         provider.add<holiday_providers::tibetan_calendar_holiday_provider>(
             "tibetan",
             std::addressof(calendar_instance<calendars::tibetan_calendar>())
+        );
+        provider.add<holiday_providers::pawukon_calendar_holiday_provider>(
+            "pawukon",
+            std::addressof(calendar_instance<calendars::pawukon_calendar>())
         );
 
         provider.add<holiday_providers::coptic_based_calendar_holiday_provider>("coptic", &calendars::coptic_calendar);

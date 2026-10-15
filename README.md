@@ -196,6 +196,7 @@ Depending on converter:
 - `ethiopic`
 - `egyptian`
 - `armenian`
+- `pawukon` (Balinese Pawukon: every Kajeng Keliwon and Tumpek in the year)
 
 Provider aliases supported by the `holidays` parser:
 
