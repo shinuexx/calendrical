@@ -120,6 +120,8 @@ namespace calendrical::cli {
 
             std::string line;
             if (!std::getline(in, line)) {
+                out << '\n';
+                out.flush();
                 break; // EOF
             }
 

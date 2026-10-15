@@ -132,6 +132,8 @@ namespace tests {
         EXPECT_EQ(cmd.execute({}), 0);
         EXPECT_NE(out.str().find("Enter commands"), std::string::npos);
         EXPECT_NE(out.str().find("> "), std::string::npos);
+        EXPECT_FALSE(out.str().empty());
+        EXPECT_EQ(out.str().back(), '\n');
         EXPECT_TRUE(err.str().empty());
     }
 
@@ -268,5 +270,64 @@ namespace tests {
         EXPECT_NE(m_dispatcher["interactive"], nullptr);
         EXPECT_EQ(m_dispatcher["interactive"]->name(), "interactive");
         EXPECT_FALSE(m_dispatcher["interactive"]->description().empty());
+    }
+
+    TEST_F(cli_interactive_fixture, dispatcher_interactive_flags_dispatch) {
+        command_dispatcher dispatcher;
+        std::istringstream in("exit\n");
+        std::ostringstream out;
+        std::ostringstream err;
+        dispatcher.add(std::make_unique<interactive_command>(&dispatcher, in, out, err));
+
+        const char* const argv_i[] = {"calendrical_cli", "-i"};
+        EXPECT_EQ(dispatcher.dispatch(2, argv_i), 0);
+        EXPECT_NE(out.str().find("Enter commands"), std::string::npos);
+
+        std::istringstream in2("exit\n");
+        std::ostringstream out2;
+        std::ostringstream err2;
+        command_dispatcher dispatcher2;
+        dispatcher2.add(std::make_unique<interactive_command>(&dispatcher2, in2, out2, err2));
+
+        const char* const argv_long[] = {"calendrical_cli", "--interactive"};
+        EXPECT_EQ(dispatcher2.dispatch(2, argv_long), 0);
+        EXPECT_NE(out2.str().find("Enter commands"), std::string::npos);
+    }
+
+    TEST_F(cli_interactive_fixture, dispatcher_interactive_help_flags) {
+        command_dispatcher dispatcher;
+        std::istringstream in("");
+        std::ostringstream out;
+        std::ostringstream err;
+        dispatcher.add(std::make_unique<interactive_command>(&dispatcher, in, out, err));
+
+        const char* const argv_i_help[] = {"calendrical_cli", "-i", "--help"};
+        testing::internal::CaptureStdout();
+        EXPECT_EQ(dispatcher.dispatch(3, argv_i_help), 0);
+        const auto captured = testing::internal::GetCapturedStdout();
+        EXPECT_NE(captured.find("Usage:"), std::string::npos);
+
+        const char* const argv_long_help[] = {"calendrical_cli", "--interactive", "-h"};
+        testing::internal::CaptureStdout();
+        EXPECT_EQ(dispatcher.dispatch(3, argv_long_help), 0);
+        const auto captured2 = testing::internal::GetCapturedStdout();
+        EXPECT_NE(captured2.find("Usage:"), std::string::npos);
+    }
+
+    TEST_F(cli_interactive_fixture, dispatcher_unregistered_interactive_flag_throws) {
+        command_dispatcher dispatcher;
+        const char* const argv_i[] = {"calendrical_cli", "-i"};
+        EXPECT_THROW((void)dispatcher.dispatch(2, argv_i), std::runtime_error);
+        const char* const argv_long[] = {"calendrical_cli", "--interactive"};
+        EXPECT_THROW((void)dispatcher.dispatch(2, argv_long), std::runtime_error);
+    }
+
+    TEST_F(cli_interactive_fixture, dispatcher_main_help_mentions_interactive) {
+        command_dispatcher dispatcher;
+        const char* const argv[] = {"calendrical_cli", "--help"};
+        testing::internal::CaptureStdout();
+        EXPECT_EQ(dispatcher.dispatch(2, argv), 0);
+        const auto captured = testing::internal::GetCapturedStdout();
+        EXPECT_NE(captured.find("-i | --interactive"), std::string::npos);
     }
 }

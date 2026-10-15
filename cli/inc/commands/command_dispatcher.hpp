@@ -14,7 +14,7 @@ namespace calendrical::cli::commands {
     /**
      * @brief Routes `argv` to the registered subcommand.
      *
-     * Also handles `-h`, `--help`, `help`, `help <command>` and `--version`.
+     * Also handles `-h`, `--help`, `help`, `help <command>`, `-i`, `--interactive` and `--version`.
      */
     class command_dispatcher final {
         /** @brief Registered subcommands keyed by name. */
