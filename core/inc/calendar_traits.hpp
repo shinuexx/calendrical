@@ -455,6 +455,9 @@ namespace calendrical::calendar_traits {
             for (std::size_t i = 0; i < parts.size(); ++i) {
                 values[offset + i] = detail::parse_int32(parts[i], names[offset + i]);
             }
+            if (parts.size() == 5 && values[4] < 0) {
+                throw std::invalid_argument("Negative Mayan Long Count values require the 9-field form; only alautun may be negative");
+            }
             return {values[0], values[1], values[2], values[3], values[4],
                     values[5], values[6], values[7], values[8]};
         }

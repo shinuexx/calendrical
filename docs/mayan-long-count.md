@@ -80,6 +80,8 @@ The CLI registers `mayan` and the alias `mayan_long_count`. Inputs are either:
   `ALAUTUN-KINCHILTUN-CAKABTUN-PICTUN-BAKTUN-KATUN-TUN-UINAL-KIN`.
 - Five dash-separated fields: `BAKTUN-KATUN-TUN-UINAL-KIN`, with four leading
   zero fields implied. This shorthand cannot encode negative counts or baktun 20.
+  A negative baktun in this form is rejected with a diagnostic directing callers
+  to the nine-field form, where only alautun may be negative.
 
 Dots are not an input delimiter; the dotted forms in reference tables are the
 conventional historical display. A leading minus sign is allowed in the full

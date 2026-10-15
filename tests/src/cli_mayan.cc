@@ -34,6 +34,23 @@ namespace tests {
         EXPECT_THROW(datetype_from_string<mayan_long_count>(invalid_number), std::runtime_error);
     }
 
+    TEST(cli_mayan, negative_shorthand_explains_the_required_full_form) {
+        const auto provider = cli::build_converter_provider();
+        for (const std::string name : {"mayan", "mayan_long_count"}) {
+            const auto* converter = provider[name];
+            ASSERT_NE(converter, nullptr);
+            try {
+                (void)converter->to_rd("-1-0-0-0-0");
+                FAIL() << "Negative shorthand must be rejected";
+            } catch (const std::invalid_argument& error) {
+                const std::string message{error.what()};
+                EXPECT_NE(message.find("9-field form"), std::string::npos);
+                EXPECT_NE(message.find("only alautun may be negative"), std::string::npos);
+            }
+            EXPECT_EQ(converter->to_rd("-1-19-19-19-19-19-19-17-19"), -1137143_rd);
+        }
+    }
+
     TEST(cli_mayan, malformed_compact_values_are_rejected) {
         for (const std::string input : {"", "1-2-3-4", "0-0-0-0-0-0", "0-0-0-0-0-0-0-0",
                                        "0-0-0-0-0-0-0-0-0-0", "13.0.0.0.0", "13-0-x-0-0",
