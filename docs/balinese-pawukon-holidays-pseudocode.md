@@ -52,8 +52,9 @@ on_or_before(date, reference):
   return reference - ((reference - epoch - day(date)) mod 210)
 
 positions_in_range(day, period, range):     # period divides 210
-  first = range.min + ((day - (range.min - epoch)) mod period)
-  return [first, first + period, ...] filtered by range
+  delta = day_from_fixed(RD 0) mod period    # CC cap-Delta
+  [first, last) = range mapped to a half-open interval by its boundary policy
+  return calendrical::positions_in_range(day mod period, period, delta, [first, last))
 
 in_year(gyear):
   year = gregorian_year_range(gyear)

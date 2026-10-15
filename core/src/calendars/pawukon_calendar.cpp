@@ -21,15 +21,19 @@ namespace calendrical::calendars {
     std::vector<fixed_date_t> pawukon_calendar::positions_in_range(int64_t day, int64_t period, const interval<fixed_date_t>& range) const {
         if (period <= 0 || pawukon_date::cycle_length % period != 0)
             throw std::invalid_argument("pawukon_calendar::positions_in_range: period " + std::to_string(period) + " does not divide 210");
-        std::vector<fixed_date_t> result{};
-        // Reduce both positions modulo period first: day may be any int64_t, and `%` cannot overflow here.
+        // Reduce day modulo period first: it may be any int64_t, and `%` cannot overflow here.
         const auto day_in_period = (day % period + period) % period;
-        const auto min_in_period = static_cast<int64_t>(day_from_fixed(range.min)) % period;
-        // First matching date on or after range.min; an open lower bound is filtered below.
-        auto date = range.min + (day_in_period - min_in_period + period) % period;
-        for (; date <= range.max; date += period)
-            if (range.contains(date))
-                result.push_back(date);
+        // CC's cap-Delta: the position of RD 0 in the cycle.
+        const auto delta = static_cast<int64_t>(day_from_fixed(fixed_date_t{ 0 })) % period;
+        // The helper scans the half-open range [min, max); map the boundary policy of range onto it.
+        const int64_t first = range.contains(range.min) ? range.min : range.min + 1;
+        const int64_t last = range.contains(range.max) ? range.max + 1 : range.max;
+        const auto positions = calendrical::positions_in_range<int64_t>(
+            day_in_period, period, delta, interval_left_closed_between(first, last));
+        std::vector<fixed_date_t> result{};
+        result.reserve(positions.size());
+        for (const auto position : positions)
+            result.emplace_back(position);
         return result;
     }
 
