@@ -19,6 +19,7 @@
 #include "calendars/japanese_calendar.hpp"
 #include "calendars/julian_calendar.hpp"
 #include "calendars/korean_calendar.hpp"
+#include "calendars/mayan_calendar.hpp"
 #include "calendars/modern_hindu_lunar_calendar.hpp"
 #include "calendars/modern_hindu_solar_calendar.hpp"
 #include "calendars/observational_hebrew_calendar.hpp"
@@ -138,6 +139,8 @@ namespace calendrical::cli {
         add_calendar_converter<calendars::japanese_calendar>(provider, "japanese", "CYCLE-YEAR-MONTH-LEAP_MONTH-DAY");
         add_calendar_converter<calendars::julian_calendar>(provider, "julian", "YYYY-MONTH-DD");
         add_calendar_converter<calendars::korean_calendar>(provider, "korean", "CYCLE-YEAR-MONTH-LEAP_MONTH-DAY");
+        add_calendar_converter<calendars::mayan_calendar>(provider, "mayan", "ALAUTUN-KINCHILTUN-CAKABTUN-PICTUN-BAKTUN-KATUN-TUN-UINAL-KIN (or BAKTUN-KATUN-TUN-UINAL-KIN)");
+        add_calendar_converter<calendars::mayan_calendar>(provider, "mayan_long_count", "ALAUTUN-KINCHILTUN-CAKABTUN-PICTUN-BAKTUN-KATUN-TUN-UINAL-KIN (or BAKTUN-KATUN-TUN-UINAL-KIN)");
         add_calendar_converter<calendars::modern_hindu_lunar_calendar>(provider, "modern_hindu_lunar", "YEAR-MONTH-LEAP_MONTH-DAY-LEAP_DAY");
         add_calendar_converter<calendars::modern_hindu_solar_calendar>(provider, "modern_hindu_solar", "YYYY-MM-DD");
         add_calendar_converter<calendars::observational_hebrew_calendar>(provider, "observational_hebrew", "YYYY-MONTH-DD");

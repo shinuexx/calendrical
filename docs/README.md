@@ -33,6 +33,11 @@ provider headers. The `us` provider (Independence Day, Labor Day, Memorial Day,
 Election Day and DST start/end, CC 2.32–2.40) is documented in its
 [provider header](../core/inc/holiday_providers/us_holiday_provider.hpp).
 
+## Other calendar documentation
+
+- [Maya Long Count](mayan-long-count.md): correlation, canonical fields, numeric bounds,
+  pre-epoch arithmetic, CLI formats and reference tests; separate from the holiday documents above.
+
 ## Meaning of statuses
 
 - **implemented** — the function or rule exists in the linked code. The API name,

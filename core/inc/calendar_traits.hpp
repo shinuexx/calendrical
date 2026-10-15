@@ -1,5 +1,6 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cctype>
 #include <charconv>
@@ -17,6 +18,7 @@
 #include "datetypes/iso_date.hpp"
 #include "datetypes/julian_date.hpp"
 #include "datetypes/lunar_date.hpp"
+#include "datetypes/mayan_dates.hpp"
 #include "datetypes/roman_date.hpp"
 #include "datetypes/sexagesimal_name.hpp"
 #include "datetypes/simple_date.hpp"
@@ -416,6 +418,50 @@ namespace calendrical::calendar_traits {
      * (`a-b-c`) formats.
      */
     struct datetype_string_converter;
+
+    template<>
+    /** @brief Text formats for the nine-field canonical Maya Long Count. */
+    struct datetype_string_converter<datetypes::mayan_long_count> {
+        /** @brief Serializes all nine named fields. */
+        static std::string to_string(const datetypes::mayan_long_count& date) { return date.to_string(); }
+        /** @brief Parses all nine named fields; semantic validation belongs to the calendar. */
+        static datetypes::mayan_long_count from_string(std::string_view input) {
+            const auto fields = detail::parse_record(input, "mayan_long_count");
+            if (fields.size() != 9 || std::count(input.begin(), input.end(), ':') != 9) {
+                throw std::runtime_error("mayan_long_count requires exactly nine distinct fields");
+            }
+            return {
+                detail::parse_int32(detail::get_required_field(fields, "alautun", "mayan_long_count"), "alautun"),
+                detail::parse_int32(detail::get_required_field(fields, "kinchiltun", "mayan_long_count"), "kinchiltun"),
+                detail::parse_int32(detail::get_required_field(fields, "cakabtun", "mayan_long_count"), "cakabtun"),
+                detail::parse_int32(detail::get_required_field(fields, "pictun", "mayan_long_count"), "pictun"),
+                detail::parse_int32(detail::get_required_field(fields, "baktun", "mayan_long_count"), "baktun"),
+                detail::parse_int32(detail::get_required_field(fields, "katun", "mayan_long_count"), "katun"),
+                detail::parse_int32(detail::get_required_field(fields, "tun", "mayan_long_count"), "tun"),
+                detail::parse_int32(detail::get_required_field(fields, "uinal", "mayan_long_count"), "uinal"),
+                detail::parse_int32(detail::get_required_field(fields, "kin", "mayan_long_count"), "kin")
+            };
+        }
+        /** @brief Parses nine dash-separated fields, or five fields with four leading zeroes. */
+        static datetypes::mayan_long_count from_compact_string(std::string_view input) {
+            const auto parts = detail::split_parts(input, '-');
+            if (parts.size() != 5 && parts.size() != 9) {
+                throw std::runtime_error("Mayan Long Count requires 5 or 9 dash-separated fields");
+            }
+            constexpr std::array<std::string_view, 9> names{
+                "alautun", "kinchiltun", "cakabtun", "pictun", "baktun", "katun", "tun", "uinal", "kin"};
+            std::array<int32_t, 9> values{};
+            const auto offset = values.size() - parts.size();
+            for (std::size_t i = 0; i < parts.size(); ++i) {
+                values[offset + i] = detail::parse_int32(parts[i], names[offset + i]);
+            }
+            if (parts.size() == 5 && values[4] < 0) {
+                throw std::invalid_argument("Negative Mayan Long Count values require the 9-field form; only alautun may be negative");
+            }
+            return {values[0], values[1], values[2], values[3], values[4],
+                    values[5], values[6], values[7], values[8]};
+        }
+    };
 
     template<>
     /** @brief String conversion for @ref datetypes::simple_date. */
