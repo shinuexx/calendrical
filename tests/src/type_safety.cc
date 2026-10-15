@@ -8,9 +8,11 @@
 
 #include "angle.hpp"
 #include "fixed_date.hpp"
+#include "lunar_phase.hpp"
 #include "moment.hpp"
 #include "operator_traits.hpp"
 #include "sample_fixed_dates.hpp"
+#include "season.hpp"
 
 // Compile-time checks of the unit algebra of angle_t, fixed_date_t and moment_t (issue #4).
 // Later parts of #4 extend these sections when they make the numeric conversions explicit.
@@ -78,6 +80,39 @@ namespace tests::type_safety {
     static_assert(divide_yields<angle_t, double, angle_t>);
     static_assert(divide_yields<angle_t, angle_t, double>);
 
+    // Numeric conversion is explicit (issue #19); implicit conversions from angle enums are preserved.
+    static_assert(!std::is_convertible_v<angle_t, double>);
+    static_assert(std::is_constructible_v<double, angle_t>);
+    static_assert(std::is_convertible_v<season, angle_t>);
+    static_assert(std::is_convertible_v<lunar_phase, angle_t>);
+
+    // Numeric types cannot be implicitly mixed with angle_t additively or in comparisons.
+    static_assert(!can_add<angle_t, double>);
+    static_assert(!can_add<double, angle_t>);
+    static_assert(!can_subtract<angle_t, double>);
+    static_assert(!can_subtract<double, angle_t>);
+    static_assert(!can_compare<angle_t, double>);
+    static_assert(!can_compare<double, angle_t>);
+
+    // Angles cannot mix additively with calendar dates or moments (e.g. 10_rd + 20_deg).
+    static_assert(!can_add<fixed_date_t, angle_t>);
+    static_assert(!can_add<angle_t, fixed_date_t>);
+    static_assert(!can_subtract<fixed_date_t, angle_t>);
+    static_assert(!can_subtract<angle_t, fixed_date_t>);
+    static_assert(!can_add<decltype(10_rd), decltype(20_deg)>);
+    static_assert(!can_add<decltype(20_deg), decltype(10_rd)>);
+    static_assert(!can_subtract<decltype(10_rd), decltype(20_deg)>);
+    static_assert(!can_subtract<decltype(20_deg), decltype(10_rd)>);
+
+    static_assert(!can_add<moment_t, angle_t>);
+    static_assert(!can_add<angle_t, moment_t>);
+    static_assert(!can_subtract<moment_t, angle_t>);
+    static_assert(!can_subtract<angle_t, moment_t>);
+    static_assert(!can_add<decltype(10_m), decltype(20_deg)>);
+    static_assert(!can_add<decltype(20_deg), decltype(10_m)>);
+    static_assert(!can_subtract<decltype(10_m), decltype(20_deg)>);
+    static_assert(!can_subtract<decltype(20_deg), decltype(10_m)>);
+
     // --- typed helpers keep the unit -------------------------------------------------------
     static_assert(std::same_as<decltype(mod(angle_t{}, 360)), angle_t>);
     static_assert(std::same_as<decltype(mod(angle_t{}, 360.0)), angle_t>);
@@ -97,9 +132,12 @@ namespace tests::type_safety {
 
     // --- raw value accessors ---------------------------------------------------------------
     static_assert(std::same_as<decltype(angle_t{}.degrees()), double>);
+    static_assert(std::same_as<decltype(day_fraction(angle_t{})), double>);
     static_assert(std::same_as<decltype(moment_t{}.days()), double>);
     static_assert(std::same_as<decltype(fixed_date_t{}.value()), int64_t>);
     static_assert((12.5_deg).degrees() == 12.5);
+    static_assert(day_fraction(90_deg) == 0.25);
+    static_assert(day_fraction(180_deg) == 0.5);
     static_assert((3.25_m).days() == 3.25);
     static_assert((7_rd).value() == 7);
 
@@ -189,5 +227,22 @@ namespace tests::type_safety {
         EXPECT_EQ(floor(12.75_deg), 12_deg);
         EXPECT_EQ(ceil(12.25_deg), 13_deg);
         EXPECT_EQ(abs(-5_deg), 5_deg);
+    }
+
+    TEST(type_safety, angle_day_fraction) {
+        EXPECT_DOUBLE_EQ(day_fraction(0_deg), 0.0);
+        EXPECT_DOUBLE_EQ(day_fraction(90_deg), 0.25);
+        EXPECT_DOUBLE_EQ(day_fraction(180_deg), 0.5);
+        EXPECT_DOUBLE_EQ(day_fraction(360_deg), 1.0);
+        EXPECT_DOUBLE_EQ(day_fraction(270_deg), 0.75);
+    }
+
+    TEST(type_safety, angle_enum_implicit_conversion) {
+        const angle_t spring = season::spring;
+        EXPECT_EQ(spring, 0_deg);
+        const angle_t summer = season::summer;
+        EXPECT_EQ(summer, 90_deg);
+        const angle_t full = lunar_phase::full_moon;
+        EXPECT_EQ(full, 180_deg);
     }
 }

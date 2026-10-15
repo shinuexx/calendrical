@@ -49,7 +49,7 @@ namespace tests {
         constexpr location loc = locations::mecca;
         auto &[rd, output] = GetParam();
         const moment_t input{ rd };
-        EXPECT_NEAR(lunar_altitude(input, loc), output, 1e-6) << output << " : " << lunar_altitude(input, loc) << " : " << input << std::endl;
+        EXPECT_NEAR(lunar_altitude(input, loc).degrees(), output.degrees(), 1e-6) << output << " : " << lunar_altitude(input, loc) << " : " << input << std::endl;
     }
 
 

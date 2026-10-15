@@ -83,5 +83,7 @@ in the implementation and tests.
 
 ## API migration
 
+- [Explicit angle conversion](angle-migration.md): explicit degree access with `degrees()`,
+  ratio calculations with `angle / angle_t::full_circle`, and day-fraction conversion.
 - [Explicit fixed-date conversion](fixed-date-migration.md): integer day arithmetic,
   scalar access with `value()` and fractional-day calculations using `moment_t`.

@@ -48,7 +48,7 @@ namespace tests {
     TEST_P(solar_longitude_test, calculate) {
         auto &[rd, output] = GetParam();
         const moment_t input = moment_t{ rd } + 0.5;
-        EXPECT_NEAR(solar_longitude(input), output, 1e-6) << output << " : " << solar_longitude(input) << " : " << input << std::endl;
+        EXPECT_NEAR(solar_longitude(input).degrees(), output.degrees(), 1e-6) << output << " : " << solar_longitude(input) << " : " << input << std::endl;
     }
 
 
