@@ -260,8 +260,8 @@ namespace calendrical::time_and_astronomy {
     moment_t solar_longitude_after(const angle_t& l, const moment_t& t)
     {
         constexpr auto rate = mean_tropical_year / 360;
-        const auto T = t + rate * mod(l - solar_longitude(t), 360);
-        const auto a = std::max<double>(t, T - 5);
+        const auto T = t + rate * mod(l - solar_longitude(t), 360).degrees();
+        const auto a = std::max(t, T - 5);
         const auto b = T + 5;
         return moment_t{ inverse_angular(make_value_function(solar_longitude), l, a, b) };
     }
@@ -289,12 +289,12 @@ namespace calendrical::time_and_astronomy {
         const auto A = cos(n) * sin(P);
         const auto B = cos(P);
         const auto arg = arctan(A, B);
-        return angle_t{ mod(p + P - arg, 360) };
+        return mod(p + P - arg, 360);
     }
 
     angle_t sidereal_solar_longitude(const moment_t& t)
     {
-        return angle_t{ mod(solar_longitude(t) - precession(t) + sidereal_start, 360) };
+        return mod(solar_longitude(t) - precession(t) + sidereal_start, 360);
     }
 
     angle_t solar_altitude(const moment_t& t, const location& location)
@@ -305,16 +305,16 @@ namespace calendrical::time_and_astronomy {
         const auto a = right_ascension(t, 0_deg, l);
         const auto d = declination(t, 0_deg, l);
         const auto O0 = sidereal_from_moment(t);
-        const auto H = angle_t{ mod(O0 + phi - a, 360) };
+        const auto H = mod(O0 + phi - a, 360);
         const auto altitude = asin(sin(psi) * sin(d) + cos(psi) * cos(d) * cos(H));
-        return angle_t{ interval_modulus(altitude, -180, 180) };
+        return interval_modulus(altitude, -180_deg, 180_deg);
     }
     moment_t estimate_prior_solar_longitude(const angle_t& l, const moment_t& t)
     {
         constexpr auto rate = mean_tropical_year / 360;
-        const auto T = t - rate * mod(solar_longitude(t) - l, 360);
-        const auto D = interval_modulus(solar_longitude(T) - l, -180, 180);
-        return std::min(t, T - rate * D);
+        const auto T = t - rate * mod(solar_longitude(t) - l, 360).degrees();
+        const auto D = interval_modulus(solar_longitude(T) - l, -180_deg, 180_deg);
+        return std::min(t, T - rate * D.degrees());
     }
 
     static constexpr auto nth_new_moon_table_a = std::array{
@@ -394,14 +394,14 @@ namespace calendrical::time_and_astronomy {
     moment_t new_moon_before(const moment_t& t) {
         const auto t0 = *zero_new_moon;
         const auto psi = lunar_phase(t);
-        const auto n = static_cast<int64_t>(std::round((t - t0) / mean_synodic_month - psi / angle_t::full_circle));
+        const auto n = static_cast<int64_t>(std::round((t - t0).days() / mean_synodic_month - psi / angle_t::full_circle));
         const auto a = last_passing([&t](const int64_t& k) { return nth_new_moon(k) < t; }, n - 1);
         return nth_new_moon(a);
     }
     moment_t new_moon_on_or_after(const moment_t& t) {
         const auto t0 = *zero_new_moon;
         const auto psi = lunar_phase(t);
-        const auto n = static_cast<int64_t>(std::round((t - t0) / mean_synodic_month - psi / angle_t::full_circle));
+        const auto n = static_cast<int64_t>(std::round((t - t0).days() / mean_synodic_month - psi / angle_t::full_circle));
         const auto a = least_passing([&t](const int64_t& k) { return nth_new_moon(k) >= t; }, n);
         return nth_new_moon(a);
     }
@@ -511,31 +511,31 @@ namespace calendrical::time_and_astronomy {
     }
 
     angle_t lunar_node(const fixed_date_t& date) {
-        return angle_t{ interval_modulus(moon_node(julian_centuries(moment_t{ date })), -90, 90) };
+        return interval_modulus(moon_node(julian_centuries(moment_t{ date })), -90_deg, 90_deg);
     }
 
     angle_t sidereal_lunar_longitude(const moment_t& t) {
-        return angle_t{ mod(lunar_longitude(t) - precession(t) + sidereal_start, 360) };
+        return mod(lunar_longitude(t) - precession(t) + sidereal_start, 360);
     }
 
     angle_t lunar_phase(const moment_t& t) {
         const auto psi = mod(lunar_longitude(t) - solar_longitude(t), 360);
         const auto t0 = *zero_new_moon;
-        const auto n = static_cast<int64_t>(std::round((t - t0) / mean_synodic_month));
-        if (const auto psi1 = 360 * mod((t - nth_new_moon(n)) / mean_synodic_month, 1); std::abs(psi - psi1) > 180)
-            return angle_t{ psi1 };
-        return angle_t{ psi };
+        const auto n = static_cast<int64_t>(std::round((t - t0).days() / mean_synodic_month));
+        if (const auto psi1 = 360_deg * mod((t - nth_new_moon(n)).days() / mean_synodic_month, 1); abs(psi - psi1) > 180_deg)
+            return psi1;
+        return psi;
     }
 
     moment_t lunar_phase_at_or_before(const angle_t& psi, const moment_t& t) {
-        const auto T = t - mean_synodic_month * mod(lunar_phase(t) - psi, 360) / 360;
+        const auto T = t - mean_synodic_month * mod(lunar_phase(t) - psi, 360).degrees() / 360;
         const auto a = T - 2;
-        const auto b = std::min<double>(t, T + 2);
+        const auto b = std::min(t, T + 2);
         return moment_t{ inverse_angular(make_value_function(lunar_phase), psi, a, b) };
     }
     moment_t lunar_phase_at_or_after(const angle_t& psi, const moment_t& t) {
-        const auto T = t + mean_synodic_month * mod(psi - lunar_phase(t), 360) / 360;
-        const auto a = std::max<double>(t, T - 2);
+        const auto T = t + mean_synodic_month * mod(psi - lunar_phase(t), 360).degrees() / 360;
+        const auto a = std::max(t, T - 2);
         const auto b = T + 2;
         return moment_t{ inverse_angular(make_value_function(lunar_phase), psi, a, b) };
     }
@@ -629,10 +629,10 @@ namespace calendrical::time_and_astronomy {
         const auto a = right_ascension(t, b, l);
         const auto d = declination(t, b, l);
         const auto O0 = sidereal_from_moment(t);
-        const auto H = angle_t{ mod(O0 + phi - a, 360) };
+        const auto H = mod(O0 + phi - a, 360);
         const auto tmp = sin(psi) * sin(d) + cos(psi) * cos(d) * cos(H);
         const auto altitude = asin(tmp);
-        return angle_t{ interval_modulus(altitude, -180, 180) };
+        return interval_modulus(altitude, -180_deg, 180_deg);
     }
 
     static constexpr auto lunar_distance_table = std::array{
@@ -750,7 +750,7 @@ namespace calendrical::time_and_astronomy {
     moment_t moment_of_depression(const moment_t& approx, const location& location, const angle_t& a, bool early) {
         auto t = approx_moment_of_depression(approx, location, a, early);
         auto prev = approx;
-        while (!is_bogus(t) && std::abs(prev - t) >= static_cast<double>(s30)) {
+        while (!is_bogus(t) && abs(prev - t) >= s30) {
             prev = t;
             t = approx_moment_of_depression(t, location, a, early);
         }
@@ -800,7 +800,7 @@ namespace calendrical::time_and_astronomy {
         const auto waning = lunar_phase(t) > angle_t::half_circle;
         const auto alt = observed_lunar_altitude(t, location);
         const auto lat = location.latitude;
-        const auto offset = alt / angle_t{4 * (90 - std::abs(lat))};
+        const auto offset = alt / (4 * (90_deg - abs(lat)));
         const auto approx = waning ? (offset > 0 ? t.add(1 - offset) : t.subtract(offset)) : t.add(0.5 + offset);
         const moment_t rise = moment_t{ binary_search(
             [&location](const double& x) { return observed_lunar_altitude(moment_t{ x }, location) > 0_deg; },
@@ -818,7 +818,7 @@ namespace calendrical::time_and_astronomy {
         const auto waxing = lunar_phase(t) < angle_t::half_circle;
         const auto alt = observed_lunar_altitude(t, location);
         const auto lat = location.latitude;
-        const auto offset = alt / angle_t{4 * (90 - std::abs(lat))};
+        const auto offset = alt / (4 * (90_deg - abs(lat)));
         const auto approx = waxing ? (offset > 0 ? t.add(offset) : t.add(1 + offset)) : t.add(0.5 - offset);
         const moment_t rise = moment_t{ binary_search(
             [&location](const double& x) { return observed_lunar_altitude(moment_t{ x }, location) < 0_deg; },
@@ -885,7 +885,7 @@ namespace calendrical::time_and_astronomy {
         const auto psi = location.latitude;
         const auto d = declination(noon, 0_deg, solar_longitude(noon));
         const auto altitude = asin(cos(d) * cos(psi) + sin(d) * sin(psi));
-        const auto h = angle_t{ interval_modulus(arctan(tan(altitude), 2 * tan(altitude) + 1), -90, 90) };
+        const auto h = interval_modulus(arctan(tan(altitude), 2 * tan(altitude) + 1), -90_deg, 90_deg);
         if (altitude <= 0_deg)
             return bogus;
         return dusk(date, location, -h);
@@ -895,7 +895,7 @@ namespace calendrical::time_and_astronomy {
         const auto psi = location.latitude;
         const auto d = declination(noon, 0_deg, solar_longitude(noon));
         const auto altitude = asin(cos(d) * cos(psi) + sin(d) * sin(psi));
-        const auto h = angle_t{ interval_modulus(arctan(tan(altitude), tan(altitude) + 1), -90, 90) };
+        const auto h = interval_modulus(arctan(tan(altitude), tan(altitude) + 1), -90_deg, 90_deg);
         if (altitude <= 0_deg)
             return bogus;
         return dusk(date, location, -h);

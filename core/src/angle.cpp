@@ -42,4 +42,11 @@ namespace calendrical {
     std::ostream& operator<<(std::ostream& out, const angle_t& angle) {
         return out << to_string(angle);
     }
+
+    angle_t floor(const angle_t& x) {
+        return angle_t{std::floor(x.degrees())};
+    }
+    angle_t ceil(const angle_t& x) {
+        return angle_t{std::ceil(x.degrees())};
+    }
 }

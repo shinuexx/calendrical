@@ -88,7 +88,7 @@ namespace calendrical::calendars {
     }
 
     fixed_date_t hebrew_calendar::fixed_from_molad(const moment_t &moon) {
-        const auto r = mod(74377 * moon - 2879.0 / 2160, 7);
+        const auto r = mod(74377 * moon.days() - 2879.0 / 2160, 7);
         const moment_t a{molad_1_tishri + r * 765433};
         return a.to_fixed_date();
     }

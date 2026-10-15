@@ -2,6 +2,7 @@
 
 #include "helpers.hpp"
 #include "fixed_date.hpp"
+#include <limits>
 #include <utility>
 
 namespace calendrical {
@@ -25,12 +26,21 @@ namespace calendrical {
             requires std::is_arithmetic_v<T>
         constexpr explicit moment_t(T v) : m_v{ static_cast<double>(v) } {}
 
-        /** @brief Constructs from a fixed date at local midnight. */
-        constexpr explicit moment_t(const fixed_date_t& rd) : m_v{ static_cast<double>(rd.operator int64_t()) } {}
+        /**
+         * @brief Converts a fixed date to the moment of its midnight.
+         *
+         * Implicit because no information is lost; the opposite direction
+         * (@ref to_fixed_date) drops the time of day and stays explicit.
+         * @ref fixed_date_t::end_of_time maps to @ref end_of_time.
+         */
+        constexpr moment_t(const fixed_date_t& rd) // NOLINT(*-explicit-constructor)
+            : m_v{ rd == fixed_date_t::end_of_time ? std::numeric_limits<double>::infinity() : static_cast<double>(rd.value()) } {}
 
         // ReSharper disable once CppNonExplicitConversionOperator
         /** @brief Converts to the raw floating-point day value. */
         constexpr operator double() const { return m_v; } // NOLINT(*-explicit-constructor)
+        /** @brief Raw day value; prefer it over relying on the implicit conversion. */
+        [[nodiscard]] constexpr double days() const { return m_v; }
         /** @brief Converts to a fixed date using the library rounding rule. */
         explicit operator fixed_date_t() const { return to_fixed_date(); }
 
@@ -120,7 +130,11 @@ namespace calendrical {
         /** @brief Fractional time-of-day component. */
         [[nodiscard]] double time() const;
 
-        /** @brief Converts to the corresponding fixed date. */
+        /**
+         * @brief Converts to the fixed date containing this moment (floor of the day value).
+         *
+         * @ref end_of_time maps to @ref fixed_date_t::end_of_time.
+         */
         [[nodiscard]] fixed_date_t to_fixed_date() const;
 
         /** @brief Returns a debug-friendly string representation of @p m. */
@@ -145,6 +159,15 @@ namespace calendrical {
 
     /** @brief Stream output for @ref moment_t. */
     std::ostream& operator<<(std::ostream& out, const moment_t& m);
+
+    /** @brief Fixed date containing @p m; same as @ref moment_t::to_fixed_date. */
+    fixed_date_t floor(const moment_t& m);
+    /** @brief First fixed date whose midnight is not earlier than @p m. */
+    fixed_date_t ceil(const moment_t& m);
+    /** @brief Fixed date whose midnight is nearest to @p m (halfway rounds away from zero). */
+    fixed_date_t round(const moment_t& m);
+    /** @brief Absolute value of the day value of @p m. */
+    constexpr moment_t abs(const moment_t& m) { return m.days() < 0 ? -m : m; }
 }
 
 /** @brief User-defined literal for moment_t from integer day value. */

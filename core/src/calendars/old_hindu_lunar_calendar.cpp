@@ -14,7 +14,7 @@ namespace calendrical::calendars {
     // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t old_hindu_lunar_calendar::get_month(const double& new_moon) const // NOLINT(*-convert-member-functions-to-static)
     {
-        const auto m = mod(ceil(new_moon / arya_solar_month), 12) + 1;
+        const auto m = mod(std::ceil(new_moon / arya_solar_month), 12) + 1;
         return static_cast<int32_t>(m);
     }
     // ReSharper disable once CppMemberFunctionMayBeStatic
@@ -26,7 +26,7 @@ namespace calendrical::calendars {
     // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t old_hindu_lunar_calendar::get_year(const double& new_moon) const // NOLINT(*-convert-member-functions-to-static)
     {
-        const auto y = ceil((new_moon + arya_solar_month) / arya_solar_year) - 1;
+        const auto y = std::ceil((new_moon + arya_solar_month) / arya_solar_year) - 1;
         return static_cast<int32_t>(y);
     }
     // ReSharper disable once CppMemberFunctionMayBeStatic
@@ -70,7 +70,7 @@ namespace calendrical::calendars {
             + m * arya_lunar_month
             + (day - 1) * arya_lunar_day
             - quarter;
-        return fixed_date_t{ static_cast<int64_t>(ceil(a)) };
+        return fixed_date_t{ static_cast<int64_t>(std::ceil(a)) };
     }
     int32_t old_hindu_lunar_calendar::get_month(const fixed_date_t& date) const
     {

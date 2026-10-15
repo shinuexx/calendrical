@@ -120,7 +120,7 @@ namespace calendrical::calendars{
                                                                const moment_t &start) const {
         const auto year_range = get_year_range(year);
         const auto pos = season / 360_deg * L;
-        const auto D = pos - mod(start, L);
+        const auto D = pos - mod(start.days(), L);
         auto t = positions_in_range<double>(pos, L, D, year_range);
         return std::move(t) | std::views::transform(bind_constructor<moment_t>{});
     }

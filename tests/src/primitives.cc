@@ -390,7 +390,7 @@ namespace tests {
         using namespace calendrical;
         static_assert(!std::is_convertible_v<int, moment_t>);
         static_assert(!std::is_convertible_v<double, moment_t>);
-        static_assert(!std::is_convertible_v<fixed_date_t, moment_t>);
+        static_assert(std::is_convertible_v<fixed_date_t, moment_t>);
         static_assert(std::is_constructible_v<moment_t, int>);
         static_assert(std::is_constructible_v<moment_t, double>);
         static_assert(std::is_constructible_v<moment_t, fixed_date_t>);
