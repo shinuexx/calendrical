@@ -62,6 +62,7 @@ namespace tests::type_safety {
     // --- typed helpers keep the unit -------------------------------------------------------
     static_assert(std::same_as<decltype(mod(angle_t{}, 360)), angle_t>);
     static_assert(std::same_as<decltype(mod(angle_t{}, 360.0)), angle_t>);
+    static_assert(std::same_as<decltype(mod(angle_t{}, angle_t{})), angle_t>);
     static_assert(std::same_as<decltype(interval_modulus(angle_t{}, angle_t{}, angle_t{})), angle_t>);
     static_assert(std::same_as<decltype(floor_div(angle_t{}, angle_t{})), double>);
     static_assert(std::same_as<decltype(floor(angle_t{})), angle_t>);
@@ -162,6 +163,7 @@ namespace tests::type_safety {
     TEST(type_safety, angle_helpers) {
         EXPECT_EQ(mod(-30_deg, 360), 330_deg);
         EXPECT_EQ(mod(725_deg, 360), 5_deg);
+        EXPECT_EQ(mod(-30_deg, 360_deg), 330_deg);
         EXPECT_EQ(interval_modulus(270_deg, -180_deg, 180_deg), -90_deg);
         EXPECT_EQ(floor_div(95_deg, 30_deg), 3.0);
         EXPECT_EQ(floor_div(-5_deg, 30_deg), -1.0);

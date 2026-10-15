@@ -165,19 +165,19 @@ namespace calendrical {
     std::ostream& operator<<(std::ostream& out, const moment_t& m);
 
     /** @brief Fixed date containing @p m; same as @ref moment_t::to_fixed_date. */
-    fixed_date_t floor(const moment_t& m);
+    [[nodiscard]] fixed_date_t floor(const moment_t& m);
     /**
      * @brief First fixed date whose midnight is not earlier than @p m.
      * @throws std::domain_error like @ref moment_t::to_fixed_date.
      */
-    fixed_date_t ceil(const moment_t& m);
+    [[nodiscard]] fixed_date_t ceil(const moment_t& m);
     /**
      * @brief Fixed date whose midnight is nearest to @p m (halfway rounds away from zero).
      * @throws std::domain_error like @ref moment_t::to_fixed_date.
      */
-    fixed_date_t round(const moment_t& m);
+    [[nodiscard]] fixed_date_t round(const moment_t& m);
     /** @brief Absolute value of the day value of @p m. */
-    constexpr moment_t abs(const moment_t& m) { return m.days() < 0 ? -m : m; }
+    [[nodiscard]] constexpr moment_t abs(const moment_t& m) { return m.days() < 0 ? -m : m; }
 }
 
 /** @brief User-defined literal for moment_t from integer day value. */

@@ -119,20 +119,22 @@ namespace calendrical
     std::ostream &operator<<(std::ostream &out, const angle_t &angle);
 
     /** @brief Floor modulo of @p x by @p y degrees; the result stays an angle in [0, @p y). */
-    inline angle_t mod(const angle_t &x, double y) { return angle_t{mod(x.degrees(), y)}; }
+    [[nodiscard]] inline angle_t mod(const angle_t &x, double y) { return angle_t{mod(x.degrees(), y)}; }
+    /** @brief Floor modulo of @p x by the angle @p y; the result stays an angle in [0, @p y). */
+    [[nodiscard]] inline angle_t mod(const angle_t &x, const angle_t &y) { return mod(x, y.degrees()); }
     /** @brief Maps @p x into the half-open angular range [`a`, `b`) by modular wraparound. */
-    inline angle_t interval_modulus(const angle_t &x, const angle_t &a, const angle_t &b)
+    [[nodiscard]] inline angle_t interval_modulus(const angle_t &x, const angle_t &a, const angle_t &b)
     {
         return angle_t{interval_modulus(x.degrees(), a.degrees(), b.degrees())};
     }
     /** @brief Number of whole @p y steps contained in @p x (floor of the ratio, dimensionless). */
-    inline double floor_div(const angle_t &x, const angle_t &y) { return floor_div(x.degrees(), y.degrees()); }
+    [[nodiscard]] inline double floor_div(const angle_t &x, const angle_t &y) { return floor_div(x.degrees(), y.degrees()); }
     /** @brief Largest whole number of degrees not greater than @p x. */
-    angle_t floor(const angle_t &x);
+    [[nodiscard]] angle_t floor(const angle_t &x);
     /** @brief Smallest whole number of degrees not less than @p x. */
-    angle_t ceil(const angle_t &x);
+    [[nodiscard]] angle_t ceil(const angle_t &x);
     /** @brief Absolute value of the angle. */
-    constexpr angle_t abs(const angle_t &x) { return x.degrees() < 0 ? -x : x; }
+    [[nodiscard]] constexpr angle_t abs(const angle_t &x) { return x.degrees() < 0 ? -x : x; }
 }
 
 /** @brief User-defined angle literal in degrees (floating-point overload). */
