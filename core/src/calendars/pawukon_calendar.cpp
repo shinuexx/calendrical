@@ -22,8 +22,11 @@ namespace calendrical::calendars {
         if (period <= 0 || pawukon_date::cycle_length % period != 0)
             throw std::invalid_argument("pawukon_calendar::positions_in_range: period " + std::to_string(period) + " does not divide 210");
         std::vector<fixed_date_t> result{};
+        // Reduce both positions modulo period first: day may be any int64_t, and `%` cannot overflow here.
+        const auto day_in_period = (day % period + period) % period;
+        const auto min_in_period = static_cast<int64_t>(day_from_fixed(range.min)) % period;
         // First matching date on or after range.min; an open lower bound is filtered below.
-        auto date = range.min + mod(day - (range.min - ms_epoch), period);
+        auto date = range.min + (day_in_period - min_in_period + period) % period;
         for (; date <= range.max; date += period)
             if (range.contains(date))
                 result.push_back(date);

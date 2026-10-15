@@ -4,6 +4,7 @@
 #include "calendars/pawukon_calendar.hpp"
 #include "primitives.hpp"
 
+#include <limits>
 #include <set>
 #include <sstream>
 #include <stdexcept>
@@ -281,6 +282,16 @@ namespace tests {
                     EXPECT_EQ(calendar.positions_in_range(day, period, range), expected)
                         << "day " << day << " period " << period << " range " << range.min << ".." << range.max;
                 }
+            }
+        }
+        // Extreme day arguments match their reduced positions.
+        for (const auto period : { 1LL, 15LL, 35LL, 210LL }) {
+            for (const auto day : { std::numeric_limits<int64_t>::min(), std::numeric_limits<int64_t>::min() + 1,
+                                    std::numeric_limits<int64_t>::max(), std::numeric_limits<int64_t>::max() - 1 }) {
+                const auto reduced = (day % period + period) % period;
+                for (const auto& range : ranges)
+                    EXPECT_EQ(calendar.positions_in_range(day, period, range), calendar.positions_in_range(reduced, period, range))
+                        << "day " << day << " period " << period;
             }
         }
         for (const auto period : { 0LL, -15LL, 11LL, 420LL })
