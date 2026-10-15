@@ -37,6 +37,7 @@ add_library(calendrical
     src/calendars/japanese_calendar.cpp
     src/calendars/julian_calendar.cpp
     src/calendars/korean_calendar.cpp
+    src/calendars/mayan_calendar.cpp
     src/calendars/modern_hindu_based.cpp
     src/calendars/modern_hindu_lunar_calendar.cpp
     src/calendars/modern_hindu_solar_calendar.cpp
@@ -53,6 +54,7 @@ add_library(calendrical
     src/calendars/tibetan_calendar.cpp
     src/calendars/vietnamese_calendar.cpp
     src/datetypes/akan_name.cpp
+    src/datetypes/mayan_dates.cpp
     src/datetypes/sexagesimal_name.cpp
     src/datetypes/stringifiers.cpp
     src/holiday_providers/bahai_based_calendar_holiday_provider.cpp

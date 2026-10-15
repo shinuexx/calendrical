@@ -282,6 +282,13 @@ preprocessor checks. The CLI prints the summary with `calendrical_cli --version`
 Build information is refreshed on every build. Configure with `-DCALENDRICAL_BUILD_TIMESTAMP=OFF` to
 leave the timestamp out; the build-info source is then recompiled only when the git state changes.
 
+## Maya Long Count
+
+The `mayan` / `mayan_long_count` converter supports canonical nine-field Long Count
+and a five-field input shorthand, with the GMT correlation JDN 584283. For example:
+`calendrical_cli convert mayan gregorian 13-0-0-0-0` gives 2012-12-21.
+See [Long Count formats, bounds and reference dates](https://github.com/shinuexx/calendrical/blob/master/docs/mayan-long-count.md).
+
 ## Feature Scope (Short Summary)
 
 - Calendars: Gregorian, Julian, Islamic variants, Hebrew variants, Persian variants, Chinese-family calendars, Hindu calendars, Baha'i calendars, Tibetan, ISO, and more
