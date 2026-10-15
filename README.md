@@ -116,6 +116,11 @@ calendrical_cli holidays --help
 
 calendrical_cli list [topic]
 calendrical_cli list --help
+
+calendrical_cli interactive
+calendrical_cli -i
+calendrical_cli --interactive
+calendrical_cli interactive --help
 ```
 
 `list [topic]` values:
@@ -123,6 +128,29 @@ calendrical_cli list --help
 - `commands` (default)
 - `calendars`
 - `holiday-calendars`
+
+## Interactive Mode
+
+Start an interactive REPL session to perform multiple conversions, holiday queries, and listings without restarting the application:
+
+```bash
+./cmake-build-debug/cli/calendrical_cli interactive
+# or using aliases:
+./cmake-build-debug/cli/calendrical_cli -i
+./cmake-build-debug/cli/calendrical_cli --interactive
+```
+
+Within the session, enter subcommands at the prompt (`> `) without the `calendrical_cli` binary prefix:
+
+```text
+> convert gregorian julian 2026-02-18
+> holidays --as-gregorian us 2026
+> list calendars
+> help
+> exit
+```
+
+Arguments with spaces can be enclosed in single (`'...'`) or double (`"..."`) quotes. If a single command fails, an error is reported and the session continues. Type `exit` or `quit` (or press Ctrl+D / send EOF) to exit.
 
 ## Registered Convert Converters
 
