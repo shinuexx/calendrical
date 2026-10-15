@@ -20,13 +20,13 @@ namespace calendrical::calendars {
     fixed_date_t samaritan_calendar::new_moon_after(const moment_t& t)
     {
         const auto a = apparent_from_universal(new_moon_on_or_after(t), samaritan_location) - 0.5;
-        return fixed_date_t{ static_cast<int64_t>(std::ceil(a)) };
+        return ceil(a);
     }
 
     fixed_date_t samaritan_calendar::new_moon_at_or_before(const moment_t& t)
     {
         const auto a = apparent_from_universal(new_moon_before(t), samaritan_location) - 0.5;
-        return fixed_date_t{ static_cast<int64_t>(std::ceil(a)) };
+        return ceil(a);
     }
     fixed_date_t samaritan_calendar::new_year_on_or_before(const fixed_date_t& date) const
     {

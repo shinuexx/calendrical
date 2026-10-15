@@ -39,7 +39,7 @@ namespace calendrical::primitives {
     }
     /** @brief Converts a moment to Unix seconds since 1970-01-01T00:00:00Z. */
     inline constexpr double unix_from_moment(moment_t t) {
-        return 24 * 60 * 60 * (t - UNIX_EPOCH);
+        return 24 * 60 * 60 * (t - UNIX_EPOCH).days();
     }
 
     /** @brief Converts Julian Day number to fixed date using `moment_t` rounding rules. */

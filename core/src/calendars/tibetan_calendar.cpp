@@ -22,11 +22,11 @@ namespace calendrical::calendars {
             const auto i = static_cast<int32_t>(static_cast<double>(a));
             return t[i];
         }
-        const angle_t ca{std::ceil(a)};
-        const angle_t fa{std::floor(a)};
+        const auto ca = ceil(a);
+        const auto fa = floor(a);
 
-        return mod(a,1) * tibetan_sun_equation(ca) +
-            mod(-a, 1) * tibetan_sun_equation(fa);
+        return mod(a.degrees(), 1) * tibetan_sun_equation(ca) +
+            mod(-a.degrees(), 1) * tibetan_sun_equation(fa);
 
     }
     angle_t tibetan_calendar::tibetan_moon_equation(const angle_t& a)
@@ -49,16 +49,16 @@ namespace calendrical::calendars {
             const auto i = static_cast<int32_t>(static_cast<double>(a));
             return t[i];
         }
-        const angle_t ca{ceil(a)};
-        const angle_t fa{floor(a)};
+        const auto ca = ceil(a);
+        const auto fa = floor(a);
 
-        return mod(a, 1) * tibetan_moon_equation(ca) +
-            mod(-a, 1) * tibetan_moon_equation(fa);
+        return mod(a.degrees(), 1) * tibetan_moon_equation(ca) +
+            mod(-a.degrees(), 1) * tibetan_moon_equation(fa);
     }
     lunar_date tibetan_calendar::to_date(const fixed_date_t& date) const
     {
         constexpr double Y = 365 + 4975 / 18382.0;
-        const auto years = static_cast<int64_t>(ceil((date - ms_epoch) / Y));
+        const auto years = static_cast<int64_t>(std::ceil((date - ms_epoch) / Y));
         auto year0 = static_cast<int32_t>(
                 last_passing([&](const int64_t& y) { return date >= to_fixed({static_cast<int32_t>(y), 1, false, 1, false}); }, years));
         auto month0 = static_cast<int32_t>(last_passing(
@@ -78,7 +78,7 @@ namespace calendrical::calendars {
     fixed_date_t tibetan_calendar::to_fixed(const lunar_date& date) const
     {
         auto [year, month, leap_month, day, leap_day] = date;
-        const auto months = static_cast<int64_t>(floor(804 / 65.0 * (year - 1) + 67/65.0 * month +
+        const auto months = static_cast<int64_t>(std::floor(804 / 65.0 * (year - 1) + 67/65.0 * month +
                                                  (leap_month ? -1 : 0) + 64/ 65.0));
         const auto days = 30 * months + day;
         const auto mean = days * 11135 / 11312.0 - 30 + (leap_day ? 0 : -1) +  1071/1616.0;
@@ -86,7 +86,7 @@ namespace calendrical::calendars {
         const auto lunar_anomaly = mod(days *  3781 / 105840.0 + 2837 / 15120.0, 1);
         const auto sun = -tibetan_sun_equation(angle_t{12 * solar_anomaly});
         const auto moon = tibetan_moon_equation(angle_t{28 * lunar_anomaly});
-        return fixed_date_t{ static_cast<int64_t>(floor(static_cast<int64_t>(ms_epoch) + mean + sun + moon)) };
+        return fixed_date_t{ static_cast<int64_t>(std::floor(static_cast<int64_t>(ms_epoch) + mean + sun + moon)) };
     }
 
     int32_t tibetan_calendar::get_month(const fixed_date_t& date) const

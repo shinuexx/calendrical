@@ -25,6 +25,8 @@ namespace calendrical {
         // ReSharper disable once CppNonExplicitConversionOperator
         /** @brief Converts to the underlying integer day index. */
         constexpr operator int64_t() const { return m_v; } // NOLINT(*-explicit-constructor)
+        /** @brief Raw day number; prefer it over relying on the implicit conversion. */
+        [[nodiscard]] constexpr int64_t value() const { return m_v; }
 
         /** @brief Equality comparison on the day number. */
         constexpr bool operator==(const fixed_date_t& other) const = default;
