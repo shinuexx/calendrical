@@ -72,6 +72,10 @@ just the list of starts. It sorts by date; output labels follow the code.
   return seasonal moments; they are not a list of additional holidays.
 - **implemented**: `observational_hebrew_calendar::classical_passover_eve`
   is a calendar function, not a method of this provider; it has a separate CSV test.
+- **implemented**: public static `observational_hebrew_calendar::first_of_nisan(gyear)`
+  returns 1 Nisan of the observational calendar (CC 18.22): the first visible crescent
+  on or after 14 days before the vernal equinox if the equinox precedes sunset at the
+  reference location, otherwise 13 days. It is a calendar function, not a provider method.
 - **needs decision**: whether full Hanukkah series should include January days
   from a start in the preceding Gregorian year. The current function uses only
   starts found by `hanukkah(gyear)`; filtering alone does not add a missing start.
@@ -98,23 +102,9 @@ just the list of starts. It sorts by date; output labels follow the code.
   Passover, Purim, Ta’anit Esther, Tishah be-Av, Yom ha-Zikkaron, Sh’ela, Hanukkah
   starts and Birkath ha-Hama; also a nonempty, sorted list in 2000–2010.
 - [Observational test](../tests/src/holidays/observational_hebrew_holidays.cc)
-  covers `classical_passover_eve()` at the documented baseline.
+  covers `classical_passover_eve()` and `first_of_nisan()`.
 - [CSV](../all-holidays.csv): CC metadata `(8.30)`–`(8.38)` for the corresponding
-  single-rule rows above, `(8.43)` for Hanukkah's first day and `(18.25)` for Classical
-  Passover Eve. These references do not validate the entire list or all regional
-  variants. The [loader](../tests/inc/holiday_csv_loader.hpp) compares only the first
+  single-rule rows above, `(8.43)` for Hanukkah's first day, `(18.22)` for Observ. Hebrew
+  1 Nisan and `(18.25)` for Classical Passover Eve. These references do not validate
+  the entire list or all regional variants. The [loader](../tests/inc/holiday_csv_loader.hpp) compares only the first
   element of a vector result with the CSV date.
-
-### Pending coverage update
-
-**proposed**: [PR #11](https://github.com/shinuexx/calendrical/pull/11) exposes
-`observational_hebrew_calendar::first_of_nisan()` as public API and adds its CSV
-comparison to the same observational test file. The existing internal calculation
-is **implemented**, but public access and this test are not part of the documented
-`master` baseline. The `Observ. Hebrew 1 Nisan` CSV row already has CC metadata
-`(18.22), 297`.
-
-**needs decision**: merge-order coordination. When #11 is merged, update this
-section, the observational-test coverage above and the baseline recorded in the
-[index](README.md). Do not describe pending public API or test coverage as already
-available on `master`.
