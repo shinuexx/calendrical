@@ -29,6 +29,11 @@ Entries up to 0.2.0 were reconstructed from the merged pull requests.
   [#32](https://github.com/shinuexx/calendrical/pull/32),
   [#33](https://github.com/shinuexx/calendrical/pull/33)).
 
+### Removed
+
+- `CMakePresets.json` and the README section on configuring with a preset; configure with
+  `cmake -S . -B build` as described in the README.
+
 ### Documentation
 
 - README section on explicit numeric conversions (`degrees()`, `value()`, `days()`) linking the
