@@ -11,6 +11,12 @@ Entries up to 0.2.0 were reconstructed from the merged pull requests.
 
 ## Unreleased
 
+### Documentation
+
+- README section on explicit numeric conversions (`degrees()`, `value()`, `days()`) linking the
+  migration guides; the package-consumer test now exercises `angle_t`, `fixed_date_t` and
+  `moment_t` through the installed headers ([#22](https://github.com/shinuexx/calendrical/issues/22)).
+
 ## 0.2.0 - 2026-10-16
 
 ### Changed (breaking)
