@@ -16,7 +16,8 @@ namespace calendrical::calendars{
     int32_t chinese_base::current_major_solar_term(const fixed_date_t& date) const
     {
         const auto s = solar_longitude(universal_from_standard(moment_t{ date }, get_location(moment_t{ date })));
-        return static_cast<int32_t>(adjusted_remainder(2 + floor_div(s, 30_deg), 12));
+        // floor_div(angle_t, angle_t) returns double; convert floored quotient to integer index
+        return static_cast<int32_t>(adjusted_remainder(2 + static_cast<int64_t>(floor_div(s, 30_deg)), 12));
     }
     moment_t chinese_base::solar_longitude_on_or_after(const angle_t& l, const moment_t& t) const
     {

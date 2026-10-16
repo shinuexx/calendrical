@@ -109,7 +109,8 @@ namespace calendrical::calendars {
         constexpr double mean_motion = 360 / hindu_sidereal_year;
         const auto anomaly = hindu_mean_position(moment_t{ date }, hindu_anomalistic_year);
         const auto epicycle = 14/360.0 - std::abs(hindu_sine(anomaly)) / 1080;
-        const auto entry = floor_div(anomaly, angle_t{ 225 / 6e1 });
+        // floor_div(angle_t, angle_t) returns double; convert floored quotient to integer index
+        const auto entry = static_cast<int64_t>(floor_div(anomaly, angle_t{ 225 / 6e1 }));
         const auto sine_table_step = hindu_sine_table(entry + 1) - hindu_sine_table(entry);
         const auto factor = -3438 / 225.0 * sine_table_step * epicycle;
         return mean_motion * (factor + 1);
