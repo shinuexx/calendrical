@@ -37,20 +37,23 @@ namespace calendrical::calendars {
         auto [year, month, leap, day] = date;
         const auto month1 = (leap || (mod(year, 19) == 18 && month > 6)) ? month : month - 1;
         const auto months = floor_div((year - 1) * 235 + 13, 19) + month1;
-        const auto midmonth = ms_epoch + static_cast<int64_t>(std::round(mean_synodic_month * static_cast<double>(months))) + 15;
+        // Convert rounded day estimate from floating point to integer days for fixed_date_t addition
+        const auto midmonth = ms_epoch + static_cast<int64_t>(std::round(mean_synodic_month * months)) + 15;
         return new_month_on_or_before(midmonth) + day - 1;
     }
 
     simple_lunar_date babylonian_calendar::to_date(const fixed_date_t& date) const
     {
         const auto crescent = new_month_on_or_before(date);
-        const auto months = static_cast<int64_t>(std::round(static_cast<double>(crescent - ms_epoch) / mean_synodic_month));
+        // Convert rounded lunation estimate to integer month count
+        const auto months = static_cast<int64_t>(std::round((crescent - ms_epoch) / mean_synodic_month));
         auto year = static_cast<int32_t>(floor_div(19 * months + 5, 235)) + 1;
+        // Convert rounded day estimate from floating point to integer days for fixed_date_t addition
         const auto approx =
-                ms_epoch + static_cast<int64_t>(std::round(static_cast<double>(floor_div(235 * (year - 1) + 13, 19)) *
+                ms_epoch + static_cast<int64_t>(std::round(floor_div(235 * (year - 1) + 13, 19) *
                                                            mean_synodic_month));
         const auto new_year = new_month_on_or_before(approx + 15);
-        const auto month1 = static_cast<int32_t>(std::round(static_cast<double>(crescent - new_year) / 29.5)) + 1;
+        const auto month1 = static_cast<int32_t>(std::round((crescent - new_year) / 29.5)) + 1;
         const auto special = mod(year, 19) == 18;
         auto leap = special ? month1 == 7 : month1 == 13;
         auto month = leap || (special && month1 > 6) ? month1 - 1 : month1;
@@ -61,7 +64,8 @@ namespace calendrical::calendars {
     int32_t babylonian_calendar::get_year(const fixed_date_t& date) const
     {
         const auto crescent = new_month_on_or_before(date);
-        const auto months = static_cast<int64_t>(std::round(static_cast<double>(crescent - ms_epoch) / mean_synodic_month));
+        // Convert rounded lunation estimate to integer month count
+        const auto months = static_cast<int64_t>(std::round((crescent - ms_epoch) / mean_synodic_month));
         return static_cast<int32_t>(floor_div(19 * months + 5, 235)) + 1;
     }
     int32_t babylonian_calendar::get_month(const fixed_date_t& date) const

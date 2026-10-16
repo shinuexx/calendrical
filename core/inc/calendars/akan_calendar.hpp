@@ -17,7 +17,7 @@ namespace calendrical::calendars {
         /** @brief Fixed date whose name is position 0 of the cycle, {6, 7}. */
         static constexpr fixed_date_t ms_epoch{37};
         /** @brief Name of RD 0, the date from which @ref on_or_before counts. */
-        static constexpr akan_name ms_name_of_rd_zero = akan_name::from(-static_cast<int64_t>(ms_epoch));
+        static constexpr akan_name ms_name_of_rd_zero = akan_name::from(-ms_epoch.value());
 
     public:
         constexpr akan_calendar() = default;

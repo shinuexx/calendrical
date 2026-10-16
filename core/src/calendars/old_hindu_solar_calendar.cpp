@@ -43,12 +43,12 @@ namespace calendrical::calendars {
 
     fixed_date_t old_hindu_solar_calendar::to_fixed(const simple_date& date) const {
         auto& [year, month, day] = date;
-        const double a = static_cast<int64_t>(ms_epoch)
+        const auto a = moment_t{ ms_epoch }
             + year * arya_solar_year
             + (month - 1) * arya_solar_month
             + day
             - h30;
-        return fixed_date_t{ static_cast<int64_t>(std::ceil(a)) };
+        return ceil(a);
     }
 
     int32_t old_hindu_solar_calendar::get_month(const fixed_date_t& date) const {

@@ -57,7 +57,7 @@ namespace calendrical::cli {
         const auto output = to_converter->from_rd(rd);
 
         std::cout << "from=" << from_name << " to=" << to_name << '\n';
-        std::cout << "rd=" << static_cast<int64_t>(rd) << '\n';
+        std::cout << "rd=" << rd.value() << '\n';
         std::cout << output << '\n';
         return 0;
     }

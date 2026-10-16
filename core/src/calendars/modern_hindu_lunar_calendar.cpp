@@ -27,7 +27,8 @@ namespace calendrical::calendars {
         constexpr double half{ 0.5 };
         auto [year, month, leap_month, day, leap_day] = date;
         const double m{(month - 1) / 12.0};
-        const double approx = static_cast<int64_t>(ms_epoch) + hindu_sidereal_year * (year + hindu_lunar_era + m);
+        const double approx = ms_epoch.value() + hindu_sidereal_year * (year + hindu_lunar_era + m);
+        // Convert floored solar position estimate to integer days
         const auto s = static_cast<int64_t>(std::floor(
                 approx - hindu_sidereal_year * interval_modulus(hindu_solar_longitude(moment_t{ approx }) / 360_deg - m, -half, half)));
         const auto k = hindu_lunar_day_from_moment(moment_t{ s + 0.25 });

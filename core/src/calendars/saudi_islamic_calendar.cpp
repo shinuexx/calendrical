@@ -28,6 +28,7 @@ namespace calendrical::calendars {
     {
         auto &[year, month, day] = date;
         const auto m = 12 * (year - 1) + month - 0.5;
+        // Convert floored lunation estimate to integer days for fixed_date_t addition
         const auto midmonth = ms_epoch + static_cast<int64_t>(std::floor(m * mean_synodic_month));
         return new_month_on_or_before(midmonth) + day - 1;
     }

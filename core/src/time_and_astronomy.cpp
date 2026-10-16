@@ -39,7 +39,7 @@ namespace calendrical::time_and_astronomy {
     moment_t ephemeris_correction(const moment_t &t) {
         static const fixed_date_t ephemeris_correction_start = gregorian.to_fixed({ 1900, month::january, 1 });
         auto year = gregorian.get_year(t.to_fixed_date());
-        const auto c = static_cast<double>(gregorian.to_fixed({year, month::july, 1}) -
+        const auto c = (gregorian.to_fixed({year, month::july, 1}) -
                         ephemeris_correction_start) /
                        36525.0;
         const auto y2000 = year - 2000;
@@ -371,7 +371,7 @@ namespace calendrical::time_and_astronomy {
     moment_t nth_new_moon(int64_t n) {
         constexpr int64_t n0 = 24724;
         const auto k = n - n0;
-        const auto c = static_cast<double>(k) / 1236.85;
+        const auto c = k / 1236.85;
         const auto approx = J2000 + nth_new_moon_approx_p(c);
         const auto E = nth_new_moon_E_p(c);
         const angle_t solar_anomaly{ nth_new_moon_solar_anomaly_p(c) };
@@ -394,6 +394,7 @@ namespace calendrical::time_and_astronomy {
     moment_t new_moon_before(const moment_t& t) {
         const auto t0 = *zero_new_moon;
         const auto psi = lunar_phase(t);
+        // Convert rounded lunation estimate to integer index for nth_new_moon search
         const auto n = static_cast<int64_t>(std::round((t - t0).days() / mean_synodic_month - psi / angle_t::full_circle));
         const auto a = last_passing([&t](const int64_t& k) { return nth_new_moon(k) < t; }, n - 1);
         return nth_new_moon(a);
@@ -401,6 +402,7 @@ namespace calendrical::time_and_astronomy {
     moment_t new_moon_on_or_after(const moment_t& t) {
         const auto t0 = *zero_new_moon;
         const auto psi = lunar_phase(t);
+        // Convert rounded lunation estimate to integer index for nth_new_moon search
         const auto n = static_cast<int64_t>(std::round((t - t0).days() / mean_synodic_month - psi / angle_t::full_circle));
         const auto a = least_passing([&t](const int64_t& k) { return nth_new_moon(k) >= t; }, n);
         return nth_new_moon(a);
@@ -521,6 +523,7 @@ namespace calendrical::time_and_astronomy {
     angle_t lunar_phase(const moment_t& t) {
         const auto psi = mod(lunar_longitude(t) - solar_longitude(t), 360);
         const auto t0 = *zero_new_moon;
+        // Convert rounded lunation estimate to integer index for nth_new_moon
         const auto n = static_cast<int64_t>(std::round((t - t0).days() / mean_synodic_month));
         if (const auto psi1 = 360_deg * mod((t - nth_new_moon(n)).days() / mean_synodic_month, 1); abs(psi - psi1) > 180_deg)
             return psi1;

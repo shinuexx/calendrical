@@ -34,7 +34,7 @@ namespace calendrical::calendars{
         static constexpr double hindu_synodic_month{(29 * 13358334.0 + 7087771)/ 13358334};
 
         /** @brief Theoretical creation epoch used in traditional calculations. */
-        static constexpr double hindu_creation{static_cast<int64_t>(ms_epoch) - 1955880000 * hindu_sidereal_year};
+        static constexpr double hindu_creation{ms_epoch.value() - 1955880000 * hindu_sidereal_year};
 
         /** @brief Hindu anomalistic year length (days). */
         static constexpr double hindu_anomalistic_year{1577917828000.0 / (4320000000.0 - 387)};

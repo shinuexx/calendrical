@@ -13,7 +13,7 @@ namespace calendrical::calendars{
     // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t observational_islamic_calendar::get_elapsed_months(const fixed_date_t& crescent) const // NOLINT(*-convert-member-functions-to-static)
     {
-        return static_cast<int32_t>(std::round(static_cast<double>(crescent - ms_epoch) / mean_synodic_month));
+        return static_cast<int32_t>(std::round((crescent - ms_epoch) / mean_synodic_month));
     }
     // ReSharper disable once CppMemberFunctionMayBeStatic
     int32_t observational_islamic_calendar::get_year(int32_t elapsed_months) const // NOLINT(*-convert-member-functions-to-static)
@@ -47,6 +47,7 @@ namespace calendrical::calendars{
     {
         auto [year, month, day] = date;
         const auto m = 12 * (year - 1) + month - 0.5;
+        // Convert floored lunation estimate to integer days for fixed_date_t addition
         const auto midmonth = ms_epoch + static_cast<int64_t>(std::floor(m * mean_synodic_month));
         return phasis_on_or_before(midmonth, islamic_location) + day - 1;
     }
