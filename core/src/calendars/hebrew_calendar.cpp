@@ -7,10 +7,10 @@ namespace calendrical::calendars {
 
     hebrew_month hebrew_calendar::get_month(const fixed_date_t& date, int32_t year) const {
         auto start = date < to_fixed({ year, hebrew_month::nisan, 1 }) ? hebrew_month::tishri : hebrew_month::nisan;
+        // Scoped enum hebrew_month converted to int64_t search bound for least_passing
         auto month = least_passing([&](int64_t m) {
             auto hm = static_cast<hebrew_month>(m);
             return date <= to_fixed({ year, hm, last_day_of_month(year, hm) });
-            // Scoped enum hebrew_month converted to int64_t search bound for least_passing
             }, static_cast<int64_t>(start));
         return static_cast<hebrew_month>(month);
     }
