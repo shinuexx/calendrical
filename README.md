@@ -23,14 +23,6 @@ The core library is written in pure C++20 and has **no external dependencies**. 
 
 ## Configure With CMake
 
-Using a preset:
-
-```bash
-cmake --preset ninja-debug
-```
-
-Manual configuration:
-
 ```bash
 cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 ```
