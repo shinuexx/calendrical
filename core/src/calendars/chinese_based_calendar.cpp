@@ -18,11 +18,13 @@ namespace calendrical::calendars {
         const auto m12 = new_moon_on_or_after(s1.add(1));
         const auto next_m11 = new_moon_before(s2.add(1));
         const auto m = new_moon_before(date.add(1));
-        const auto leap_year = std::round(static_cast<double>(next_m11 - m12) / mean_synodic_month) == 12;
-        const auto month = mod(static_cast<int64_t>(std::round(static_cast<double>(m - m12) / mean_synodic_month)) - (leap_year && is_prior_leap_month(m12, m) ? 1 : 0), 12);
+        const auto leap_year = std::round((next_m11 - m12) / mean_synodic_month) == 12;
+        // Convert rounded lunation estimate to integer month index
+        const auto month = mod(static_cast<int64_t>(std::round((m - m12) / mean_synodic_month)) - (leap_year && is_prior_leap_month(m12, m) ? 1 : 0), 12);
         auto leap_month = leap_year && no_major_solar_term(m) && !is_prior_leap_month(m12, new_moon_before(m));
+        // Convert floored tropical year estimate to integer elapsed years
         const auto elapsed_years = static_cast<int64_t>(std::floor(
-                1.5 - static_cast<double>(month) / 12.0 + static_cast<double>(date - m_epoch) / mean_tropical_year));
+                1.5 - month / 12.0 + (date - m_epoch) / mean_tropical_year));
         const auto cycle = floor_div(elapsed_years - 1, 60) + 1;
         const auto year = adjusted_remainder(elapsed_years, 60);
         const auto day = date - m + 1;

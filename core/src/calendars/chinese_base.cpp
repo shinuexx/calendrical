@@ -16,7 +16,7 @@ namespace calendrical::calendars{
     int32_t chinese_base::current_major_solar_term(const fixed_date_t& date) const
     {
         const auto s = solar_longitude(universal_from_standard(moment_t{ date }, get_location(moment_t{ date })));
-        return static_cast<int32_t>(adjusted_remainder(2 + static_cast<int64_t>(floor_div(s, 30_deg)), 12));
+        return static_cast<int32_t>(adjusted_remainder(2 + floor_div(s, 30_deg), 12));
     }
     moment_t chinese_base::solar_longitude_on_or_after(const angle_t& l, const moment_t& t) const
     {
@@ -69,7 +69,7 @@ namespace calendrical::calendars{
         const auto s2 = winter_solstice_on_or_before(s1 + 370);
         const auto m12 = new_moon_on_or_after(s1 + 1);
         const auto m13 = new_moon_on_or_after(m12 + 1);
-        if (const auto next_m11 = new_moon_before(s2 + 1); std::round(static_cast<double>(next_m11 - m12) / mean_synodic_month) == 12 &&
+        if (const auto next_m11 = new_moon_before(s2 + 1); std::round((next_m11 - m12) / mean_synodic_month) == 12 &&
                                                            (no_major_solar_term(m12) || no_major_solar_term(m13)))
             return new_moon_on_or_after(m13 + 1);
         return m13;
