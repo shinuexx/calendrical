@@ -285,14 +285,15 @@ Installed headers live in `<prefix>/include/calendrical/` and are included by ba
 
 ## Version and Build Information
 
-The library version is read from the `VERSION` file; bump it there. `version.hpp` exposes it together
-with information recorded when the library was built:
+The library version is read from the `VERSION` file; bump it there and record the changes in
+[CHANGELOG.md](CHANGELOG.md). `version.hpp` exposes the version together with information recorded
+when the library was built:
 
 ```cpp
 #include "version.hpp"
 
-calendrical::version();          // "0.1.0" - headers you compiled against (constexpr)
-calendrical::library_version();  // "0.1.0" - the linked binary; differs if headers and library mismatch
+calendrical::version();          // "0.2.0" - headers you compiled against (constexpr)
+calendrical::library_version();  // "0.2.0" - the linked binary; differs if headers and library mismatch
 calendrical::commit();           // full git hash, or "unknown" outside a git checkout
 calendrical::branch();           // git branch, "HEAD" when detached
 calendrical::is_dirty();         // uncommitted changes to tracked files at build time
