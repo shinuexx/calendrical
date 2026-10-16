@@ -19,6 +19,15 @@ Entries up to 0.2.0 were reconstructed from the merged pull requests.
   yield 60) ([#30](https://github.com/shinuexx/calendrical/issues/30),
   [#31](https://github.com/shinuexx/calendrical/pull/31)).
 
+### Changed
+
+- Internal cleanup of `static_cast`s on unit-type boundaries in the Hebrew and observational
+  Hebrew calendars and the Hebrew-based holiday provider: raw-value casts were replaced with
+  `value()` or typed `moment_t` arithmetic, redundant casts removed and the remaining scoped-enum
+  casts documented. No API or result changes
+  ([#28](https://github.com/shinuexx/calendrical/issues/28),
+  [#32](https://github.com/shinuexx/calendrical/pull/32)).
+
 ### Documentation
 
 - README section on explicit numeric conversions (`degrees()`, `value()`, `days()`) linking the
