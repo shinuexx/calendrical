@@ -18,7 +18,11 @@ namespace calendrical::datetypes {
         /** @brief Constructs from stem/branch indices. */
         constexpr sexagesimal_name(int32_t stem, int32_t branch) : stem(stem), branch(branch) {}
 
-        /** @brief Returns cyclic difference from @p other within the sexagesimal cycle. */
+        /**
+         * @brief Number of days forward from this name to @p other, in the range 1..60.
+         *
+         * `a.difference(b)` counts days from `a` to `b`; equal names yield 60.
+         */
         [[nodiscard]] int32_t difference(const sexagesimal_name &other) const;
         /** @brief Creates the sexagesimal name corresponding to sequence index @p n. */
         [[nodiscard]] static sexagesimal_name from(int64_t n);
