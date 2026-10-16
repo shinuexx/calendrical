@@ -11,6 +11,14 @@ Entries up to 0.2.0 were reconstructed from the merged pull requests.
 
 ## Unreleased
 
+### Fixed
+
+- `sexagesimal_name::difference()` counted in the wrong direction for names whose stem and
+  branch differ, so `chinese_based_calendar::day_name_on_or_before()` could return the wrong day.
+  `a.difference(b)` now returns the number of days forward from `a` to `b` (1..60; equal names
+  yield 60) ([#30](https://github.com/shinuexx/calendrical/issues/30),
+  [#31](https://github.com/shinuexx/calendrical/pull/31)).
+
 ### Documentation
 
 - README section on explicit numeric conversions (`degrees()`, `value()`, `days()`) linking the
