@@ -10,7 +10,7 @@ namespace calendrical::calendars {
     
     double modern_hindu_base::hindu_sine_table(int64_t entry)
     {
-        const auto exact = 3438 * sin(static_cast<double>(entry) * angle_t::dms(0, 225));
+        const auto exact = 3438 * sin(entry * angle_t::dms(0, 225));
         const auto error = 0.215 * sign(exact) * sign(std::abs(exact) - 1716);
         return std::round(exact + error) / 3438.0;
     }
@@ -19,6 +19,7 @@ namespace calendrical::calendars {
     {
         const auto entry = O / angle_t::dms(0, 225);
         const auto fraction = mod(entry, 1);
+        // Convert bounded table step boundaries from double to int64_t entry index
         return fraction * hindu_sine_table(static_cast<int64_t>(std::ceil(entry))) + (1 - fraction) * hindu_sine_table(static_cast<int64_t>(std::floor(entry)));
     }
     angle_t modern_hindu_base::hindu_arcsin(const double& amp) // NOLINT(*-no-recursion)
@@ -108,7 +109,7 @@ namespace calendrical::calendars {
         constexpr double mean_motion = 360 / hindu_sidereal_year;
         const auto anomaly = hindu_mean_position(moment_t{ date }, hindu_anomalistic_year);
         const auto epicycle = 14/360.0 - std::abs(hindu_sine(anomaly)) / 1080;
-        const auto entry = static_cast<int64_t>(floor_div(anomaly, angle_t{ 225 / 6e1 }));
+        const auto entry = floor_div(anomaly, angle_t{ 225 / 6e1 });
         const auto sine_table_step = hindu_sine_table(entry + 1) - hindu_sine_table(entry);
         const auto factor = -3438 / 225.0 * sine_table_step * epicycle;
         return mean_motion * (factor + 1);
@@ -135,18 +136,18 @@ namespace calendrical::calendars {
     {
         constexpr double a{ 1577917828 / (1582237828 * 360.0) };
         constexpr double quarter{ 0.25 };
-        return moment_t{ static_cast<int64_t>(date) + quarter + day_fraction(ujjain.longitude - m_hindu_location.longitude)
+        return moment_t{ date } + quarter + day_fraction(ujjain.longitude - m_hindu_location.longitude)
             - hindu_equation_of_time(date)
-            + a * (hindu_ascensional_difference(date, m_hindu_location).degrees() + quarter * hindu_solar_sidereal_difference(date)) };
+            + a * (hindu_ascensional_difference(date, m_hindu_location).degrees() + quarter * hindu_solar_sidereal_difference(date));
     }
 
     moment_t modern_hindu_base::hindu_sunset(const fixed_date_t& date) const
     {
         constexpr double a{ 1577917828 / (1582237828 * 360.0) };
         constexpr double quarter{ 0.25 };
-        return moment_t{ static_cast<int64_t>(date) + quarter + day_fraction(ujjain.longitude - m_hindu_location.longitude)
+        return moment_t{ date } + quarter + day_fraction(ujjain.longitude - m_hindu_location.longitude)
             - hindu_equation_of_time(date)
-            + a * ((-hindu_ascensional_difference(date, m_hindu_location)).degrees() + quarter * hindu_solar_sidereal_difference(date)) };
+            + a * ((-hindu_ascensional_difference(date, m_hindu_location)).degrees() + quarter * hindu_solar_sidereal_difference(date));
     }
 
     moment_t modern_hindu_base::hindu_standard_from_sundial(const moment_t& t) const

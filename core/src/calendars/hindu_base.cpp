@@ -6,6 +6,7 @@ namespace calendrical::calendars{
     }
 
     int32_t hindu_base::jovian_year(const fixed_date_t& date) const {
+        // Disambiguate floor_div(double, double) overload and convert result to integer cycle count
         const auto a = static_cast<int64_t>(floor_div(static_cast<double>(day_count(date)), arya_jovian_period / 12)) + 27;
         return static_cast<int32_t>(adjusted_remainder(a, 60));
     }
