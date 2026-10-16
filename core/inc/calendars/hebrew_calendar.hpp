@@ -14,7 +14,7 @@ namespace calendrical::calendars {
         /** @brief Mean lunation length used for molad calculations (days). */
         static constexpr double molad_month_length = 29 + 0.5 + 793.0/25920; // { 765433.0 / 25920 }; //= 29 + rational{ 1,2 } + rational{ 793,25920 };
         /** @brief Reference molad of 1 Tishri relative to the Hebrew epoch. */
-        static constexpr double molad_1_tishri = static_cast<int64_t>(ms_epoch) - molad_part;
+        static constexpr double molad_1_tishri = ms_epoch.value() - molad_part;
 
         /** @brief Internal month extractor using a resolved Hebrew year. */
         [[nodiscard]] hebrew_month get_month(const fixed_date_t& date, int32_t year) const;
