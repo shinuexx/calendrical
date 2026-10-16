@@ -91,7 +91,7 @@ namespace calendrical::cli {
                 if (as_gregorian) {
                     std::cout << gregorian.to_date(date).to_string() << " | " << name << '\n';
                 } else {
-                    std::cout << static_cast<int64_t>(date) << " | " << name << '\n';
+                    std::cout << date.value() << " | " << name << '\n';
                 }
             }
         }

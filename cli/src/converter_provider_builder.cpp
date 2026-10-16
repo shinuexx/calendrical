@@ -87,7 +87,7 @@ namespace calendrical::cli {
             "NNNNNN",
             [](const std::string& x) { return std::stoll(x); },
             bind_constructor<fixed_date_t>{},
-            [](fixed_date_t x) { return static_cast<int64_t>(x); }
+            [](fixed_date_t x) { return x.value(); }
         );
         provider.add<double>(
             "jd",
