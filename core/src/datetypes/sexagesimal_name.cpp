@@ -7,7 +7,7 @@ namespace calendrical::datetypes {
         const auto stem_difference = static_cast<int64_t>(other.stem - stem);
         const auto branch_difference = static_cast<int64_t>(other.branch - branch);
         return static_cast<int32_t>(
-             adjusted_remainder(stem_difference + 25 * (branch_difference + stem_difference), 60));
+             adjusted_remainder(stem_difference + 25 * (branch_difference - stem_difference), 60));
     }
     sexagesimal_name sexagesimal_name::from(int64_t n) {
     return {
