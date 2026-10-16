@@ -254,6 +254,36 @@ int main() {
 
 Public headers live in `core/inc`, implementations in `core/src`.
 
+## Explicit Numeric Conversions
+
+`angle_t`, `fixed_date_t` and `moment_t` no longer convert implicitly to a scalar.
+Arithmetic stays typed (`date + 1`, `t + 0.25`, `alpha + beta`), and a raw value is
+taken explicitly at the boundary with a method that names its unit:
+
+| Type | Raw value | Unit |
+| --- | --- | --- |
+| `angle_t` | `angle.degrees()` | degrees (`double`) |
+| `fixed_date_t` | `date.value()` | RD day number (`int64_t`) |
+| `moment_t` | `t.days()` | RD days, fractional (`double`) |
+
+```cpp
+#include <angle.hpp>
+#include <fixed_date.hpp>
+#include <moment.hpp>
+
+const calendrical::fixed_date_t date = 730120_rd;
+const calendrical::moment_t noon = calendrical::moment_t{date} + 0.5;
+const calendrical::fixed_date_t back = calendrical::floor(noon);  // == date
+const double turns = 90_deg / calendrical::angle_t::full_circle;  // 0.25
+const double raw = noon.days() + (90_deg).degrees() + date.value();
+```
+
+Mixing types implicitly (`date + 0.5`, `moment < double`, `angle + double`,
+`date + angle`) is a compilation error. `static_cast` still works, but the named
+methods are preferred. See the migration guides for
+[angles](docs/angle-migration.md), [fixed dates](docs/fixed-date-migration.md) and
+[moments](docs/moment-migration.md).
+
 ## Project Structure
 
 - `core/`
