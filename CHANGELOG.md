@@ -11,6 +11,24 @@ Entries up to 0.2.0 were reconstructed from the merged pull requests.
 
 ## Unreleased
 
+### Fixed
+
+- `sexagesimal_name::difference()` counted in the wrong direction for names whose stem and
+  branch differ, so `chinese_based_calendar::day_name_on_or_before()` could return the wrong day.
+  `a.difference(b)` now returns the number of days forward from `a` to `b` (1..60; equal names
+  yield 60) ([#30](https://github.com/shinuexx/calendrical/issues/30),
+  [#31](https://github.com/shinuexx/calendrical/pull/31)).
+
+### Changed
+
+- Internal review of the remaining `static_cast`s on unit-type boundaries across all calendar
+  families, astronomy helpers and the CLI: casts that bypassed a unit type were replaced with
+  `degrees()` / `value()` / `days()` or typed arithmetic, redundant casts were removed and the
+  remaining justified casts are commented. No API or result changes
+  ([#28](https://github.com/shinuexx/calendrical/issues/28),
+  [#32](https://github.com/shinuexx/calendrical/pull/32),
+  [#33](https://github.com/shinuexx/calendrical/pull/33)).
+
 ### Documentation
 
 - README section on explicit numeric conversions (`degrees()`, `value()`, `days()`) linking the
