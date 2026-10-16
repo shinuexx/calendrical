@@ -38,6 +38,7 @@ namespace calendrical::calendars{
 
     fixed_date_t gregorian_calendar::to_fixed(const gregorian_date& date) const {
         const auto& [year, month, day] = date;
+        // Scoped enum month converted to int64_t index for arithmetic
         const auto m = static_cast<int64_t>(month);
         const int64_t y1 = year - 1LL;
         return m_epoch - 1

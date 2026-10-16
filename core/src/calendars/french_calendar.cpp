@@ -26,12 +26,12 @@ namespace calendrical::calendars{
     int32_t french_calendar::get_year(const fixed_date_t& date) const
     {
         const auto new_year = new_year_on_or_before(date);
-        return static_cast<int32_t>(std::round(static_cast<double>(new_year - ms_epoch) / mean_tropical_year) + 1);
+        return static_cast<int32_t>(std::round((new_year - ms_epoch) / mean_tropical_year) + 1);
     }
     simple_date french_calendar::to_date(const fixed_date_t& date) const
     {
         const auto new_year = new_year_on_or_before(date);
-        const auto year = static_cast<int32_t>(std::round(static_cast<double>(new_year - ms_epoch) / mean_tropical_year) + 1);
+        const auto year = static_cast<int32_t>(std::round((new_year - ms_epoch) / mean_tropical_year) + 1);
         const auto month = get_month(date, new_year);
         const auto day = get_day(date, new_year);
         return { year, month, day };

@@ -32,6 +32,7 @@ namespace calendrical::calendars{
     fixed_date_t julian_calendar::to_fixed(const julian_date &date) const {
         const auto &[year, month, day] = date;
         const int64_t y = year < 0 ? year + 1LL : year;
+        // Scoped enum month converted to int64_t index for arithmetic
         const auto m = static_cast<int64_t>(month);
         return ms_epoch - 1
             + 365 *(y - 1)

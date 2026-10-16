@@ -8,7 +8,7 @@ namespace calendrical::calendars{
 
     int32_t astro_bahai_calendar::get_years(const fixed_date_t &date) const {
         const auto new_year = new_year_on_or_before(date);
-        return static_cast<int32_t>(std::round(static_cast<double>(new_year - ms_epoch) / mean_tropical_year));
+        return static_cast<int32_t>(std::round((new_year - ms_epoch) / mean_tropical_year));
     }
 
     // ReSharper disable once CppMemberFunctionMayBeStatic
@@ -24,7 +24,7 @@ namespace calendrical::calendars{
     bahai_date astro_bahai_calendar::to_date(const fixed_date_t& date) const
     {
         const auto new_year = new_year_on_or_before(date);
-        const auto years = static_cast<int32_t>(std::round(static_cast<double>(new_year - ms_epoch) / mean_tropical_year));
+        const auto years = static_cast<int32_t>(std::round((new_year - ms_epoch) / mean_tropical_year));
         auto major = get_major(years);
         auto cycle = get_cycle(years);
         auto year = get_year(years);
@@ -39,16 +39,19 @@ namespace calendrical::calendars{
         fixed_date_t a;
         int32_t b;
         if (month == 19) {
+            // Convert floored tropical year estimate to integer days for fixed_date_t addition
             const auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years + 0.5)));
             a = new_year_on_or_before(ms_epoch + x);
             b = -20 + day;
         }
         else if (month == ayyam_i_ha) {
+            // Convert floored tropical year estimate to integer days for fixed_date_t addition
             const auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years - 0.5)));
             a = new_year_on_or_before(ms_epoch + x);
             b = 341 + day;
         }
         else {
+            // Convert floored tropical year estimate to integer days for fixed_date_t addition
             const auto x = static_cast<int64_t>(std::floor(mean_tropical_year * (years - 0.5)));
             a = new_year_on_or_before(ms_epoch + x);
             b = 19 * (month - 1) + day - 1;

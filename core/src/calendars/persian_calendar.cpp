@@ -23,7 +23,7 @@ namespace calendrical::calendars {
     int32_t persian_calendar::get_year(const fixed_date_t& date) const
     {
         const auto new_year = new_year_on_or_before(date);
-        const auto y = std::round(static_cast<double>(new_year - ms_epoch) / mean_tropical_year) + 1;
+        const auto y = std::round((new_year - ms_epoch) / mean_tropical_year) + 1;
         const auto year = 0 < y ? y : y - 1;
         return static_cast<int32_t>(year);
     }
@@ -31,6 +31,7 @@ namespace calendrical::calendars {
     {
         auto &[year, month, day] = date;
         const auto y = 0 < year ? year - 1 : year;
+        // Convert floored tropical year estimate to integer days for fixed_date_t addition
         const auto beg = ms_epoch + 180 + static_cast<int64_t>(std::floor(mean_tropical_year * y));
         const auto new_year = new_year_on_or_before(beg);
         return new_year - 1
