@@ -7,6 +7,7 @@ namespace calendrical::calendars {
 
     hebrew_month hebrew_calendar::get_month(const fixed_date_t& date, int32_t year) const {
         auto start = date < to_fixed({ year, hebrew_month::nisan, 1 }) ? hebrew_month::tishri : hebrew_month::nisan;
+        // Scoped enum hebrew_month converted to int64_t search bound for least_passing
         auto month = least_passing([&](int64_t m) {
             auto hm = static_cast<hebrew_month>(m);
             return date <= to_fixed({ year, hm, last_day_of_month(year, hm) });
@@ -32,7 +33,7 @@ namespace calendrical::calendars {
         return mod(3 * (days + 1), 7) < 3 ? days + 1 : days;
     }
 
-     hebrew_calendar::hebrew_calendar() : m_possible_days_begin(hebrew_calendar::to_fixed({5, hebrew_month::nisan, 1})){}
+    hebrew_calendar::hebrew_calendar() : m_possible_days_begin(hebrew_calendar::to_fixed({5, hebrew_month::nisan, 1})){}
 
     bool hebrew_calendar::is_leap_year(int32_t year) const { return mod(7 * year + 1, 19) < 7; }
 
@@ -61,6 +62,7 @@ namespace calendrical::calendars {
     fixed_date_t hebrew_calendar::to_fixed(const hebrew_date &date) const {
         auto& [year, month, day] = date;
         const auto lmhy = last_month_of_year(year);
+        // Scoped enum hebrew_month converted to int64_t for sigma summation and integer bounds
         const auto p = [=](int64_t m) { return m <= static_cast<int64_t>(lmhy); };
         const auto p2 = [=](int64_t m) { return m < static_cast<int64_t>(month);};
         const auto f = [&](int64_t m) -> int64_t { return last_day_of_month(year, static_cast<hebrew_month>(m)); };
@@ -83,8 +85,7 @@ namespace calendrical::calendars {
     moment_t hebrew_calendar::molad(int32_t year, hebrew_month month) {
         const auto y = month < hebrew_month::tishri ? year + 1 : year;
         const auto months_elapsed = month - hebrew_month::tishri + floor_div(235 * y - 234, 19);
-        const auto r = static_cast<int64_t>(ms_epoch) - molad_part + static_cast<double>(months_elapsed) * molad_month_length;
-        return moment_t{ r };
+        return moment_t{ ms_epoch } - molad_part + months_elapsed * molad_month_length;
     }
 
     fixed_date_t hebrew_calendar::fixed_from_molad(const moment_t &moon) {

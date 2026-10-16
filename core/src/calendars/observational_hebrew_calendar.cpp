@@ -33,7 +33,7 @@ namespace calendrical::calendars{
         const auto gyear = m_gregorian->get_year(date);
         const auto ny = first_of_nisan(gyear);
         const auto new_year = date < ny ? first_of_nisan(gyear - 1) : ny;
-        auto month = static_cast<hebrew_month>(static_cast<int32_t>(std::round(static_cast<double>(crescent - new_year) / 29.5) + 1)) ;
+        auto month = static_cast<hebrew_month>(static_cast<int32_t>(std::round((crescent - new_year) / 29.5) + 1));
         auto year = m_hebrew->get_year(new_year) + (month >= hebrew_month::tishri ? 1 : 0);
         const auto day = date - crescent + 1;
         return { year, month, static_cast<int32_t>(day) };
@@ -45,6 +45,7 @@ namespace calendrical::calendars{
         const auto start = m_hebrew->to_fixed({year1, hebrew_month::nisan, 1});
         const auto gyear = m_gregorian->get_year(start.add(60));
         const auto new_year = first_of_nisan(gyear);
+        // Convert rounded day estimate from floating point to integer days for fixed_date_t addition
         const auto midmonth = new_year + static_cast<int64_t>(std::round(29.5 * (static_cast<int32_t>(month) - 1))) + 15;
         return phasis_on_or_before(midmonth, hebrew_location) + day - 1;
     }
